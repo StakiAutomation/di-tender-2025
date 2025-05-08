@@ -82,8 +82,7 @@ export const Income: FC<React.PropsWithChildren<unknown>> = () => {
     variables :{filter:searchString},
   })
 
-  const searchForPayee = (text:string)=> {
-    getFromNationalRegister();
+  useEffect(() => {
     var newSearchResults:AsyncSearchOption[] = [];
     console.log("searchresults: " + JSON.stringify(nationalRegistrySearchResults));
     if (nationalRegistrySearchResults != undefined) {
@@ -101,15 +100,35 @@ export const Income: FC<React.PropsWithChildren<unknown>> = () => {
       }
 
     }
-    // const name = nationalRegistrySearchResults.getFromNationalRegistry.name;
-    // const kennitala = nationalRegistrySearchResults.getFromNationalRegistry.nationalId;
-    // console.log("name: " + name);
-
-
-
-    // results.push({label:name, value:kennitala} as AsyncSearchOption);
-    // results.push({label:"niðurstaða 2", value:"kennitala 2"} as AsyncSearchOption);
     setSearchResults(newSearchResults);
+  }, [nationalRegistrySearchResults])
+
+  const searchForPayee = (text:string)=> {
+    if (text.length > 0) {
+      getFromNationalRegister();
+    }
+    else {
+      setSearchResults([]);
+    }
+
+    // var newSearchResults:AsyncSearchOption[] = [];
+    // console.log("searchresults: " + JSON.stringify(nationalRegistrySearchResults));
+    // if (nationalRegistrySearchResults != undefined) {
+    //   const results = (nationalRegistrySearchResults as any).getFromNationalRegistry;
+    //   // console.log(JSON.stringify(results));
+    //   console.log("count " + results.length);
+    //   for (const resultNumber in (nationalRegistrySearchResults as any).getFromNationalRegistry) {
+    //     const res = (nationalRegistrySearchResults as any).getFromNationalRegistry[resultNumber];
+    //     console.log(res);
+    //     const name = res.name;
+    //     const kennitala = res.nationalId;
+    //     console.log("name: " + name);
+    //     console.log("kt: " + kennitala);
+    //     newSearchResults.push({label:name, value:kennitala} as AsyncSearchOption);
+    //   }
+    //
+    // }
+    // setSearchResults(newSearchResults);
   }
 
   return (

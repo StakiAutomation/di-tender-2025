@@ -105,23 +105,23 @@ export class TaxReturnsService {
           taxReturns.tekjur.push(incomeDTO);
         }
       }
-      if (taxReturnInput.eignir != null) {
-        taxReturns.eignir = [];
-        for (const eign of taxReturnInput.eignir ?? []) {
-          const assetDto: AssetDto = {
-            id: 0,
-            tegund: {id: eign.tegund_id} as AssetTypeDto,
-            titill: eign.titill,
-            numer: eign.numer,
-            heimilisfang: eign.heimilisfang,
-            kaupar: eign.kaupar,
-            upphaed: eign.upphaed,
-            reitur: {numer: eign.reitur} as FormFieldDto,
-
-          };
-          taxReturns.eignir.push(assetDto);
-        }
-      }
+      // if (taxReturnInput.eignir != null) {
+      //   taxReturns.eignir = [];
+      //   for (const eign of taxReturnInput.eignir ?? []) {
+      //     const assetDto: AssetDto = {
+      //       id: 0,
+      //       tegund: {id: eign.tegund_id} as AssetTypeDto,
+      //       titill: eign.titill,
+      //       numer: eign.numer,
+      //       heimilisfang: eign.heimilisfang,
+      //       kaupar: eign.kaupar,
+      //       upphaed: eign.upphaed,
+      //       reitur: {numer: eign.reitur} as FormFieldDto,
+      //
+      //     };
+      //     taxReturns.eignir.push(assetDto);
+      //   }
+      // }
 
       const newReturnString = JSON.stringify(taxReturns);
       await this.storeTaxReturnForKennitala(newReturnString, kennitala);
