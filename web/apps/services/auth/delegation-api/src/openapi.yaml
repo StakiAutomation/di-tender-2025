@@ -1,0 +1,1510 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /v1/clients:
+    get:
+      operationId: ClientsController_findAll
+      parameters:
+        - name: lang
+          required: false
+          in: query
+          description: The language to return the client name in.
+          schema:
+            type: string
+        - name: clientId
+          required: false
+          in: query
+          description: List of clientIds to filter by.
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - /clients
+      security:
+        - ias:
+            - '@island.is/auth/delegations:write'
+  /v1/me/delegations:
+    get:
+      operationId: MeDelegationsController_findAll
+      parameters:
+        - name: domain
+          required: false
+          in: query
+          description: The domain name the delegation is defined in.
+          schema:
+            type: string
+        - name: direction
+          required: false
+          in: query
+          description: >-
+            The direction of the delegation. Defaults to outgoing if not
+            provided.
+          schema:
+            enum:
+              - outgoing
+              - incoming
+            default: outgoing
+        - name: validity
+          required: false
+          in: query
+          description: The date validity of the delegation.
+          schema:
+            enum:
+              - all
+              - now
+              - past
+              - includeFuture
+            default: all
+        - name: X-Query-OtherUser
+          required: false
+          in: header
+          description: >-
+            The identifier of the other user in the delegation. If the
+            direction=outgoing, this is the user the delegation is to. If the
+            direction=incoming, this is the user the delegation is from.
+          schema:
+            type: string
+            pattern: ^\d{10}$
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DelegationDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - me/delegations
+      security:
+        - ias:
+            - '@island.is/auth/delegations:write'
+            - '@admin.island.is/delegations'
+    post:
+      operationId: MeDelegationsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDelegationDTO'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegationDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '409':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - me/delegations
+      security:
+        - ias:
+            - '@island.is/auth/delegations:write'
+            - '@admin.island.is/delegations'
+  /v1/me/delegations/{delegationId}:
+    get:
+      operationId: MeDelegationsController_findOne
+      parameters:
+        - name: delegationId
+          required: true
+          in: path
+          description: The id of the delegation.
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegationDTO'
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - me/delegations
+      security:
+        - ias:
+            - '@island.is/auth/delegations:write'
+            - '@admin.island.is/delegations'
+    patch:
+      operationId: MeDelegationsController_patch
+      parameters:
+        - name: delegationId
+          required: true
+          in: path
+          description: The id of the delegation.
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDelegationDTO'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegationDTO'
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - me/delegations
+      security:
+        - ias:
+            - '@island.is/auth/delegations:write'
+            - '@admin.island.is/delegations'
+    delete:
+      operationId: MeDelegationsController_delete
+      parameters:
+        - name: delegationId
+          required: true
+          in: path
+          description: The id of the delegation.
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - me/delegations
+      security:
+        - ias:
+            - '@island.is/auth/delegations:write'
+            - '@admin.island.is/delegations'
+  /v1/delegation-index/.id:
+    put:
+      operationId: DelegationIndexController_createOrUpdateDelegationRecord
+      description: Create or update a delegation index record.
+      parameters:
+        - name: X-Param-Id
+          required: true
+          in: header
+          description: >-
+            Delegation information delimited by an underscore e.g.
+            delegationType_nationalIdTo_nationalIdFrom
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDelegationRecordInputDTO'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegationRecordDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - delegation-index
+      security:
+        - ias:
+            - '@island.is/auth/delegations/index:system-write'
+    delete:
+      operationId: DelegationIndexController_removeDelegationRecord
+      description: Delete a delegation index record.
+      parameters:
+        - name: X-Param-Id
+          required: true
+          in: header
+          description: >-
+            Delegation information delimited by an underscore e.g.
+            delegationType_nationalIdTo_nationalIdFrom
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - delegation-index
+      security:
+        - ias:
+            - '@island.is/auth/delegations/index:system-write'
+  /v1/delegations:
+    get:
+      operationId: DelegationsController_getDelegationRecords
+      description: >-
+        Fetch delegations from specific national id and scope from delegation
+        index
+      parameters:
+        - name: X-Query-National-Id
+          required: true
+          in: header
+          description: fetch delegations for this national id
+          schema:
+            type: string
+        - name: scope
+          required: true
+          in: query
+          description: fetch delegations that have access to this scope
+          schema:
+            type: string
+        - name: direction
+          required: false
+          in: query
+          description: >-
+            The direction of the delegation. Defaults to outgoing if not
+            provided.
+          schema:
+            enum:
+              - outgoing
+              - incoming
+            default: outgoing
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDelegationRecordDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - delegations
+      security:
+        - ias:
+            - '@island.is/auth/delegations/index:system'
+  /v1/domains:
+    get:
+      operationId: DomainsController_findAll
+      description: |-
+        Get all domains. Provides query parameters to filter domains
+              delegation support and/or specific delegation direction.
+      parameters:
+        - name: lang
+          required: false
+          in: query
+          description: The language to return display strings in.
+          schema:
+            type: string
+        - name: direction
+          required: false
+          in: query
+          description: |-
+            The direction of the delegations to apply on domain filtering.
+                        Setting this param implicitly filters by delegation support.
+                        Default returns all domains.
+          schema:
+            enum:
+              - outgoing
+        - name: domainName
+          required: false
+          in: query
+          description: A list of domain names to filter by.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: supportsDelegations
+          required: false
+          in: query
+          description: |-
+            A boolean to filter by delegation support.
+                        If set to true, only domains with delegation support are returned.
+                        If set to false or not set, all domains are returned.
+                        This param is implicitly set to true when direction param is used.
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DomainDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - domains
+      security:
+        - ias: []
+  /v1/domains/{domainName}:
+    get:
+      operationId: DomainsController_findOne
+      description: Returns a single domain by name.
+      parameters:
+        - name: domainName
+          required: true
+          in: path
+          description: The domain name to the scope tree belongs to.
+          schema:
+            type: string
+        - name: lang
+          required: false
+          in: query
+          description: The language to return display strings in.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainDTO'
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - domains
+      security:
+        - ias: []
+  /v1/domains/{domainName}/scope-tree:
+    get:
+      operationId: DomainsController_findScopeTree
+      description: Returns a sorted scope tree for the given domain.
+      parameters:
+        - name: domainName
+          required: true
+          in: path
+          description: The domain name to the scope tree belongs to.
+          schema:
+            type: string
+        - name: lang
+          required: false
+          in: query
+          description: The language to return display strings in.
+          schema:
+            type: string
+        - name: direction
+          required: false
+          in: query
+          description: >-
+            The direction of the delegations to apply on domain filtering.
+            Default returns all domains.
+          schema:
+            enum:
+              - outgoing
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScopeTreeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - domains
+      security:
+        - ias: []
+  /v1/domains/{domainName}/scopes:
+    get:
+      operationId: DomainsController_findScopes
+      description: Returns a list of scopes for the given domain.
+      parameters:
+        - name: domainName
+          required: true
+          in: path
+          description: The domain name to the scope tree belongs to.
+          schema:
+            type: string
+        - name: lang
+          required: false
+          in: query
+          description: The language to return display strings in.
+          schema:
+            type: string
+        - name: direction
+          required: false
+          in: query
+          description: >-
+            The direction of the delegations to apply on domain filtering.
+            Default returns all domains.
+          schema:
+            enum:
+              - outgoing
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiScopeListDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - domains
+      security:
+        - ias: []
+  /v1/scopes/scope-tree:
+    get:
+      operationId: ScopesController_findScopeTree
+      description: Returns a sorted scope tree for the requested scopes.
+      parameters:
+        - name: requestedScopes
+          required: true
+          in: query
+          description: List of scopes to return the tree for.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: lang
+          required: false
+          in: query
+          description: The language to return the scopes in.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScopeTreeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - scopes
+      security:
+        - ias: []
+  /v1/me/login-restrictions:
+    get:
+      operationId: MeLoginRestrictionsController_findAll
+      description: Gets the current user login restrictions.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginRestrictionsPaginatedDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - me/login-restrictions
+    put:
+      operationId: MeLoginRestrictionsController_create
+      description: Creates or updates a login restriction for the current user.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLoginRestrictionDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginRestriction'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - me/login-restrictions
+    delete:
+      operationId: MeLoginRestrictionsController_delete
+      description: Deletes the current user login restriction.
+      parameters: []
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - me/login-restrictions
+info:
+  title: IdentityServer Internal Delegation API
+  description: >-
+    Internal API for IdentityServer to manage delegations.
+
+
+
+    The swagger document can be downloaded by appending `-json` to the last path
+    segment.
+  version: '1.0'
+  contact: {}
+tags: []
+servers:
+  - url: http://localhost:5333
+components:
+  securitySchemes:
+    ias:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://identity-server.dev01.devland.is/connect/authorize
+          tokenUrl: https://identity-server.dev01.devland.is/connect/token
+          scopes:
+            openid: Default openid scope
+            '@island.is/auth/delegations:write': Access to manage delegations.
+      description: >-
+        Authentication and authorization using island.is authentication service
+        (IAS).
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    ClientDto:
+      type: object
+      properties:
+        clientId:
+          type: string
+          example: '@island.is/web'
+          description: This is the client id that is used to identify the client.
+        clientName:
+          type: string
+          example: Mínar síður Ísland.is
+          description: This is the name of the client that is displayed to the user.
+        domainName:
+          type: string
+          example: '@island.is/web'
+          description: >-
+            This is the domain name, unique identifier for the domain the client
+            belongs to.
+      required:
+        - clientId
+        - clientName
+        - domainName
+    HttpProblemResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: number
+          description: The HTTP status code
+        detail:
+          type: string
+          description: >-
+            A human-readable explanation specific to this occurrence of the
+            problem
+        instance:
+          type: string
+          description: >-
+            A URI reference that identifies the specific occurrence of the
+            problem.
+      required:
+        - type
+        - title
+    AuthDelegationType:
+      type: string
+      enum:
+        - ProcurationHolder
+        - LegalGuardian
+        - Custom
+        - PersonalRepresentative
+        - LegalGuardianMinor
+        - LegalRepresentative
+        - GeneralMandate
+    AuthDelegationProvider:
+      type: string
+      enum:
+        - thjodskra
+        - fyrirtaekjaskra
+        - talsmannagrunnur
+        - delegationdb
+        - syslumenn
+    DelegationScopeDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        delegationId:
+          type: string
+        scopeName:
+          type: string
+        displayName:
+          type: string
+        validFrom:
+          format: date-time
+          type: string
+        validTo:
+          format: date-time
+          type: string
+          nullable: true
+      required:
+        - delegationId
+        - scopeName
+        - displayName
+        - validFrom
+    DelegationDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        fromNationalId:
+          type: string
+        fromName:
+          type: string
+        toNationalId:
+          type: string
+        toName:
+          type: string
+          nullable: true
+        validTo:
+          format: date-time
+          type: string
+          nullable: true
+        type:
+          $ref: '#/components/schemas/AuthDelegationType'
+        provider:
+          $ref: '#/components/schemas/AuthDelegationProvider'
+        referenceId:
+          type: string
+          nullable: true
+        createdByNationalId:
+          type: string
+          nullable: true
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DelegationScopeDTO'
+        domainName:
+          type: string
+          nullable: true
+      required:
+        - fromNationalId
+        - fromName
+        - toNationalId
+        - type
+        - provider
+    UpdateDelegationScopeDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        validTo:
+          format: date-time
+          type: string
+          description: A date that the delegation is valid to. Must be in the future.
+      required:
+        - name
+        - validTo
+    CreateDelegationDTO:
+      type: object
+      properties:
+        toNationalId:
+          type: string
+          description: National ID of the user receiving the delegation.
+        domainName:
+          type: string
+          description: Name identifying the domain the delegation is given in.
+        scopes:
+          description: List of scopes the delegation authorizes.
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateDelegationScopeDTO'
+      required:
+        - toNationalId
+    PatchDelegationDTO:
+      type: object
+      properties:
+        updateScopes:
+          description: List of scopes to be added or updated for a delegation.
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateDelegationScopeDTO'
+        deleteScopes:
+          description: List of scopes to be removed from a delegation.
+          type: array
+          items:
+            type: string
+    CreateDelegationRecordInputDTO:
+      type: object
+      properties:
+        validTo:
+          format: date-time
+          type: string
+          nullable: true
+    DelegationRecordDTO:
+      type: object
+      properties:
+        fromNationalId:
+          type: string
+        toNationalId:
+          type: string
+        subjectId:
+          type: string
+          nullable: true
+        type:
+          type: string
+      required:
+        - fromNationalId
+        - toNationalId
+        - subjectId
+        - type
+    PageInfoDto:
+      type: object
+      properties:
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPreviousPage:
+          type: boolean
+          example: false
+        startCursor:
+          type: string
+          example: WyIwM2JmMWUwOS1hNWEwLTQyNDMtOTAxOC1mY2FhYjg4NTVkMTYiXQ==
+        endCursor:
+          type: string
+          example: WyJmODY1MDAzMS03YTFkLTRhOTAtOWI2OC00ODg1YjlkZDZjZDgiXQ==
+      required:
+        - hasNextPage
+        - hasPreviousPage
+        - startCursor
+        - endCursor
+    PaginatedDelegationRecordDTO:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DelegationRecordDTO'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+        totalCount:
+          type: number
+      required:
+        - data
+        - pageInfo
+        - totalCount
+    DomainDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          example: '@island.is'
+        description:
+          type: string
+          example: Domain for Island.is
+        nationalId:
+          type: string
+          example: '0123456789'
+        displayName:
+          type: string
+          example: Mínar síður Ísland.is
+        organisationLogoKey:
+          type: string
+          example: Stafrænt Ísland
+          description: This key is used to look up the organisation in Contentful.
+        contactEmail:
+          type: string
+          example: email@island.is
+      required:
+        - name
+        - description
+        - nationalId
+        - displayName
+        - organisationLogoKey
+        - contactEmail
+    ScopeTreeDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the api scope or api scope group.
+          example: '@island.is/finances'
+        displayName:
+          type: string
+          description: Display name of the api scope or api scope group.
+          example: Fjármál
+        description:
+          type: string
+          description: Description of the api scope or api scope group.
+          example: Aðgangur að fjármálum.
+        domainName:
+          type: string
+          description: Domain name which the scope or group belongs to.
+          example: '@island.is'
+        children:
+          description: >-
+            List of scopes belonging to the group. When children is undefined it
+            represents a scope instead of a group.
+          example:
+            - name: '@island.is/finances/schedule'
+              displayName: Greiðsluáætlun
+              description: Aðgangur að greiðsluáætlunum.
+              domainName: '@island.is'
+            - name: '@island.is/finances/overview'
+              displayName: Yfirlit
+              description: Aðgangur að fjármála yfirliti.
+              domainName: '@island.is'
+          type: array
+          items:
+            $ref: '#/components/schemas/ScopeTreeDTO'
+      required:
+        - name
+        - displayName
+        - description
+        - domainName
+    ApiScopeListDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the api scope or api scope group.
+          example: '@island.is/finances/schedule'
+        displayName:
+          type: string
+          description: Display name of the api scope or api scope group.
+          example: Greiðsluáætlun
+        description:
+          type: string
+          description: Description of the api scope or api scope group.
+          example: Aðgangur að greiðsluáætlunum.
+        domainName:
+          type: string
+          description: Domain name which the scope or group belongs to.
+          example: '@island.is'
+        group:
+          description: >-
+            The group this scope belongs to. This is undefined for groups and
+            scopes which are not inside a group.
+          example:
+            - name: '@island.is/finances'
+              displayName: Fjármál
+              description: Aðgangur að fjármálum.
+              domainName: '@island.is'
+          allOf:
+            - $ref: '#/components/schemas/ApiScopeListDTO'
+      required:
+        - name
+        - displayName
+        - description
+        - domainName
+    LoginRestrictionDto:
+      type: object
+      properties:
+        nationalId:
+          type: string
+        phoneNumber:
+          type: string
+        until:
+          format: date-time
+          type: string
+      required:
+        - nationalId
+        - phoneNumber
+        - until
+    LoginRestrictionsPaginatedDto:
+      type: object
+      properties:
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+        totalCount:
+          type: number
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoginRestrictionDto'
+      required:
+        - pageInfo
+        - totalCount
+        - data
+    CreateLoginRestrictionDto:
+      type: object
+      properties:
+        until:
+          format: date-time
+          type: string
+          description: >-
+            Date until which the user is restricted from logging in on new
+            devices.
+      required:
+        - until
+    LoginRestriction:
+      type: object
+      properties:
+        nationalId:
+          type: string
+        phoneNumber:
+          type: string
+        until:
+          format: date-time
+          type: string
+      required:
+        - nationalId
+        - phoneNumber
+        - until

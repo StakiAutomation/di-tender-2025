@@ -1,0 +1,1601 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /applications/{id}:
+    get:
+      operationId: ApplicationController_findOne
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponseDto'
+      tags:
+        - applications
+      security:
+        - bearer: []
+    put:
+      operationId: ApplicationController_update
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          description: The id of the application to update.
+          allowEmptyValue: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplicationDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponseDto'
+      tags:
+        - applications
+      security:
+        - bearer: []
+    delete:
+      operationId: ApplicationController_delete
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          description: The id of the application to delete.
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - applications
+      security:
+        - bearer: []
+  /users/{nationalId}/applications:
+    get:
+      operationId: ApplicationController_findAll
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: nationalId
+          required: true
+          in: path
+          description: To get the applications for a specific user's national id.
+          allowEmptyValue: false
+          schema:
+            type: string
+        - name: typeId
+          required: false
+          in: query
+          description: To filter applications by type. Comma-separated for multiple values.
+          schema:
+            type: string
+        - name: status
+          required: false
+          in: query
+          description: >-
+            To filter applications by status. Comma-separated for multiple
+            values.
+          schema:
+            type: string
+        - name: scopeCheck
+          required: false
+          in: query
+          description: >-
+            To check if the user has access to the application. Used for service
+            portal not applications. Defaults to false.
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationResponseDto'
+      tags:
+        - applications
+      security:
+        - bearer: []
+  /applications:
+    post:
+      operationId: ApplicationController_create
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApplicationDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponseDto'
+      tags:
+        - applications
+      security:
+        - bearer: []
+  /applications/assign:
+    put:
+      operationId: ApplicationController_assignApplication
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignApplicationDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponseDto'
+      tags:
+        - applications
+      security:
+        - bearer: []
+  /applications/{id}/externalData:
+    put:
+      operationId: ApplicationController_updateExternalData
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          description: The id of the application to update the external data for.
+          allowEmptyValue: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PopulateExternalDataDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponseDto'
+      tags:
+        - applications
+      security:
+        - bearer: []
+  /applications/{id}/submit:
+    put:
+      operationId: ApplicationController_submitApplication
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          description: The id of the application to update the state for.
+          allowEmptyValue: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplicationStateDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponseDto'
+      tags:
+        - applications
+      security:
+        - bearer: []
+  /applications/{id}/attachments:
+    put:
+      operationId: ApplicationController_addAttachment
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          description: The id of the application to update the attachments for.
+          allowEmptyValue: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddAttachmentDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponseDto'
+      tags:
+        - applications
+      security:
+        - bearer: []
+    delete:
+      operationId: ApplicationController_deleteAttachment
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          description: The id of the application to delete attachment(s) from.
+          allowEmptyValue: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteAttachmentDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponseDto'
+      tags:
+        - applications
+      security:
+        - bearer: []
+  /applications/{id}/attachments/{attachmentKey}/presigned-url:
+    get:
+      operationId: ApplicationController_getAttachmentPresignedURL
+      description: Gets a presigned url for attachments
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          description: application id
+          schema:
+            type: string
+        - name: attachmentKey
+          required: true
+          in: path
+          description: key for attachment
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignedUrlResponseDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - applications
+      security:
+        - bearer: []
+  /admin/applications-statistics:
+    get:
+      operationId: AdminController_getCountByTypeIdAndStatus
+      description: Get applications statistics
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: startDate
+          required: true
+          in: query
+          description: Start date for the statistics
+          schema:
+            type: string
+        - name: endDate
+          required: true
+          in: query
+          description: End date for the statistics
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationStatistics'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - applications
+      security:
+        - bearer: []
+  /admin/{nationalId}/applications:
+    get:
+      operationId: AdminController_findAllAdmin
+      description: Get applications for a specific user
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: nationalId
+          required: true
+          in: path
+          description: To get the applications for a specific user's national id.
+          schema:
+            type: string
+        - name: typeId
+          required: false
+          in: query
+          description: To filter applications by type. Comma-separated for multiple values.
+          schema:
+            type: string
+        - name: status
+          required: false
+          in: query
+          description: >-
+            To filter applications by status. Comma-separated for multiple
+            values.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationListAdminResponseDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - applications
+      security:
+        - bearer: []
+  /admin/institution/{nationalId}/applications/{page}/{count}:
+    get:
+      operationId: AdminController_findAllInstitutionAdmin
+      description: Get applications for a specific institution
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: nationalId
+          required: true
+          in: path
+          description: To get the applications for a specific institution's national id.
+          schema:
+            type: string
+        - name: page
+          required: true
+          in: path
+          description: The page to fetch
+          schema:
+            type: number
+        - name: count
+          required: true
+          in: path
+          description: Number of items to fetch
+          schema:
+            type: number
+        - name: status
+          required: false
+          in: query
+          description: >-
+            To filter applications by status. Comma-separated for multiple
+            values.
+          schema:
+            type: string
+        - name: applicantNationalId
+          required: false
+          in: query
+          description: To filter applications by applicant nationalId.
+          schema:
+            type: string
+        - name: from
+          required: false
+          in: query
+          description: Only return results created after specified date
+          schema:
+            type: string
+        - name: to
+          required: false
+          in: query
+          description: Only return results cerated before specified date
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationAdminPaginatedResponse'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - applications
+      security:
+        - bearer: []
+  /applications/{applicationId}/payment-status:
+    get:
+      operationId: PaymentController_getPaymentStatus
+      parameters:
+        - name: locale
+          in: header
+          description: Front-end language selected
+          schema:
+            type: string
+        - name: applicationId
+          required: true
+          in: path
+          description: The id of the application check if it is paid.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentStatusResponseDto'
+      tags:
+        - payments
+      security:
+        - bearer: []
+  /application-payment/{applicationId}/{id}:
+    post:
+      operationId: PaymentCallbackController_paymentApproved
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Callback'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - payment-callback
+  /application-payment/api-client-payment-callback:
+    post:
+      operationId: PaymentCallbackController_apiClientPaymentCallback
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiClientCallback'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - payment-callback
+info:
+  title: Application backend
+  description: This is provided as a reference to implement other backends.
+  version: '1.0'
+  contact: {}
+tags:
+  - name: application
+    description: ''
+  - name: payment
+    description: ''
+  - name: payment-callback
+    description: ''
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    ActionCardTag:
+      type: object
+      properties:
+        label:
+          type: string
+        variant:
+          type: string
+    PendingAction:
+      type: object
+      properties:
+        displayStatus:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        button:
+          type: string
+    History:
+      type: object
+      properties:
+        date:
+          format: date-time
+          type: string
+        log:
+          type: string
+      required:
+        - date
+        - log
+    ActionCardMetaData:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        tag:
+          $ref: '#/components/schemas/ActionCardTag'
+        deleteButton:
+          type: boolean
+        pendingAction:
+          $ref: '#/components/schemas/PendingAction'
+        history:
+          default: []
+          type: array
+          items:
+            $ref: '#/components/schemas/History'
+        draftFinishedSteps:
+          type: number
+        draftTotalSteps:
+          type: number
+        historyButton:
+          type: string
+      required:
+        - draftFinishedSteps
+        - draftTotalSteps
+    ApplicationResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        applicant:
+          type: string
+        assignees:
+          type: array
+          items:
+            type: string
+        applicantActors:
+          type: array
+          items:
+            type: string
+        state:
+          type: string
+        actionCard:
+          $ref: '#/components/schemas/ActionCardMetaData'
+        attachments:
+          type: object
+        typeId:
+          type: string
+          enum:
+            - ExampleForm
+            - ExampleCommonActions
+            - ExampleInputs
+            - ExampleNoInputs
+            - ExamplePayment
+            - ExampleStateTransfers
+            - Passport
+            - PassportAnnulment
+            - DrivingLearnersPermit
+            - DrivingLicense
+            - DrivingAssessmentApproval
+            - ParentalLeave
+            - DocumentProviderOnboarding
+            - HealthInsurance
+            - ChildrenResidenceChangeV2
+            - DataProtectionAuthorityComplaint
+            - LoginService
+            - InheritanceReport
+            - InstitutionCollaboration
+            - FundingGovernmentProjects
+            - PublicDebtPaymentPlan
+            - ComplaintsToAlthingiOmbudsman
+            - AccidentNotification
+            - GeneralPetitionService
+            - GeneralFishingLicense
+            - PSign
+            - AnnouncementOfDeath
+            - CriminalRecord
+            - FinancialAid
+            - DrivingInstructorRegistrations
+            - DrivingSchoolConfirmation
+            - MortgageCertificate
+            - MarriageConditions
+            - NoDebtCertificate
+            - FinancialStatementCemetery
+            - FinancialStatementsInao
+            - FinancialStatementIndividualElection
+            - FinancialStatementPoliticalParty
+            - OperatingLicense
+            - Estate
+            - DrivingLicenseDuplicate
+            - AnonymityInVehicleRegistry
+            - ChangeCoOwnerOfVehicle
+            - ChangeOperatorOfVehicle
+            - DigitalTachographDriversCard
+            - LicensePlateRenewal
+            - OrderVehicleLicensePlate
+            - OrderVehicleRegistrationCertificate
+            - TransferOfVehicleOwnership
+            - DrivingLicenseBookUpdateInstructor
+            - AlcoholTaxRedemption
+            - EuropeanHealthInsuranceCard
+            - OldAgePension
+            - HouseholdSupplement
+            - CarRecycling
+            - PresidentialListCreation
+            - PresidentialListSigning
+            - ParliamentaryListCreation
+            - ParliamentaryListSigning
+            - MunicipalListCreation
+            - MunicipalListSigning
+            - Citizenship
+            - AdditionalSupportForTheElderly
+            - EnergyFunds
+            - HealthcareLicenseCertificate
+            - HealthcareWorkPermit
+            - PensionSupplement
+            - TransferOfMachineOwnership
+            - DeathBenefits
+            - University
+            - HomeSupport
+            - ChangeMachineSupervisor
+            - DeregisterMachine
+            - GrindavikHousingBuyout
+            - RequestInspectionForMachine
+            - OfficialJournalOfIceland
+            - IdCard
+            - HealthInsuranceDeclaration
+            - StreetRegistration
+            - IncomePlan
+            - NewPrimarySchool
+            - WorkAccidentNotification
+            - MachineRegistration
+            - SeminarRegistration
+            - TrainingLicenseOnAWorkMachine
+            - SecondarySchool
+        answers:
+          type: object
+        externalData:
+          type: object
+        name:
+          type: string
+        institution:
+          type: string
+        progress:
+          type: number
+        status:
+          type: string
+          enum:
+            - notstarted
+            - draft
+            - inprogress
+            - completed
+            - rejected
+            - approved
+        pruned:
+          type: boolean
+      required:
+        - id
+        - created
+        - modified
+        - applicant
+        - assignees
+        - applicantActors
+        - state
+        - typeId
+        - answers
+        - externalData
+        - status
+        - pruned
+    CreateApplicationDto:
+      type: object
+      properties:
+        typeId:
+          type: string
+          enum:
+            - ExampleForm
+            - ExampleCommonActions
+            - ExampleInputs
+            - ExampleNoInputs
+            - ExamplePayment
+            - ExampleStateTransfers
+            - Passport
+            - PassportAnnulment
+            - DrivingLearnersPermit
+            - DrivingLicense
+            - DrivingAssessmentApproval
+            - ParentalLeave
+            - DocumentProviderOnboarding
+            - HealthInsurance
+            - ChildrenResidenceChangeV2
+            - DataProtectionAuthorityComplaint
+            - LoginService
+            - InheritanceReport
+            - InstitutionCollaboration
+            - FundingGovernmentProjects
+            - PublicDebtPaymentPlan
+            - ComplaintsToAlthingiOmbudsman
+            - AccidentNotification
+            - GeneralPetitionService
+            - GeneralFishingLicense
+            - PSign
+            - AnnouncementOfDeath
+            - CriminalRecord
+            - FinancialAid
+            - DrivingInstructorRegistrations
+            - DrivingSchoolConfirmation
+            - MortgageCertificate
+            - MarriageConditions
+            - NoDebtCertificate
+            - FinancialStatementCemetery
+            - FinancialStatementsInao
+            - FinancialStatementIndividualElection
+            - FinancialStatementPoliticalParty
+            - OperatingLicense
+            - Estate
+            - DrivingLicenseDuplicate
+            - AnonymityInVehicleRegistry
+            - ChangeCoOwnerOfVehicle
+            - ChangeOperatorOfVehicle
+            - DigitalTachographDriversCard
+            - LicensePlateRenewal
+            - OrderVehicleLicensePlate
+            - OrderVehicleRegistrationCertificate
+            - TransferOfVehicleOwnership
+            - DrivingLicenseBookUpdateInstructor
+            - AlcoholTaxRedemption
+            - EuropeanHealthInsuranceCard
+            - OldAgePension
+            - HouseholdSupplement
+            - CarRecycling
+            - PresidentialListCreation
+            - PresidentialListSigning
+            - ParliamentaryListCreation
+            - ParliamentaryListSigning
+            - MunicipalListCreation
+            - MunicipalListSigning
+            - Citizenship
+            - AdditionalSupportForTheElderly
+            - EnergyFunds
+            - HealthcareLicenseCertificate
+            - HealthcareWorkPermit
+            - PensionSupplement
+            - TransferOfMachineOwnership
+            - DeathBenefits
+            - University
+            - HomeSupport
+            - ChangeMachineSupervisor
+            - DeregisterMachine
+            - GrindavikHousingBuyout
+            - RequestInspectionForMachine
+            - OfficialJournalOfIceland
+            - IdCard
+            - HealthInsuranceDeclaration
+            - StreetRegistration
+            - IncomePlan
+            - NewPrimarySchool
+            - WorkAccidentNotification
+            - MachineRegistration
+            - SeminarRegistration
+            - TrainingLicenseOnAWorkMachine
+            - SecondarySchool
+        initialQuery:
+          type: string
+      required:
+        - typeId
+    AssignApplicationDto:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
+    UpdateApplicationDto:
+      type: object
+      properties:
+        answers:
+          type: object
+        draftProgress:
+          type: object
+        skipValidation:
+          type: boolean
+    DataProviderDto:
+      type: object
+      properties:
+        actionId:
+          type: string
+        order:
+          type: number
+      required:
+        - actionId
+    PopulateExternalDataDto:
+      type: object
+      properties:
+        dataProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataProviderDto'
+      required:
+        - dataProviders
+    UpdateApplicationStateDto:
+      type: object
+      properties:
+        event:
+          type: string
+        answers:
+          type: object
+        message:
+          type: string
+      required:
+        - event
+    AddAttachmentDto:
+      type: object
+      properties:
+        key:
+          type: string
+        url:
+          type: string
+      required:
+        - key
+        - url
+    DeleteAttachmentDto:
+      type: object
+      properties:
+        key:
+          type: string
+      required:
+        - key
+    PresignedUrlResponseDto:
+      type: object
+      properties:
+        url:
+          type: string
+      required:
+        - url
+    HttpProblemResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: number
+          description: The HTTP status code
+        detail:
+          type: string
+          description: >-
+            A human-readable explanation specific to this occurrence of the
+            problem
+        instance:
+          type: string
+          description: >-
+            A URI reference that identifies the specific occurrence of the
+            problem.
+      required:
+        - type
+        - title
+    ApplicationStatistics:
+      type: object
+      properties:
+        typeid:
+          type: string
+        count:
+          type: number
+        draft:
+          type: number
+        inprogress:
+          type: number
+        completed:
+          type: number
+        rejected:
+          type: number
+        approved:
+          type: number
+        name:
+          type: string
+      required:
+        - typeid
+        - count
+        - draft
+        - inprogress
+        - completed
+        - rejected
+        - approved
+        - name
+    ApplicationListAdminResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        applicant:
+          type: string
+        assignees:
+          type: array
+          items:
+            type: string
+        applicantActors:
+          type: array
+          items:
+            type: string
+        state:
+          type: string
+        actionCard:
+          $ref: '#/components/schemas/ActionCardMetaData'
+        attachments:
+          type: object
+        typeId:
+          type: string
+          enum:
+            - ExampleForm
+            - ExampleCommonActions
+            - ExampleInputs
+            - ExampleNoInputs
+            - ExamplePayment
+            - ExampleStateTransfers
+            - Passport
+            - PassportAnnulment
+            - DrivingLearnersPermit
+            - DrivingLicense
+            - DrivingAssessmentApproval
+            - ParentalLeave
+            - DocumentProviderOnboarding
+            - HealthInsurance
+            - ChildrenResidenceChangeV2
+            - DataProtectionAuthorityComplaint
+            - LoginService
+            - InheritanceReport
+            - InstitutionCollaboration
+            - FundingGovernmentProjects
+            - PublicDebtPaymentPlan
+            - ComplaintsToAlthingiOmbudsman
+            - AccidentNotification
+            - GeneralPetitionService
+            - GeneralFishingLicense
+            - PSign
+            - AnnouncementOfDeath
+            - CriminalRecord
+            - FinancialAid
+            - DrivingInstructorRegistrations
+            - DrivingSchoolConfirmation
+            - MortgageCertificate
+            - MarriageConditions
+            - NoDebtCertificate
+            - FinancialStatementCemetery
+            - FinancialStatementsInao
+            - FinancialStatementIndividualElection
+            - FinancialStatementPoliticalParty
+            - OperatingLicense
+            - Estate
+            - DrivingLicenseDuplicate
+            - AnonymityInVehicleRegistry
+            - ChangeCoOwnerOfVehicle
+            - ChangeOperatorOfVehicle
+            - DigitalTachographDriversCard
+            - LicensePlateRenewal
+            - OrderVehicleLicensePlate
+            - OrderVehicleRegistrationCertificate
+            - TransferOfVehicleOwnership
+            - DrivingLicenseBookUpdateInstructor
+            - AlcoholTaxRedemption
+            - EuropeanHealthInsuranceCard
+            - OldAgePension
+            - HouseholdSupplement
+            - CarRecycling
+            - PresidentialListCreation
+            - PresidentialListSigning
+            - ParliamentaryListCreation
+            - ParliamentaryListSigning
+            - MunicipalListCreation
+            - MunicipalListSigning
+            - Citizenship
+            - AdditionalSupportForTheElderly
+            - EnergyFunds
+            - HealthcareLicenseCertificate
+            - HealthcareWorkPermit
+            - PensionSupplement
+            - TransferOfMachineOwnership
+            - DeathBenefits
+            - University
+            - HomeSupport
+            - ChangeMachineSupervisor
+            - DeregisterMachine
+            - GrindavikHousingBuyout
+            - RequestInspectionForMachine
+            - OfficialJournalOfIceland
+            - IdCard
+            - HealthInsuranceDeclaration
+            - StreetRegistration
+            - IncomePlan
+            - NewPrimarySchool
+            - WorkAccidentNotification
+            - MachineRegistration
+            - SeminarRegistration
+            - TrainingLicenseOnAWorkMachine
+            - SecondarySchool
+        answers:
+          type: object
+        externalData:
+          type: object
+        name:
+          type: string
+        institution:
+          type: string
+        progress:
+          type: number
+        status:
+          type: string
+          enum:
+            - notstarted
+            - draft
+            - inprogress
+            - completed
+            - rejected
+            - approved
+        pruned:
+          type: boolean
+        applicantName:
+          type: string
+        paymentStatus:
+          type: string
+        pruneAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - created
+        - modified
+        - applicant
+        - assignees
+        - applicantActors
+        - state
+        - typeId
+        - answers
+        - externalData
+        - status
+    ApplicationAdminPaginatedResponse:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationListAdminResponseDto'
+        count:
+          type: number
+      required:
+        - rows
+        - count
+    PaymentStatusResponseDto:
+      type: object
+      properties:
+        fulfilled:
+          type: boolean
+        paymentUrl:
+          type: string
+      required:
+        - fulfilled
+        - paymentUrl
+    Callback:
+      type: object
+      properties:
+        receptionID:
+          type: string
+        chargeItemSubject:
+          type: string
+        status:
+          type: string
+          enum:
+            - paid
+            - cancelled
+            - recreated
+            - recreatedAndPaid
+      required:
+        - receptionID
+        - chargeItemSubject
+        - status
+    ApiClientCallbackMetadata:
+      type: object
+      properties:
+        applicationId:
+          type: string
+        paymentId:
+          type: string
+      required:
+        - applicationId
+        - paymentId
+    ApiClientPayment:
+      type: object
+      properties:
+        cardVR:
+          type: string
+        acquirerReferenceNumber:
+          type: string
+        transactionID:
+          type: string
+        authorizationCode:
+          type: string
+        transactionLifecycleId:
+          type: string
+        maskedCardNumber:
+          type: string
+        isSuccess:
+          type: boolean
+        cardInformation:
+          type: object
+        transactionType:
+          type: string
+        isCardPresent:
+          type: boolean
+        currency:
+          type: string
+        authenticationMethod:
+          type: string
+        authorizedAmount:
+          type: number
+        marketInformation:
+          type: object
+        authorizationIdentifier:
+          type: string
+        eci:
+          type: string
+        paymentAccountReference:
+          type: string
+        authorizationExpiryDate:
+          type: string
+        responseCode:
+          type: string
+        responseDescription:
+          type: string
+        responseTime:
+          type: string
+        correlationID:
+          type: string
+      required:
+        - cardVR
+        - acquirerReferenceNumber
+        - transactionID
+        - authorizationCode
+        - transactionLifecycleId
+        - maskedCardNumber
+        - isSuccess
+        - cardInformation
+        - transactionType
+        - isCardPresent
+        - currency
+        - authenticationMethod
+        - authorizedAmount
+        - marketInformation
+        - authorizationIdentifier
+        - eci
+        - paymentAccountReference
+        - authorizationExpiryDate
+        - responseCode
+        - responseDescription
+        - responseTime
+        - correlationID
+    ApiClientCharge:
+      type: object
+      properties:
+        created:
+          type: string
+        modified:
+          type: string
+        id:
+          type: string
+        paymentFlowId:
+          type: string
+        receptionId:
+          type: string
+        user4:
+          type: string
+      required:
+        - created
+        - modified
+        - id
+        - paymentFlowId
+        - receptionId
+        - user4
+    ApiClientEventMetadata:
+      type: object
+      properties:
+        payment:
+          $ref: '#/components/schemas/ApiClientPayment'
+        charge:
+          $ref: '#/components/schemas/ApiClientCharge'
+      required:
+        - payment
+        - charge
+    ApiClientPaymentDetails:
+      type: object
+      properties:
+        paymentMethod:
+          type: string
+        reason:
+          type: string
+        message:
+          type: string
+        eventMetadata:
+          $ref: '#/components/schemas/ApiClientEventMetadata'
+      required:
+        - paymentMethod
+        - reason
+        - message
+        - eventMetadata
+    ApiClientCallback:
+      type: object
+      properties:
+        type:
+          type: string
+        paymentFlowId:
+          type: string
+        paymentFlowMetadata:
+          $ref: '#/components/schemas/ApiClientCallbackMetadata'
+        occurredAt:
+          type: string
+        details:
+          $ref: '#/components/schemas/ApiClientPaymentDetails'
+      required:
+        - type
+        - paymentFlowId
+        - paymentFlowMetadata
+        - occurredAt
+        - details

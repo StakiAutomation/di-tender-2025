@@ -1,0 +1,1310 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /v1/right-types:
+    get:
+      operationId: RightTypesController_getAll
+      summary: Get a list of all right types for personal representatives
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/PaginatedPersonalRepresentativeRightTypeDto
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Right Types
+      security:
+        - bearer: []
+    post:
+      operationId: RightTypesController_create
+      summary: Create a right type
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalRepresentativeRightTypeDTO'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalRepresentativeRightTypeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '409':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Right Types
+      security:
+        - bearer: []
+  /v1/right-types/{code}:
+    get:
+      operationId: RightTypesController_getAsync
+      summary: Get a single right type by code
+      parameters:
+        - name: code
+          required: true
+          in: path
+          description: Unique code for a type
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalRepresentativeRightTypeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Right Types
+      security:
+        - bearer: []
+    delete:
+      operationId: RightTypesController_removeAsync
+      summary: >-
+        Mark a single right type invalid by code. Note that the type is not
+        deleted but marked as invalid.
+      parameters:
+        - name: code
+          required: true
+          in: path
+          description: Unique code for a type
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Right Types
+      security:
+        - bearer: []
+    put:
+      operationId: RightTypesController_update
+      summary: Update a right type by code
+      parameters:
+        - name: code
+          required: true
+          in: path
+          description: Unique code for a type
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalRepresentativeRightTypeDTO'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalRepresentativeRightTypeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Right Types
+      security:
+        - bearer: []
+  /v1/personal-representatives:
+    get:
+      operationId: PersonalRepresentativesController_getAll
+      summary: Gets all personal representatives
+      description: Personal representative connections with rights
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+        - name: personalRepresentativeId
+          required: false
+          in: query
+          example: '0123456789'
+          description: nationalId of Personal Representative
+          schema:
+            type: string
+        - name: representedPersonId
+          required: false
+          in: query
+          example: '0123456789'
+          description: nationalId of Personal Representative
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaginatedPersonalRepresentativeDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Personal Representatives
+      security:
+        - bearer: []
+    post:
+      operationId: PersonalRepresentativesController_create
+      summary: Create a new personal representative connection
+      description: >-
+        Created personal representative connections with rights. All other
+        connections between nationalIds are removed, right list must be supplied
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalRepresentativeCreateDTO'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalRepresentativeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '409':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Personal Representatives
+      security:
+        - bearer: []
+  /v1/personal-representatives/{id}:
+    get:
+      operationId: PersonalRepresentativesController_get
+      summary: Gets a personal representative rights by id
+      description: Personal representative connection with rights
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Unique id for a specific connection
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalRepresentativeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Personal Representatives
+      security:
+        - bearer: []
+    delete:
+      operationId: PersonalRepresentativesController_remove
+      summary: Delete a personal representative connection by id
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Unique id for a specific connection
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Personal Representatives
+      security:
+        - bearer: []
+  /v1/personal-representative-types:
+    get:
+      operationId: PersonalRepresentativeTypesController_getAll
+      summary: >-
+        Get a list of all personal representative types for personal
+        representatives
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPersonalRepresentativeTypeDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Personal Representative Types
+      security:
+        - bearer: []
+    post:
+      operationId: PersonalRepresentativeTypesController_create
+      summary: Create a personal representative type
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalRepresentativeTypeDTO'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalRepresentativeTypeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '409':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Personal Representative Types
+      security:
+        - bearer: []
+  /v1/personal-representative-types/{code}:
+    get:
+      operationId: PersonalRepresentativeTypesController_getAsync
+      summary: Get a single personal representative type by code
+      parameters:
+        - name: code
+          required: true
+          in: path
+          description: Unique code for a type
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPersonalRepresentativeTypeDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Personal Representative Types
+      security:
+        - bearer: []
+    delete:
+      operationId: PersonalRepresentativeTypesController_removeAsync
+      summary: >-
+        Mark a single personal representative type invalid by code. Note that
+        the type is not deleted but marked as invalid.
+      parameters:
+        - name: code
+          required: true
+          in: path
+          description: Unique code for a type
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Personal Representative Types
+      security:
+        - bearer: []
+    put:
+      operationId: PersonalRepresentativeTypesController_update
+      summary: Update a personal representative type by code
+      parameters:
+        - name: code
+          required: true
+          in: path
+          description: Unique code for a type
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalRepresentativeTypeDTO'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalRepresentativeTypeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Personal Representative Types
+      security:
+        - bearer: []
+  /v1/access-logs:
+    get:
+      operationId: AccessLogsController_getAll
+      summary: Get a list of all logged accesses
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+        - name: personalRepresentativeId
+          required: false
+          in: query
+          example: '0123456789'
+          description: nationalId of Personal Representative
+          schema:
+            type: string
+        - name: representedPersonId
+          required: false
+          in: query
+          example: '0123456789'
+          description: nationalId of Personal Representative
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPersonalRepresentativeAccessDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Access logs
+      security:
+        - bearer: []
+info:
+  title: Personal Representative Service API
+  description: >-
+    Service API for personal representative. Only intended for the ministry of
+    welfare.
+
+    The swagger document can be downloaded by appending `-json` to the last path
+    segment.
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    PersonalRepresentativeRightTypeDTO:
+      type: object
+      properties:
+        code:
+          type: string
+          example: health_prescriptions
+        description:
+          type: string
+          example: Access to prescriptions through heilsuvera for example
+        validFrom:
+          format: date-time
+          type: string
+          example: 2025-05-05T09:41:17.008Z
+        validTo:
+          format: date-time
+          type: string
+          example: 2025-05-07T09:41:17.008Z
+      required:
+        - code
+        - description
+    PageInfoDto:
+      type: object
+      properties:
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPreviousPage:
+          type: boolean
+          example: false
+        startCursor:
+          type: string
+          example: WyIwM2JmMWUwOS1hNWEwLTQyNDMtOTAxOC1mY2FhYjg4NTVkMTYiXQ==
+        endCursor:
+          type: string
+          example: WyJmODY1MDAzMS03YTFkLTRhOTAtOWI2OC00ODg1YjlkZDZjZDgiXQ==
+      required:
+        - hasNextPage
+        - hasPreviousPage
+        - startCursor
+        - endCursor
+    PaginatedPersonalRepresentativeRightTypeDto:
+      type: object
+      properties:
+        totalCount:
+          type: number
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonalRepresentativeRightTypeDTO'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+      required:
+        - totalCount
+        - data
+        - pageInfo
+    HttpProblemResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: number
+          description: The HTTP status code
+        detail:
+          type: string
+          description: >-
+            A human-readable explanation specific to this occurrence of the
+            problem
+        instance:
+          type: string
+          description: >-
+            A URI reference that identifies the specific occurrence of the
+            problem.
+      required:
+        - type
+        - title
+    PersonalRepresentativeDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          example: guid
+        personalRepresentativeTypeCode:
+          type: string
+          example: personal_representative_for_disabled_person
+        contractId:
+          type: string
+          example: '99'
+          description: >-
+            contractId from personal representative contract system from
+            personal representative contract system or other external system
+            used to create personal rep contracts
+        externalUserId:
+          type: string
+          example: usernameA
+          description: >-
+            userId(AD) from personal representative contract system or other
+            external system used to create personal rep contracts
+        nationalIdPersonalRepresentative:
+          type: string
+          example: '0123456789'
+          description: nationalId of Personal Representative
+          pattern: ^d{10}$
+        nationalIdRepresentedPerson:
+          type: string
+          example: '0123456789'
+          description: nationalId of Represented Person
+          pattern: ^d{10}$
+        validTo:
+          format: date-time
+          type: string
+          example: 2025-05-07T09:41:17.000Z
+        rights:
+          example: >-
+            [{code:"health", description:"health descr", validFrom:"xx.yy.zzzz",
+            validTo: "kk.dd.oooo"}, {code:"finance"}, description:"finance
+            descr"}]
+          description: >-
+            A list of right typess that the personal representative has on
+            behalf of represented person
+          type: array
+          items:
+            type: string
+        prDelegationTypes:
+          description: >-
+            A list of delegation types rights that the personal representative
+            has on behalf of represented person
+          type: array
+          items:
+            type: string
+        inactive:
+          type: boolean
+          description: >-
+            Setting model as inactive, i.e. deceased. If set as true then
+            inactiveReason property must be set
+        inactiveReason:
+          type: string
+          example: DECEASED_PARTY
+          description: Reason for personal representative to be inactive
+      required:
+        - personalRepresentativeTypeCode
+        - contractId
+        - externalUserId
+        - nationalIdPersonalRepresentative
+        - nationalIdRepresentedPerson
+        - rights
+        - prDelegationTypes
+        - inactive
+    PaginatedPersonalRepresentativeDto:
+      type: object
+      properties:
+        totalCount:
+          type: number
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonalRepresentativeDTO'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+      required:
+        - totalCount
+        - data
+        - pageInfo
+    PersonalRepresentativeCreateDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          example: guid
+        personalRepresentativeTypeCode:
+          type: string
+          example: personal_representative_for_disabled_person
+        contractId:
+          type: string
+          example: '99'
+          description: >-
+            contractId from personal representative contract system from
+            personal representative contract system or other external system
+            used to create personal rep contracts
+        externalUserId:
+          type: string
+          example: usernameA
+          description: >-
+            userId(AD) from personal representative contract system or other
+            external system used to create personal rep contracts
+        nationalIdPersonalRepresentative:
+          type: string
+          example: '0123456789'
+          description: nationalId of Personal Representative
+          pattern: ^d{10}$
+        nationalIdRepresentedPerson:
+          type: string
+          example: '0123456789'
+          description: nationalId of Represented Person
+          pattern: ^d{10}$
+        validTo:
+          format: date-time
+          type: string
+          example: 2025-05-07T09:41:17.002Z
+        rightCodes:
+          example: '["health", "finance"]'
+          description: >-
+            A list of right typess that the personal representative has on
+            behalf of represented person
+          minItems: 1
+          type: array
+          items:
+            type: string
+      required:
+        - personalRepresentativeTypeCode
+        - contractId
+        - externalUserId
+        - nationalIdPersonalRepresentative
+        - nationalIdRepresentedPerson
+        - rightCodes
+    PersonalRepresentativeTypeDTO:
+      type: object
+      properties:
+        code:
+          type: string
+          example: personal_representative_for_disabled_person
+        name:
+          type: string
+          example: Persónulegur talsmaður fatlaðs einstaklings
+        description:
+          type: string
+          example: Persónulegur talsmaður fatlaðs einstaklings, nánari lýsing
+        validTo:
+          format: date-time
+          type: string
+          example: 2025-05-07T09:41:17.006Z
+      required:
+        - code
+        - name
+        - description
+    PaginatedPersonalRepresentativeTypeDto:
+      type: object
+      properties:
+        totalCount:
+          type: number
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonalRepresentativeTypeDTO'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+      required:
+        - totalCount
+        - data
+        - pageInfo
+    PersonalRepresentativeAccessDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          example: guid
+        serviceProvider:
+          type: string
+          example: serviceProvider
+        nationalIdPersonalRepresentative:
+          type: string
+          example: nationalId of Personal Representative
+        nationalIdRepresentedPerson:
+          type: string
+          example: nationalId of Represented Person
+      required:
+        - serviceProvider
+        - nationalIdPersonalRepresentative
+        - nationalIdRepresentedPerson
+    PaginatedPersonalRepresentativeAccessDto:
+      type: object
+      properties:
+        totalCount:
+          type: number
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonalRepresentativeAccessDTO'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+      required:
+        - totalCount
+        - data
+        - pageInfo

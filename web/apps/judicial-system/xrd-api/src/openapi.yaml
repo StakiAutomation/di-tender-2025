@@ -1,0 +1,316 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /api/v1/case:
+    post:
+      operationId: AppController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCaseDto'
+      responses:
+        '201':
+          description: Creates a new case
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Case'
+  /api/v1/defenders:
+    get:
+      operationId: AppController_getLawyers
+      parameters: []
+      responses:
+        '200':
+          description: Returns a list of defenders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Defender'
+        '502':
+          description: Failed to retrieve defenders
+  /api/v1/subpoena/{policeSubpoenaId}:
+    patch:
+      operationId: AppController_updateSubpoena
+      parameters:
+        - name: policeSubpoenaId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSubpoenaDto'
+      responses:
+        '400':
+          description: Invalid input
+        '502':
+          description: Failed to update subpoena
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+info:
+  title: Judicial System xRoad API
+  description: This is the xRoad API for the judicial system.
+  version: '1.0'
+  contact: {}
+tags:
+  - name: judicial-system
+    description: ''
+servers: []
+components:
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    CreateCaseDto:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - INDICTMENT
+            - ADMISSION_TO_FACILITY
+            - CUSTODY
+            - TRAVEL_BAN
+            - AUTOPSY
+            - BANKING_SECRECY_WAIVER
+            - BODY_SEARCH
+            - ELECTRONIC_DATA_DISCOVERY_INVESTIGATION
+            - EXPULSION_FROM_HOME
+            - INTERNET_USAGE
+            - OTHER
+            - PAROLE_REVOCATION
+            - PHONE_TAPPING
+            - PSYCHIATRIC_EXAMINATION
+            - RESTRAINING_ORDER
+            - RESTRAINING_ORDER_AND_EXPULSION_FROM_HOME
+            - SEARCH_WARRANT
+            - SOUND_RECORDING_EQUIPMENT
+            - STATEMENT_FROM_MINOR
+            - STATEMENT_IN_COURT
+            - TELECOMMUNICATIONS
+            - TRACKING_EQUIPMENT
+            - VIDEO_RECORDING_EQUIPMENT
+        policeCaseNumber:
+          type: string
+        prosecutorNationalId:
+          type: string
+        prosecutorsOfficeNationalId:
+          type: string
+        accusedNationalId:
+          type: string
+        accusedDOB:
+          type: string
+        accusedName:
+          type: string
+        accusedGender:
+          type: string
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+        accusedAddress:
+          type: string
+        citizenship:
+          type: string
+        leadInvestigator:
+          type: string
+        isHeightenedSecurityLevel:
+          type: boolean
+      required:
+        - type
+        - policeCaseNumber
+        - prosecutorNationalId
+        - accusedNationalId
+    Case:
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id
+    Defender:
+      type: object
+      properties:
+        nationalId:
+          type: string
+        name:
+          type: string
+        practice:
+          type: string
+      required:
+        - nationalId
+        - name
+        - practice
+    UpdateSubpoenaDto:
+      type: object
+      properties:
+        acknowledged:
+          type: boolean
+        comment:
+          type: string
+        servedBy:
+          type: string
+        servedAt:
+          type: string
+        defenderChoice:
+          type: string
+          enum:
+            - WAIVE
+            - CHOOSE
+            - DELAY
+            - DELEGATE
+        defenderNationalId:
+          type: string
+        prosecutedConfirmedSubpoenaThroughIslandis:
+          type: boolean
+        delivered:
+          type: boolean
+        deliveredOnPaper:
+          type: boolean
+        deliveredToLawyer:
+          type: boolean

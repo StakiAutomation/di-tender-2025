@@ -1,0 +1,20 @@
+{
+  "name": "cache",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/cache/src",
+  "projectType": "library",
+  "tags": ["lib:node", "scope:node"],
+  "generators": {},
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/cache/jest.config.ts"
+      },
+      "outputs": ["{workspaceRoot}/coverage/libs/cache"]
+    }
+  }
+}

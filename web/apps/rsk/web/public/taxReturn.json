@@ -1,0 +1,368 @@
+{
+  "id": 2,
+  "skattgreidandi": {
+    "id": 1,
+    "kennitala": "1203894569",
+    "netfang": "jokull.thordarson@email.is",
+    "simanumer": "7728391",
+    "person": {
+      "kennitala": "1203894569",
+      "nafn": "Jökull Þórðarson",
+      "heimilisfang": "Bláfjallagata 12, 105 Reykjavík",
+      "tegund": "einstaklingur"
+    }
+  },
+  "ar": "2025",
+  "eitt_uppgjor": true,
+  "slysatrygging_heimilisstorf": true,
+  "fjolskyldumerking": "3+0+2",
+  "stada": {
+    "id": 1,
+    "nafn": "Móttekið",
+    "kodi": "MOTTEKID"
+  },
+  "eignir": [
+    {
+      "id": 4,
+      "tegund": {
+        "id": 1,
+        "nafn": "Innlendar fasteignir"
+      },
+      "titill": null,
+      "numer": "210-9876",
+      "heimilisfang": "Bláfjallagata 12",
+      "kaupar": null,
+      "upphaed": 52000000,
+      "reitur": {
+        "id": 17,
+        "numer": "314",
+        "nafn": "Samtals fasteignir",
+        "lysing": "Heildarverðmæti innlendra fasteigna",
+        "hopur": {
+          "id": 4,
+          "numer": "4.1",
+          "nafn": "Innlendar fasteignir skv. fasteignamati",
+          "eydublad": {
+            "id": 2,
+            "numer": "4",
+            "nafn": "Eignir"
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "tegund": {
+        "id": 2,
+        "nafn": "Bifreiðir"
+      },
+      "titill": null,
+      "numer": "KB-521",
+      "heimilisfang": null,
+      "kaupar": "2021",
+      "upphaed": 3100000,
+      "reitur": {
+        "id": 19,
+        "numer": "06",
+        "nafn": "Samtals bifreiðaeign",
+        "lysing": "Heildarverðmæti bifreiða",
+        "hopur": {
+          "id": 6,
+          "numer": "4.3",
+          "nafn": "Bifreiðir",
+          "eydublad": {
+            "id": 2,
+            "numer": "4",
+            "nafn": "Eignir"
+          }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "tegund": {
+        "id": 2,
+        "nafn": "Bifreiðir"
+      },
+      "titill": null,
+      "numer": "JU-329",
+      "heimilisfang": null,
+      "kaupar": "2012",
+      "upphaed": 430000,
+      "reitur": {
+        "id": 19,
+        "numer": "06",
+        "nafn": "Samtals bifreiðaeign",
+        "lysing": "Heildarverðmæti bifreiða",
+        "hopur": {
+          "id": 6,
+          "numer": "4.3",
+          "nafn": "Bifreiðir",
+          "eydublad": {
+            "id": 2,
+            "numer": "4",
+            "nafn": "Eignir"
+          }
+        }
+      }
+    }
+  ],
+  "tekjur": [
+    {
+      "id": 1,
+      "titill": "Norðurljós Software ehf",
+      "upphaed": 9360000,
+      "reitur": {
+        "id": 1,
+        "numer": "21",
+        "nafn": "",
+        "lysing": null,
+        "hopur": {
+          "id": 1,
+          "numer": "2.1",
+          "nafn": "Launatekjur og starfstengdar greiðslur",
+          "eydublad": {
+            "id": 1,
+            "numer": "2",
+            "nafn": "Tekjur"
+          }
+        }
+      },
+      "kennitala_greidanda": "1010101010",
+      "greidandi": {
+        "kennitala": "1010101010",
+        "nafn": "Norðurljós Software ehf",
+        "heimilisfang": "Software Street 1",
+        "tegund": "fyrirtaeki"
+      }
+    },
+    {
+      "id": 2,
+      "titill": "Mús & Merki ehf.",
+      "upphaed": 900000,
+      "reitur": {
+        "id": 1,
+        "numer": "21",
+        "nafn": "",
+        "lysing": null,
+        "hopur": {
+          "id": 1,
+          "numer": "2.1",
+          "nafn": "Launatekjur og starfstengdar greiðslur",
+          "eydublad": {
+            "id": 1,
+            "numer": "2",
+            "nafn": "Tekjur"
+          }
+        }
+      },
+      "kennitala_greidanda": "1111111111",
+      "greidandi": {
+        "kennitala": "1111111111",
+        "nafn": "Mús & Merki ehf.",
+        "heimilisfang": "Mouse Street 1",
+        "tegund": "fyrirtaeki"
+      }
+    },
+    {
+      "id": 3,
+      "titill": "Dagpeningar",
+      "upphaed": 120000,
+      "reitur": {
+        "id": 3,
+        "numer": "23",
+        "nafn": "Dagpeningar",
+        "lysing": null,
+        "hopur": {
+          "id": 2,
+          "numer": "2.2",
+          "nafn": "Ökutækjastyrkur. Dagpeningar. Hlunnindi.",
+          "eydublad": {
+            "id": 1,
+            "numer": "2",
+            "nafn": "Tekjur"
+          }
+        }
+      },
+      "kennitala_greidanda": null
+    },
+    {
+      "id": 4,
+      "titill": "Íþróttastyrkur",
+      "upphaed": 75000,
+      "reitur": {
+        "id": 9,
+        "numer": "96",
+        "nafn": "Aðrar greiðslur",
+        "lysing": null,
+        "hopur": {
+          "id": 3,
+          "numer": "2.3",
+          "nafn": "Lífeyrisgreiðslur. Greiðslur frá Tryggingastofnun. Aðrar bótagreiðslur, styrkir o.fl.",
+          "eydublad": {
+            "id": 1,
+            "numer": "2",
+            "nafn": "Tekjur"
+          }
+        }
+      },
+      "kennitala_greidanda": "1010101010",
+      "greidandi": {
+        "kennitala": "1010101010",
+        "nafn": "Norðurljós Software ehf",
+        "heimilisfang": "Software Street 1",
+        "tegund": "fyrirtaeki"
+      }
+    },
+    {
+      "id": 5,
+      "titill": "Starfsmenntastyrkur",
+      "upphaed": 130000,
+      "reitur": {
+        "id": 10,
+        "numer": "131",
+        "nafn": "Styrkir til náms, rannsókna- og vísindastarfa",
+        "lysing": null,
+        "hopur": {
+          "id": 3,
+          "numer": "2.3",
+          "nafn": "Lífeyrisgreiðslur. Greiðslur frá Tryggingastofnun. Aðrar bótagreiðslur, styrkir o.fl.",
+          "eydublad": {
+            "id": 1,
+            "numer": "2",
+            "nafn": "Tekjur"
+          }
+        }
+      },
+      "kennitala_greidanda": "1212121212",
+      "greidandi": {
+        "kennitala": "1212121212",
+        "nafn": "VR",
+        "heimilisfang": "Kringlan 1",
+        "tegund": "fyrirtaeki"
+      }
+    }
+  ],
+  "skuldir": [
+    {
+      "id": 1,
+      "tegund": {
+        "id": 1,
+        "nafn": "Vaxtagjöld vegna íbúðarhúsnæðis til eigin nota"
+      },
+      "titill": null,
+      "vaxtagjold": 920000,
+      "eftirstodvar": 28540000,
+      "kaupar": "2021",
+      "stadsetning": "",
+      "fastanumer": "205-4180",
+      "kennitala_lanveitanda": "4910080160",
+      "lanveitandi": {
+        "kennitala": "4910080160",
+        "nafn": "Íslandsbanki hf.",
+        "heimilisfang": "Suðurlandsbraut 14",
+        "tegund": "fyrirtaeki"
+      },
+      "lansnumer": "56783900123",
+      "lantokudagur": "2021-06-15T00:00:00.000Z",
+      "lanstimi_i_arum": 30,
+      "heildargreidslur_arsins": 2280000,
+      "afborgun_nafnverd": 1360000
+    },
+    {
+      "id": 2,
+      "tegund": {
+        "id": 2,
+        "nafn": "Aðrar skuldir og vaxtagjöld"
+      },
+      "titill": "Eftirstöðvar á korti númer: 4469 88XX XXXX 4567",
+      "vaxtagjold": 39200,
+      "eftirstodvar": 217000,
+      "kaupar": null,
+      "stadsetning": null,
+      "fastanumer": null,
+      "kennitala_lanveitanda": null,
+      "lansnumer": null,
+      "lantokudagur": null,
+      "lanstimi_i_arum": null,
+      "heildargreidslur_arsins": null,
+      "afborgun_nafnverd": null
+    },
+    {
+      "id": 3,
+      "tegund": {
+        "id": 2,
+        "nafn": "Aðrar skuldir og vaxtagjöld"
+      },
+      "titill": "Aukalán",
+      "vaxtagjold": 86000,
+      "eftirstodvar": 980000,
+      "kaupar": null,
+      "stadsetning": null,
+      "fastanumer": null,
+      "kennitala_lanveitanda": null,
+      "lansnumer": null,
+      "lantokudagur": null,
+      "lanstimi_i_arum": null,
+      "heildargreidslur_arsins": null,
+      "afborgun_nafnverd": null
+    },
+    {
+      "id": 4,
+      "tegund": {
+        "id": 2,
+        "nafn": "Aðrar skuldir og vaxtagjöld"
+      },
+      "titill": "0142-26-732645 Varðan",
+      "vaxtagjold": 14500,
+      "eftirstodvar": 62000,
+      "kaupar": null,
+      "stadsetning": null,
+      "fastanumer": null,
+      "kennitala_lanveitanda": null,
+      "lansnumer": null,
+      "lantokudagur": null,
+      "lanstimi_i_arum": null,
+      "heildargreidslur_arsins": null,
+      "afborgun_nafnverd": null
+    },
+    {
+      "id": 5,
+      "tegund": {
+        "id": 2,
+        "nafn": "Aðrar skuldir og vaxtagjöld"
+      },
+      "titill": "Kílómetragjald, Skatturinn",
+      "vaxtagjold": 0,
+      "eftirstodvar": 2370,
+      "kaupar": null,
+      "stadsetning": null,
+      "fastanumer": null,
+      "kennitala_lanveitanda": null,
+      "lansnumer": null,
+      "lantokudagur": null,
+      "lanstimi_i_arum": null,
+      "heildargreidslur_arsins": null,
+      "afborgun_nafnverd": null
+    },
+    {
+      "id": 6,
+      "tegund": {
+        "id": 2,
+        "nafn": "Aðrar skuldir og vaxtagjöld"
+      },
+      "titill": "Þing- og sveitarsjóðsgjöld, Skatturinn",
+      "vaxtagjold": 224,
+      "eftirstodvar": 0,
+      "kaupar": null,
+      "stadsetning": null,
+      "fastanumer": null,
+      "kennitala_lanveitanda": null,
+      "lansnumer": null,
+      "lantokudagur": null,
+      "lanstimi_i_arum": null,
+      "heildargreidslur_arsins": null,
+      "afborgun_nafnverd": null
+    }
+  ]
+}

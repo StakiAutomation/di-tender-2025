@@ -1,0 +1,446 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /api/open/v1/applications:
+    get:
+      operationId: AppController_getApplication
+      parameters:
+        - name: API-Key
+          required: true
+          in: header
+          schema:
+            type: string
+        - name: Municipality-Code
+          required: true
+          in: header
+          schema:
+            type: string
+        - name: startDate
+          required: true
+          in: query
+          description: 'Format: 2024-02-22 - year-month-date'
+          schema:
+            type: string
+        - name: endDate
+          required: true
+          in: query
+          description: 'Format: 2024-02-22 - year-month-date'
+          schema:
+            type: string
+        - name: state
+          required: true
+          in: query
+          description: 'States are:  New, InProgress, DataNeeded, Rejected, Approved'
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Gets application for municipality
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationBackendModel'
+  /api/open/v1/pdf:
+    get:
+      operationId: AppController_getPdf
+      parameters:
+        - name: API-Key
+          required: true
+          in: header
+          schema:
+            type: string
+        - name: Municipality-Code
+          required: true
+          in: header
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Gets application from id and returns pdf
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PdfResponseBackendModel'
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+info:
+  title: Finanical Aid API
+  description: This is an API for municipalities to access applications for filing systems
+  version: '1.0'
+  contact: {}
+tags:
+  - name: financial-aid
+    description: ''
+servers: []
+components:
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    ApplicationFileBackendModel:
+      type: object
+      properties:
+        name:
+          type: string
+        key:
+          type: string
+        type:
+          type: string
+          enum:
+            - TaxReturn
+            - Income
+            - Other
+            - SpouseFiles
+            - ChildrenFiles
+      required:
+        - name
+        - key
+        - type
+    StaffBackendModel:
+      type: object
+      properties:
+        name:
+          type: string
+        nationalId:
+          type: string
+      required:
+        - name
+        - nationalId
+    DeductionFactorsBackendModel:
+      type: object
+      properties:
+        description:
+          type: string
+        amount:
+          type: number
+      required:
+        - description
+        - amount
+    AmountBackendModel:
+      type: object
+      properties:
+        aidAmount:
+          type: number
+        income:
+          type: number
+        childrenAidAmount:
+          type: number
+        decemberAidAmount:
+          type: number
+        deductionFactors:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeductionFactorsBackendModel'
+        personalTaxCredit:
+          type: number
+        spousePersonalTaxCredit:
+          type: number
+        tax:
+          type: number
+        finalAmount:
+          type: number
+      required:
+        - aidAmount
+        - income
+        - childrenAidAmount
+        - decemberAidAmount
+        - deductionFactors
+        - personalTaxCredit
+        - spousePersonalTaxCredit
+        - tax
+        - finalAmount
+    DirectTaxPaymentBackendModel:
+      type: object
+      properties:
+        totalSalary:
+          type: number
+        payerNationalId:
+          type: string
+        personalAllowance:
+          type: number
+        withheldAtSource:
+          type: number
+        month:
+          type: number
+        year:
+          type: number
+        userType:
+          type: string
+      required:
+        - totalSalary
+        - payerNationalId
+        - personalAllowance
+        - withheldAtSource
+        - month
+        - year
+        - userType
+    ApplicationBackendModel:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        nationalId:
+          type: string
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+        usePersonalTaxCredit:
+          type: boolean
+        hasIncome:
+          type: boolean
+        bankNumber:
+          type: string
+        ledger:
+          type: string
+        accountNumber:
+          type: string
+        formComment:
+          type: string
+        spouseFormComment:
+          type: string
+        state:
+          type: string
+          enum:
+            - New
+            - InProgress
+            - DataNeeded
+            - Rejected
+            - Approved
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationFileBackendModel'
+        rejection:
+          type: string
+        staff:
+          $ref: '#/components/schemas/StaffBackendModel'
+        spouseName:
+          type: string
+        spouseNationalId:
+          type: string
+        spousePhoneNumber:
+          type: string
+        spouseEmail:
+          type: string
+        amount:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/AmountBackendModel'
+        city:
+          type: string
+        streetName:
+          type: string
+        postalCode:
+          type: string
+        municipalityCode:
+          type: string
+        hasFetchedDirectTaxPayment:
+          type: boolean
+        spouseHasFetchedDirectTaxPayment:
+          type: boolean
+        navSuccess:
+          type: boolean
+        directTaxPayments:
+          type: array
+          items:
+            $ref: '#/components/schemas/DirectTaxPaymentBackendModel'
+        children:
+          type: array
+          items:
+            type: array
+        childrenComment:
+          type: string
+      required:
+        - id
+        - created
+        - modified
+        - nationalId
+        - name
+        - phoneNumber
+        - email
+        - usePersonalTaxCredit
+        - hasIncome
+        - bankNumber
+        - ledger
+        - accountNumber
+        - formComment
+        - spouseFormComment
+        - state
+        - files
+        - rejection
+        - staff
+        - spouseName
+        - spouseNationalId
+        - spousePhoneNumber
+        - spouseEmail
+        - amount
+        - city
+        - streetName
+        - postalCode
+        - municipalityCode
+        - hasFetchedDirectTaxPayment
+        - spouseHasFetchedDirectTaxPayment
+        - navSuccess
+        - directTaxPayments
+        - children
+        - childrenComment
+    PdfResponseBackendModel:
+      type: object
+      properties:
+        file:
+          type: string
+      required:
+        - file

@@ -1,0 +1,692 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /v1/actor/delegations:
+    get:
+      operationId: ActorDelegationsController_findAll
+      description: "Finds all incoming delegations for the signed in user or actor.\n\t\t\tIncluding the custom delegations as well as natural delegations from NationalRegistry and CompanyRegistry."
+      parameters:
+        - name: direction
+          required: true
+          in: query
+          schema:
+            enum:
+              - incoming
+            default: incoming
+        - name: delegationTypes
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: otherUser
+          required: false
+          in: query
+          description: >-
+            The ID of another user. We filter out all delegations not related to
+            that national id.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MergedDelegationDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - actor-delegations
+  /passkeys:
+    delete:
+      operationId: PasskeysController_deletePasskey
+      summary: Deletes passkey for the authenticated user.
+      description: Deletes passkey for the authenticated user.
+      parameters: []
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - passkeys
+  /passkeys/register:
+    get:
+      operationId: PasskeysController_getPasskeyRegistrationOptions
+      summary: Gets passkey registration options for the authenicated user.
+      description: Passkey registration options for the authenticated user.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationOptions'
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationOptions'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - passkeys
+    post:
+      operationId: PasskeysController_verifyRegistration
+      summary: Validates registration based on input from authenicated user.
+      description: Verifies authenticated user passkey registration response.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationResponse'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationResult'
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationResult'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - passkeys
+  /passkeys/authenticate:
+    get:
+      operationId: PasskeysController_getPasskeyAuthenticationOptions
+      summary: Gets passkey authentication options for the authenticated user.
+      description: Passkey authenticate options for the authenticated user.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationOptions'
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationOptions'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - passkeys
+info:
+  title: IdentityServer Public API
+  description: >-
+    Public API for IdentityServer.
+
+
+
+    The swagger document can be downloaded by appending `-json` to the last path
+    segment.
+  version: '1.0'
+  contact: {}
+tags: []
+servers:
+  - url: http://localhost:3370
+components:
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    AuthDelegationType:
+      type: string
+      enum:
+        - ProcurationHolder
+        - LegalGuardian
+        - Custom
+        - PersonalRepresentative
+        - LegalGuardianMinor
+        - LegalRepresentative
+        - GeneralMandate
+    DelegationScopeDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        delegationId:
+          type: string
+        scopeName:
+          type: string
+        displayName:
+          type: string
+        validFrom:
+          format: date-time
+          type: string
+        validTo:
+          format: date-time
+          type: string
+          nullable: true
+      required:
+        - delegationId
+        - scopeName
+        - displayName
+        - validFrom
+    MergedDelegationDTO:
+      type: object
+      properties:
+        fromNationalId:
+          type: string
+        fromName:
+          type: string
+          nullable: true
+        toNationalId:
+          type: string
+        toName:
+          type: string
+          nullable: true
+        validTo:
+          format: date-time
+          type: string
+          nullable: true
+        types:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthDelegationType'
+        scopes:
+          nullable: true
+          type: array
+          items:
+            $ref: '#/components/schemas/DelegationScopeDTO'
+      required:
+        - fromNationalId
+        - toNationalId
+        - types
+    HttpProblemResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: number
+          description: The HTTP status code
+        detail:
+          type: string
+          description: >-
+            A human-readable explanation specific to this occurrence of the
+            problem
+        instance:
+          type: string
+          description: >-
+            A URI reference that identifies the specific occurrence of the
+            problem.
+      required:
+        - type
+        - title
+    RegistrationOptionsRp:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required:
+        - name
+    RegistrationOptionsUser:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+      required:
+        - id
+        - name
+        - displayName
+    RegistrationOptionsPublicKeyCredentialOption:
+      type: object
+      properties:
+        alg:
+          type: number
+        type:
+          type: string
+      required:
+        - alg
+        - type
+    RegistrationOptionsPublicKeyCredentialDescriptorJSON:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        transports:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - type
+    RegistrationOptionsAuthenticatorSelection:
+      type: object
+      properties:
+        authenticatorAttachment:
+          type: string
+        requireResidentKey:
+          type: boolean
+        residentKey:
+          type: string
+        userVerification:
+          type: string
+    RegistrationOptionsExtensions:
+      type: object
+      properties:
+        appid:
+          type: string
+        credProps:
+          type: boolean
+        hmacCreateSecret:
+          type: boolean
+    RegistrationOptions:
+      type: object
+      properties:
+        challenge:
+          type: string
+        rp:
+          $ref: '#/components/schemas/RegistrationOptionsRp'
+        user:
+          $ref: '#/components/schemas/RegistrationOptionsUser'
+        pubKeyCredParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrationOptionsPublicKeyCredentialOption'
+        timeout:
+          type: number
+        attestation:
+          type: string
+        excludeCredentials:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/RegistrationOptionsPublicKeyCredentialDescriptorJSON
+        authenticatorSelection:
+          $ref: '#/components/schemas/RegistrationOptionsAuthenticatorSelection'
+        extensions:
+          $ref: '#/components/schemas/RegistrationOptionsExtensions'
+      required:
+        - challenge
+        - rp
+        - user
+        - pubKeyCredParams
+    RegistrationResponseResponse:
+      type: object
+      properties:
+        attestationObject:
+          type: string
+        clientDataJSON:
+          type: string
+        transports:
+          type: array
+          items:
+            type: string
+        publicKeyAlgorithm:
+          type: number
+        publicKey:
+          type: string
+        authenticatorData:
+          type: string
+      required:
+        - attestationObject
+        - clientDataJSON
+    ClientExtensionResultsCredProps:
+      type: object
+      properties:
+        rk:
+          type: boolean
+    RegistrationResponseClientExtensionResults:
+      type: object
+      properties:
+        appid:
+          type: boolean
+        credProps:
+          $ref: '#/components/schemas/ClientExtensionResultsCredProps'
+        hmacCreateSecret:
+          type: boolean
+    RegistrationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        rawId:
+          type: string
+        response:
+          $ref: '#/components/schemas/RegistrationResponseResponse'
+        authenticatorAttachment:
+          type: string
+        clientExtensionResults:
+          $ref: '#/components/schemas/RegistrationResponseClientExtensionResults'
+        type:
+          type: string
+      required:
+        - id
+        - rawId
+        - response
+        - clientExtensionResults
+        - type
+    RegistrationResult:
+      type: object
+      properties:
+        verified:
+          type: boolean
+      required:
+        - verified
+    AuthenticationOptionsPublicKeyCredentialDescriptor:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        transports:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - type
+        - transports
+    AuthenticationOptionsExtensions:
+      type: object
+      properties:
+        appid:
+          type: string
+        credProps:
+          type: boolean
+        hmacCreateSecret:
+          type: boolean
+      required:
+        - hmacCreateSecret
+    AuthenticationOptions:
+      type: object
+      properties:
+        challenge:
+          type: string
+        timeout:
+          type: number
+        rpId:
+          type: string
+        allowCredentials:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/AuthenticationOptionsPublicKeyCredentialDescriptor
+        userVerification:
+          type: string
+        extensions:
+          $ref: '#/components/schemas/AuthenticationOptionsExtensions'
+      required:
+        - challenge

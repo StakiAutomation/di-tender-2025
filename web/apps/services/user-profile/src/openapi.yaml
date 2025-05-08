@@ -1,0 +1,1481 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: UserProfileInfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: UserProfileInfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /userProfile/{nationalId}:
+    get:
+      operationId: UserProfileController_findOneByNationalId
+      parameters:
+        - name: nationalId
+          required: true
+          in: path
+          description: The nationalId of the application to update.
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '204':
+          description: ''
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:read'
+    patch:
+      operationId: UserProfileController_update
+      parameters:
+        - name: nationalId
+          required: true
+          in: path
+          description: The national id of the user profile to be updated.
+          allowEmptyValue: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserProfileDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:write'
+  /actor/locale:
+    get:
+      operationId: UserProfileController_getActorLocale
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActorLocale'
+        '204':
+          description: ''
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:read'
+  /userProfile:
+    post:
+      operationId: UserProfileController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserProfileDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:write'
+  /emailVerification/{nationalId}:
+    post:
+      operationId: UserProfileController_recreateVerification
+      parameters:
+        - name: nationalId
+          required: true
+          in: path
+          description: The national id of the user for email verification.
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:write'
+  /emailVerification:
+    post:
+      operationId: UserProfileController_createEmailVerification
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEmailVerificationDto'
+      responses:
+        '204':
+          description: ''
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:write'
+  /confirmEmail/{nationalId}:
+    post:
+      operationId: UserProfileController_confirmEmail
+      parameters:
+        - name: nationalId
+          required: true
+          in: path
+          description: The national id of the user for email verification.
+          allowEmptyValue: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmEmailDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmationDtoResponse'
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:write'
+  /confirmSms/{nationalId}:
+    post:
+      operationId: UserProfileController_confirmSms
+      parameters:
+        - name: nationalId
+          required: true
+          in: path
+          description: The national id of the user for email verification.
+          allowEmptyValue: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmSmsDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmationDtoResponse'
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:write'
+  /smsVerification:
+    post:
+      operationId: UserProfileController_createSmsVerification
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSmsVerificationDto'
+      responses:
+        '204':
+          description: ''
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:write'
+  /userProfile/{nationalId}/device-tokens:
+    post:
+      operationId: UserProfileController_addDeviceToken
+      summary: 'Adds a device token for notifications for a user device '
+      parameters:
+        - name: nationalId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceTokenDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDeviceTokenDto'
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:write'
+    delete:
+      operationId: UserProfileController_deleteDeviceToken
+      summary: Deletes a device token for a user device
+      parameters:
+        - name: nationalId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceTokenDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteTokenResponseDto'
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:write'
+    get:
+      operationId: UserTokenController_getDeviceTokens
+      summary: admin access - returns a list of user device tokens
+      parameters:
+        - name: nationalId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDeviceTokenDto'
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:admin'
+  /readiness:
+    get:
+      operationId: UserProfileInfraController_readiness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Readiness'
+      tags:
+        - internal
+  /userProfile/{nationalId}/notification-settings:
+    get:
+      operationId: UserTokenController_findOneByNationalId
+      summary: admin access - returns user profile settings
+      parameters:
+        - name: nationalId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+      tags:
+        - User Profile
+      security:
+        - oauth2:
+            - '@island.is/user-profile:admin'
+  /v2/me:
+    get:
+      operationId: MeUserProfileController_findUserProfile
+      description: Get user profile for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/me
+      security:
+        - oauth2:
+            - '@island.is/user-profile:read'
+    patch:
+      operationId: MeUserProfileController_patchUserProfile
+      description: Update user profile for the current user.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchUserProfileDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/me
+      security:
+        - oauth2:
+            - '@island.is/user-profile:read'
+  /v2/me/create-verification:
+    post:
+      operationId: MeUserProfileController_createVerification
+      description: Creates a verification code for the user for either email or sms
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVerificationDto'
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/me
+      security:
+        - oauth2:
+            - '@island.is/user-profile:read'
+  /v2/me/nudge:
+    post:
+      operationId: MeUserProfileController_confirmNudge
+      description: >-
+        Confirms that the user has seen the nudge from a specific screen.
+        Allowed screens are defined in NudgeFrom enum.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostNudgeDto'
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/me
+      security:
+        - oauth2:
+            - '@island.is/user-profile:read'
+  /v2/me/actor-profiles:
+    get:
+      operationId: MeUserProfileController_getActorProfiles
+      description: Get actor profiles for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedActorProfileDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/me
+      security:
+        - oauth2:
+            - '@island.is/user-profile:read'
+  /v2/me/actor-profiles/.from-national-id:
+    patch:
+      operationId: MeUserProfileController_createOrUpdateActorProfile
+      description: Update or create an actor profile for the current user
+      parameters:
+        - name: X-Param-From-National-Id
+          required: true
+          in: header
+          description: National id of the user that granted the delegation
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchActorProfileDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeActorProfileDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/me
+      security:
+        - oauth2:
+            - '@island.is/user-profile:read'
+  /v2/users:
+    get:
+      operationId: UserProfileController_findUserProfiles
+      description: Get user profiles.
+      parameters:
+        - name: search
+          required: true
+          in: query
+          description: Search term for user profiles
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserProfileDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/users
+      security:
+        - oauth2:
+            - '@island.is/user-profile:system'
+        - oauth2:
+            - '@admin.island.is/service-desk'
+  /v2/users/.national-id:
+    get:
+      operationId: UserProfileController_findUserProfile
+      description: Get user profile for given nationalId.
+      parameters:
+        - name: X-Param-National-Id
+          required: true
+          in: header
+          description: National id of the user to find
+          schema:
+            type: string
+        - name: clientType
+          required: false
+          in: query
+          description: Client type
+          schema:
+            enum:
+              - first_party
+              - third_party
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/users
+      security:
+        - oauth2:
+            - '@island.is/user-profile:system'
+        - oauth2:
+            - '@island.is/user-profile:system'
+            - '@island.is/user-profile:admin'
+            - '@admin.island.is/service-desk'
+    patch:
+      operationId: UserProfileController_patchUserProfile
+      description: Update user profile for given nationalId.
+      parameters:
+        - name: X-Param-National-Id
+          required: true
+          in: header
+          description: National id of the user to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchUserProfileDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/users
+      security:
+        - oauth2:
+            - '@island.is/user-profile:system'
+        - oauth2:
+            - '@admin.island.is/service-desk'
+  /v2/users/.to-national-id/actor-profiles/.from-national-id:
+    get:
+      operationId: UserProfileController_getActorProfile
+      description: Get actor profiles for nationalId.
+      parameters:
+        - name: X-Param-To-National-Id
+          required: true
+          in: header
+          description: National id of the user the actor profile is for
+          schema:
+            type: string
+        - name: X-Param-From-National-Id
+          required: true
+          in: header
+          description: National id of the user the delegation is from
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActorProfileDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/users
+      security:
+        - oauth2:
+            - '@island.is/user-profile:system'
+  /v2/users/.nationalId/device-tokens:
+    get:
+      operationId: UserTokenController_findUserDeviceToken
+      description: Get user device tokens for given nationalId.
+      parameters:
+        - name: X-Param-National-Id
+          required: true
+          in: header
+          description: National id of the owner of the device tokens
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDeviceTokenDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/users
+      security:
+        - oauth2:
+            - '@island.is/user-profile:admin'
+  /v2/users/.nationalId/device-tokens/{deviceToken}:
+    delete:
+      operationId: UserTokenController_deleteUserDeviceToken
+      description: Delete a user device token.
+      parameters:
+        - name: X-Param-National-Id
+          required: true
+          in: header
+          schema:
+            type: string
+        - name: deviceToken
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - v2/users
+      security:
+        - oauth2:
+            - '@island.is/user-profile:admin'
+info:
+  title: User Profile backend
+  description: Backend providing user profiles for Island.is
+  version: '1.0'
+  contact: {}
+tags:
+  - name: User Profile
+    description: 'User profile api for Island.is users '
+servers: []
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            openid: ''
+            profile: ''
+            '@island.is/user-profile:admin': Get user device tokens
+            '@island.is/user-profile:read': Get a single user profile.
+            '@island.is/user-profile:write': Update and email/sms varifications for a single user profile.
+          authorizationUrl: https://identity-server.dev01.devland.is/connect/authorize
+          tokenUrl: https://identity-server.dev01.devland.is/connect/token
+      description: OAuth2 authentication scheme.
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        nationalId:
+          type: string
+        mobilePhoneNumber:
+          type: string
+        locale:
+          type: string
+          description: User selected locale
+          enum:
+            - en
+            - is
+        email:
+          type: string
+        emailVerified:
+          type: boolean
+        mobilePhoneNumberVerified:
+          type: boolean
+        profileImageUrl:
+          type: string
+        documentNotifications:
+          type: boolean
+        emailStatus:
+          type: string
+        mobileStatus:
+          type: string
+        lastNudge:
+          format: date-time
+          type: string
+        emailNotifications:
+          type: boolean
+        nextNudge:
+          format: date-time
+          type: string
+      required:
+        - id
+        - created
+        - modified
+        - nationalId
+        - mobilePhoneNumber
+        - locale
+        - email
+        - emailVerified
+        - mobilePhoneNumberVerified
+        - profileImageUrl
+        - documentNotifications
+        - emailStatus
+        - mobileStatus
+        - lastNudge
+        - emailNotifications
+        - nextNudge
+    ActorLocale:
+      type: object
+      properties:
+        nationalId:
+          type: string
+        locale:
+          type: string
+          enum:
+            - en
+            - is
+      required:
+        - nationalId
+        - locale
+    CreateUserProfileDto:
+      type: object
+      properties:
+        nationalId:
+          type: string
+        mobilePhoneNumber:
+          type: string
+        locale:
+          type: string
+        email:
+          type: string
+        emailStatus:
+          type: string
+        mobileStatus:
+          type: string
+        emailCode:
+          type: string
+        smsCode:
+          type: string
+      required:
+        - nationalId
+    UpdateUserProfileDto:
+      type: object
+      properties:
+        mobilePhoneNumber:
+          type: string
+        locale:
+          type: string
+        profileImageUrl:
+          type: string
+        email:
+          type: string
+        documentNotifications:
+          type: boolean
+        emailStatus:
+          type: string
+        mobileStatus:
+          type: string
+        emailCode:
+          type: string
+        smsCode:
+          type: string
+    CreateEmailVerificationDto:
+      type: object
+      properties:
+        nationalId:
+          type: string
+        email:
+          type: string
+      required:
+        - nationalId
+        - email
+    ConfirmEmailDto:
+      type: object
+      properties:
+        hash:
+          type: string
+        email:
+          type: string
+      required:
+        - email
+    ConfirmationDtoResponse:
+      type: object
+      properties:
+        confirmed:
+          type: boolean
+        message:
+          type: string
+        remainingAttempts:
+          type: number
+      required:
+        - confirmed
+        - message
+    ConfirmSmsDto:
+      type: object
+      properties:
+        code:
+          type: string
+        mobilePhoneNumber:
+          type: string
+      required:
+        - mobilePhoneNumber
+    CreateSmsVerificationDto:
+      type: object
+      properties:
+        nationalId:
+          type: string
+        mobilePhoneNumber:
+          type: string
+      required:
+        - nationalId
+        - mobilePhoneNumber
+    DeviceTokenDto:
+      type: object
+      properties:
+        deviceToken:
+          type: string
+          example: >-
+            f4XghAZSRs6L-RNWRo9-Mw:APA91bFGgAc-0rhMgeHCDvkMJBH_nU4dApG6qqATliEbPs9xXf5n7EJ7FiAjJ6NNCHMBKdqHMdLrkaFHxuShzTwmZquyCjchuVMwAGmlwdXY8vZWnVqvMVItYn5lfIH-mR7Q9FvnNlhv
+      required:
+        - deviceToken
+    UserDeviceTokenDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: b3f99e48-57e6-4d30-a933-1304dad40c62
+        nationalId:
+          type: string
+        deviceToken:
+          type: string
+          example: >-
+            f4XghAZSRs6L-RNWRo9-Mw:APA91bFGgAc-0rhMgeHCDvkMJBH_nU4dApG6qqATliEbPs9xXf5n7EJ7FiAjJ6NNCHMBKdqHMdLrkaFHxuShzTwmZquyCjchuVMwAGmlwdXY8vZWnVqvMVItYn5lfIH-mR7Q9FvnNlhv
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+      required:
+        - id
+        - nationalId
+        - deviceToken
+        - created
+        - modified
+    DeleteTokenResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
+    Readiness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    UserProfileDto:
+      type: object
+      properties:
+        nationalId:
+          type: string
+        email:
+          type: string
+          nullable: true
+        mobilePhoneNumber:
+          type: string
+          nullable: true
+        locale:
+          type: string
+          enum:
+            - en
+            - is
+          nullable: true
+        mobilePhoneNumberVerified:
+          type: boolean
+        emailVerified:
+          type: boolean
+        documentNotifications:
+          type: boolean
+        profileImageUrl:
+          type: string
+        needsNudge:
+          type: boolean
+          nullable: true
+        lastNudge:
+          format: date-time
+          type: string
+        nextNudge:
+          format: date-time
+          type: string
+        emailNotifications:
+          type: boolean
+        isRestricted:
+          type: boolean
+      required:
+        - nationalId
+        - mobilePhoneNumberVerified
+        - emailVerified
+        - documentNotifications
+        - emailNotifications
+        - isRestricted
+    HttpProblemResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: number
+          description: The HTTP status code
+        detail:
+          type: string
+          description: >-
+            A human-readable explanation specific to this occurrence of the
+            problem
+        instance:
+          type: string
+          description: >-
+            A URI reference that identifies the specific occurrence of the
+            problem.
+      required:
+        - type
+        - title
+    PatchUserProfileDto:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        emailVerificationCode:
+          type: string
+        mobilePhoneNumber:
+          type: string
+          nullable: true
+        mobilePhoneNumberVerificationCode:
+          type: string
+        locale:
+          type: string
+        emailNotifications:
+          type: boolean
+        documentNotifications:
+          type: boolean
+    CreateVerificationDto:
+      type: object
+      properties:
+        email:
+          type: string
+        mobilePhoneNumber:
+          type: string
+    PostNudgeDto:
+      type: object
+      properties:
+        nudgeType:
+          type: string
+          enum:
+            - NUDGE
+            - SKIP_EMAIL
+            - SKIP_PHONE
+      required:
+        - nudgeType
+    MeActorProfileDto:
+      type: object
+      properties:
+        fromNationalId:
+          type: string
+        emailNotifications:
+          type: boolean
+      required:
+        - fromNationalId
+        - emailNotifications
+    PageInfoDto:
+      type: object
+      properties:
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPreviousPage:
+          type: boolean
+          example: false
+        startCursor:
+          type: string
+          example: WyIwM2JmMWUwOS1hNWEwLTQyNDMtOTAxOC1mY2FhYjg4NTVkMTYiXQ==
+        endCursor:
+          type: string
+          example: WyJmODY1MDAzMS03YTFkLTRhOTAtOWI2OC00ODg1YjlkZDZjZDgiXQ==
+      required:
+        - hasNextPage
+        - hasPreviousPage
+        - startCursor
+        - endCursor
+    PaginatedActorProfileDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeActorProfileDto'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+        totalCount:
+          type: number
+      required:
+        - data
+        - pageInfo
+        - totalCount
+    PatchActorProfileDto:
+      type: object
+      properties:
+        emailNotifications:
+          type: boolean
+      required:
+        - emailNotifications
+    PaginatedUserProfileDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfileDto'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+        totalCount:
+          type: number
+      required:
+        - data
+        - pageInfo
+        - totalCount
+    ActorProfileDto:
+      type: object
+      properties:
+        fromNationalId:
+          type: string
+        emailNotifications:
+          type: boolean
+        email:
+          type: string
+          nullable: true
+        emailVerified:
+          type: boolean
+        documentNotifications:
+          type: boolean
+        locale:
+          type: string
+          enum:
+            - en
+            - is
+          nullable: true
+      required:
+        - fromNationalId
+        - emailNotifications
+        - emailVerified
+        - documentNotifications

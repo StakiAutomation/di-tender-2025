@@ -1,0 +1,451 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /v1/rights:
+    get:
+      operationId: RightsController_getMany
+      summary: Get a list of all right types for personal representatives
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/PaginatedPersonalRepresentativeRightTypeDto
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Right Types - Public
+      security:
+        - bearer: []
+  /v1/rights/{code}:
+    get:
+      operationId: RightsController_get
+      summary: Get a single right type by code
+      parameters:
+        - name: code
+          required: true
+          in: path
+          description: Unique code for a specific right type
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalRepresentativeRightTypeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Right Types - Public
+      security:
+        - bearer: []
+  /v1/personal-representatives:
+    get:
+      operationId: PersonalRepresentativesController_getByPersonalRepresentative
+      summary: >-
+        Gets personal representative rights by nationalId of personal
+        representative
+      description: >-
+        Personal representative connections with rights. A personal
+        representative can represent more than one person
+      parameters:
+        - name: prId
+          required: true
+          in: query
+          description: nationalId of personal representative.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonalRepresentativePublicDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Personal Representatives - Public
+      security:
+        - bearer: []
+info:
+  title: Personal Representative Rights External API
+  description: >-
+    Rights API for personal representativve. Intended for selected service
+    providers who do not use island.is agent service.
+
+    The swagger document can be downloaded by appending `-json` to the last path
+    segment.
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    PersonalRepresentativeRightTypeDTO:
+      type: object
+      properties:
+        code:
+          type: string
+          example: health_prescriptions
+        description:
+          type: string
+          example: Access to prescriptions through heilsuvera for example
+        validFrom:
+          format: date-time
+          type: string
+          example: 2025-05-05T09:41:10.536Z
+        validTo:
+          format: date-time
+          type: string
+          example: 2025-05-07T09:41:10.536Z
+      required:
+        - code
+        - description
+    PageInfoDto:
+      type: object
+      properties:
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPreviousPage:
+          type: boolean
+          example: false
+        startCursor:
+          type: string
+          example: WyIwM2JmMWUwOS1hNWEwLTQyNDMtOTAxOC1mY2FhYjg4NTVkMTYiXQ==
+        endCursor:
+          type: string
+          example: WyJmODY1MDAzMS03YTFkLTRhOTAtOWI2OC00ODg1YjlkZDZjZDgiXQ==
+      required:
+        - hasNextPage
+        - hasPreviousPage
+        - startCursor
+        - endCursor
+    PaginatedPersonalRepresentativeRightTypeDto:
+      type: object
+      properties:
+        totalCount:
+          type: number
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonalRepresentativeRightTypeDTO'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+      required:
+        - totalCount
+        - data
+        - pageInfo
+    HttpProblemResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: number
+          description: The HTTP status code
+        detail:
+          type: string
+          description: >-
+            A human-readable explanation specific to this occurrence of the
+            problem
+        instance:
+          type: string
+          description: >-
+            A URI reference that identifies the specific occurrence of the
+            problem.
+      required:
+        - type
+        - title
+    PersonalRepresentativePublicDTO:
+      type: object
+      properties:
+        personalRepresentativeTypeCode:
+          type: string
+          example: personal_representative_for_disabled_person
+        nationalIdPersonalRepresentative:
+          type: string
+          example: '0123456789'
+          description: nationalId of Personal Representative
+          pattern: ^d{10}$
+        nationalIdRepresentedPerson:
+          type: string
+          example: '0123456789'
+          description: nationalId of Represented Person
+          pattern: ^d{10}$
+        rights:
+          example: '["health", "finance"]'
+          description: >-
+            A list of right types that the personal representative has on behalf
+            of represented person
+          type: array
+          items:
+            type: string
+        prDelegationTypeCodes:
+          example: '["PersonalRepresentative:health", "PersonalRepresentative:finance"]'
+          description: >-
+            A list of delegation types that the personal representative has on
+            behalf of represented person
+          type: array
+          items:
+            type: string
+      required:
+        - personalRepresentativeTypeCode
+        - nationalIdPersonalRepresentative
+        - nationalIdRepresentedPerson
+        - rights
+        - prDelegationTypeCodes

@@ -1,0 +1,435 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /v1/me/sessions:
+    get:
+      operationId: SessionsController_findAll
+      description: Get all sessions for the authenticated user.
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+        - name: from
+          required: false
+          in: query
+          description: Only return sessions from this date.
+          schema:
+            format: date-time
+            type: string
+        - name: to
+          required: false
+          in: query
+          description: Only return sessions to this date.
+          schema:
+            format: date-time
+            type: string
+        - name: order
+          required: false
+          in: query
+          description: Orders results by date. Defaults to descending order.
+          schema:
+            $ref: '#/components/schemas/Order'
+        - name: X-Query-OtherUser
+          required: false
+          in: header
+          description: The identifier of a user associated with a session.
+          schema:
+            type: string
+            pattern: ^\d{10}$
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionsResultDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - sessions
+      security:
+        - ias: []
+    post:
+      operationId: SessionsController_create
+      description: Register a user session.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionDto'
+      responses:
+        '202':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - sessions
+      security:
+        - ias: []
+info:
+  title: Session log API
+  description: >-
+    Session log to track user sessions.
+
+
+
+    The swagger document can be downloaded by appending `-json` to the last path
+    segment.
+  version: '1.0'
+  contact: {}
+tags: []
+servers:
+  - url: http://localhost:3333
+components:
+  securitySchemes:
+    ias:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://identity-server.dev01.devland.is/connect/authorize
+          tokenUrl: https://identity-server.dev01.devland.is/connect/token
+          scopes:
+            openid: Default openid scope
+            '@island.is/internal': Access to list all sessions of the authenticated user.
+            '@island.is/internal:procuring': Access to list all sessions of the organisation.
+            '@island.is/sessions:write': Access to log sessions.
+      description: >-
+        Authentication and authorization using island.is authentication service
+        (IAS).
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    Order:
+      type: string
+      enum:
+        - ASC
+        - DESC
+    Session:
+      type: object
+      properties:
+        id:
+          type: object
+        sessionId:
+          type: string
+        actorNationalId:
+          type: string
+        subjectNationalId:
+          type: string
+        clientId:
+          type: string
+        timestamp:
+          format: date-time
+          type: string
+        userAgent:
+          type: string
+        device:
+          type: string
+        ip:
+          type: string
+        ipLocation:
+          type: string
+      required:
+        - id
+        - sessionId
+        - actorNationalId
+        - subjectNationalId
+        - clientId
+        - timestamp
+        - userAgent
+        - ip
+    PageInfoDto:
+      type: object
+      properties:
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPreviousPage:
+          type: boolean
+          example: false
+        startCursor:
+          type: string
+          example: WyIwM2JmMWUwOS1hNWEwLTQyNDMtOTAxOC1mY2FhYjg4NTVkMTYiXQ==
+        endCursor:
+          type: string
+          example: WyJmODY1MDAzMS03YTFkLTRhOTAtOWI2OC00ODg1YjlkZDZjZDgiXQ==
+      required:
+        - hasNextPage
+        - hasPreviousPage
+        - startCursor
+        - endCursor
+    SessionsResultDto:
+      type: object
+      properties:
+        totalCount:
+          type: number
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Session'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+      required:
+        - totalCount
+        - data
+        - pageInfo
+    HttpProblemResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: number
+          description: The HTTP status code
+        detail:
+          type: string
+          description: >-
+            A human-readable explanation specific to this occurrence of the
+            problem
+        instance:
+          type: string
+          description: >-
+            A URI reference that identifies the specific occurrence of the
+            problem.
+      required:
+        - type
+        - title
+    CreateSessionDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The IDS session ID. Deprecated, use sessionId instead.
+          deprecated: true
+        sessionId:
+          type: string
+          description: The IDS session ID
+        actorNationalId:
+          type: string
+        subjectNationalId:
+          type: string
+        clientId:
+          type: string
+        timestamp:
+          format: date-time
+          type: string
+        userAgent:
+          type: string
+        ip:
+          type: string
+      required:
+        - actorNationalId
+        - subjectNationalId
+        - clientId
+        - timestamp
+        - userAgent
+        - ip

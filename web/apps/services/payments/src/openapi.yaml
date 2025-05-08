@@ -1,0 +1,948 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /v1/payments/{id}:
+    get:
+      operationId: PaymentFlowController_getPaymentFlow
+      description: Retrieves payment flow information by ID.
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPaymentFlowDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - payments
+    delete:
+      operationId: PaymentFlowController_deletePaymentFlow
+      description: Deletes a PaymentFlow.
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPaymentFlowDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - payments
+  /v1/payments/{id}/status:
+    get:
+      operationId: PaymentFlowController_getPaymentFlowStatus
+      description: Retrieves payment flow information by ID.
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPaymentFlowStatusDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - payments
+  /v1/payments:
+    post:
+      operationId: PaymentFlowController_createPaymentUrl
+      description: Creates a new PaymentFlow.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentFlowInput'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePaymentFlowDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - payments
+  /v1/payments/card/verify:
+    post:
+      operationId: CardPaymentController_verify
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyCardInput'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyCardResponse'
+      tags:
+        - payments
+  /v1/payments/card/verify-callback:
+    post:
+      operationId: CardPaymentController_verificationCallback
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationCallbackInput'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationCallbackResponse'
+      tags:
+        - payments
+  /v1/payments/card/verification-status/{paymentFlowId}:
+    get:
+      operationId: CardPaymentController_verificationStatus
+      parameters:
+        - name: paymentFlowId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationStatusResponse'
+      tags:
+        - payments
+  /v1/payments/card/charge:
+    post:
+      operationId: CardPaymentController_charge
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChargeCardInput'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargeCardResponse'
+      tags:
+        - payments
+  /v1/payments/invoice/create:
+    post:
+      operationId: InvoicePaymentController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInvoiceInput'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateInvoiceResponse'
+      tags:
+        - payments
+info:
+  title: Payments API
+  description: >-
+    This service handles and encapsulates all lgoic related to payment flows,
+    from creation to payment. It handles communication with FJS for the
+    payments.
+  version: '1.0'
+  contact: {}
+tags:
+  - name: reference
+    description: ''
+servers: []
+components:
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    GetPaymentFlowDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the payment flow
+          format: uuid
+        productTitle:
+          type: string
+          description: Product title to display to the payer
+        productPrice:
+          type: number
+          description: >-
+            Price of the product being paid for, can be combined of multiple
+            prices based on the product ids of the payment flow
+        payerNationalId:
+          type: string
+          description: National id of the payer, can be a company or an individual
+        payerName:
+          type: string
+          description: Name of the payer
+        existingInvoiceId:
+          type: string
+          description: Optional identifier for an invoice associated with the payment flow
+        availablePaymentMethods:
+          type: array
+          description: List of allowed payment methods for this payment flow
+          example:
+            - card
+            - invoice
+          items:
+            type: string
+            enum:
+              - card
+              - invoice
+        onUpdateUrl:
+          type: string
+          description: >-
+            URL callback to be called on payment update events like when the
+            user requests to create invoice rather than directly paying
+        organisationId:
+          type: string
+          description: Identifier for the organization initiating the payment flow
+        paymentStatus:
+          type: string
+          description: 'Status of the payment: unpaid, pending invoice or paid'
+          enum:
+            - unpaid
+            - invoice_pending
+            - paid
+        metadata:
+          type: object
+          description: >-
+            Arbitrary JSON data that will be returned on in callbacks (e.g.
+            onSuccess, onUpdate)
+          example:
+            customData: value
+        returnUrl:
+          type: string
+          description: >-
+            The URL to redirect the user to after the payment flow has been
+            completed or cancelled
+        redirectToReturnUrlOnSuccess:
+          type: boolean
+          description: >-
+            If user should be redirected to the returnUrl after the payment flow
+            has been completed successfully
+        updatedAt:
+          format: date-time
+          type: string
+          description: Last updated at
+      required:
+        - id
+        - productTitle
+        - productPrice
+        - payerNationalId
+        - payerName
+        - availablePaymentMethods
+        - onUpdateUrl
+        - organisationId
+        - paymentStatus
+        - updatedAt
+    HttpProblemResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: number
+          description: The HTTP status code
+        detail:
+          type: string
+          description: >-
+            A human-readable explanation specific to this occurrence of the
+            problem
+        instance:
+          type: string
+          description: >-
+            A URI reference that identifies the specific occurrence of the
+            problem.
+      required:
+        - type
+        - title
+    GetPaymentFlowStatusDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the payment flow
+          format: uuid
+        paymentStatus:
+          type: string
+          description: 'Status of the payment: unpaid, pending invoice or paid'
+          enum:
+            - unpaid
+            - invoice_pending
+            - paid
+        updatedAt:
+          format: date-time
+          type: string
+          description: Last updated at
+      required:
+        - id
+        - paymentStatus
+        - updatedAt
+    ChargeInput:
+      type: object
+      properties:
+        chargeType:
+          type: string
+          description: Charge type
+        chargeItemCode:
+          type: string
+          description: Charge item code
+        quantity:
+          type: number
+          description: Quantity of this item
+        price:
+          type: number
+          description: Price of the charge
+      required:
+        - chargeType
+        - chargeItemCode
+        - quantity
+    ExtraDataItem:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Key
+        value:
+          type: string
+          description: Value
+      required:
+        - name
+        - value
+    CreatePaymentFlowInput:
+      type: object
+      properties:
+        availablePaymentMethods:
+          type: array
+          description: List of allowed payment methods for this payment flow
+          example:
+            - card
+            - invoice
+          items:
+            type: string
+            enum:
+              - card
+              - invoice
+        charges:
+          description: Charges associated with the payment flow
+          type: array
+          items:
+            $ref: '#/components/schemas/ChargeInput'
+        payerNationalId:
+          type: string
+          description: National id of the payer, can be a company or an individual
+        organisationId:
+          type: string
+          description: National id for the organization initiating the payment flow
+        onUpdateUrl:
+          type: string
+          description: >-
+            URL callback to be called on payment update events like when the
+            user requests to create invoice rather than directly paying
+        metadata:
+          type: object
+          description: >-
+            Arbitrary JSON data that will be returned with the onUpdateUrl
+            callback
+          example:
+            applicationId: abc123
+        productTitle:
+          type: string
+          description: Product title to display to the payer
+        existingInvoiceId:
+          type: string
+          description: Optional identifier for an invoice associated with the payment flow
+        returnUrl:
+          type: string
+          description: >-
+            URL to redirect the payer to after the payment flow has been
+            completed successfully
+        redirectToReturnUrlOnSuccess:
+          type: boolean
+          description: >-
+            If true the user will be redirected to the returnUrl after the
+            payment flow has been completed successfully
+        extraData:
+          description: >-
+            Define key-value pairs of extra data that should be included when
+            creating the FJS charge for the payment, example: car license plate,
+            house address etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraDataItem'
+        chargeItemSubjectId:
+          type: string
+          description: >-
+            Id that becomes the subject of the FJS charge item, used to
+            reference where it originated from
+      required:
+        - availablePaymentMethods
+        - charges
+        - payerNationalId
+        - organisationId
+        - onUpdateUrl
+    PaymentUrls:
+      type: object
+      properties:
+        is:
+          type: string
+          description: URL for Icelandic locale
+          example: https://www.island.is/greida/is/:id
+        en:
+          type: string
+          description: URL for English locale
+          example: https://www.island.is/greida/en/:id
+      required:
+        - is
+        - en
+    CreatePaymentFlowDTO:
+      type: object
+      properties:
+        urls:
+          description: Localized URLs for payment flow initiation
+          example:
+            is: https://www.island.is/greida/is/:id
+            en: https://www.island.is/greida/en/:id
+          allOf:
+            - $ref: '#/components/schemas/PaymentUrls'
+      required:
+        - urls
+    VerifyCardInput:
+      type: object
+      properties:
+        paymentFlowId:
+          type: string
+          description: Id of the related payment flow being paid
+        cardNumber:
+          type: string
+          description: Card number
+        expiryMonth:
+          type: number
+          description: Card expiry month
+        expiryYear:
+          type: number
+          description: Card expiry year
+        amount:
+          type: number
+          description: Total amount to be paid in ISK (not cents)
+      required:
+        - paymentFlowId
+        - cardNumber
+        - expiryMonth
+        - expiryYear
+        - amount
+    VerificationField:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Field name
+        value:
+          type: string
+          description: Field value
+      required:
+        - name
+        - value
+    CardInformation:
+      type: object
+      properties:
+        cardScheme:
+          type: string
+          description: Card scheme (for example Visa or MasterCard)
+        issuingCountry:
+          type: string
+          description: Issuing country of the card
+        cardUsage:
+          type: string
+          description: Card usage description
+        cardCategory:
+          type: string
+          description: Card category
+        outOfScaScope:
+          type: string
+          description: Out-of-SCA scope status
+        cardProductCategory:
+          type: string
+          description: Card product category
+      required:
+        - cardScheme
+        - issuingCountry
+        - cardUsage
+        - cardCategory
+        - outOfScaScope
+        - cardProductCategory
+    VerifyCardResponse:
+      type: object
+      properties:
+        cardVerificationRawResponse:
+          type: string
+          description: Raw response from card verification
+        postUrl:
+          type: string
+          description: Post URL for verification
+        verificationFields:
+          description: Verification fields
+          type: array
+          items:
+            $ref: '#/components/schemas/VerificationField'
+        additionalFields:
+          description: Additional fields
+          type: array
+          items:
+            $ref: '#/components/schemas/VerificationField'
+        isSuccess:
+          type: boolean
+          description: Indicates if the verification was successful
+        cardInformation:
+          description: Card information
+          allOf:
+            - $ref: '#/components/schemas/CardInformation'
+        scriptPath:
+          type: string
+          description: Script path for further actions
+        responseCode:
+          type: string
+          description: Response code from the verification
+        responseDescription:
+          type: string
+          description: Description of the response
+        responseTime:
+          type: string
+          description: Response time of the verification
+        correlationId:
+          type: string
+          description: Correlation ID for tracking
+      required:
+        - cardVerificationRawResponse
+        - postUrl
+        - verificationFields
+        - additionalFields
+        - isSuccess
+        - cardInformation
+        - scriptPath
+        - responseCode
+        - responseDescription
+        - responseTime
+        - correlationId
+    VerificationCallbackInput:
+      type: object
+      properties:
+        md:
+          type: string
+          description: Encoded MD object with custom request data.
+        mdStatus:
+          type: string
+          description: >-
+            MD Status: Indicates the outcome of the 3D Secure authentication
+            process.
+        cavv:
+          type: string
+          description: >-
+            Cardholder authentication verificationProves cardholder
+            authentication.
+        xid:
+          type: string
+          description: Request id
+        dsTransId:
+          type: string
+          description: >-
+            Universally unique transaction identifier assigned by the DS to
+            identify a single transaction.
+      required:
+        - md
+        - mdStatus
+        - cavv
+        - xid
+        - dsTransId
+    VerificationCallbackResponse:
+      type: object
+      properties:
+        paymentFlowId:
+          type: string
+      required:
+        - paymentFlowId
+    VerificationStatusResponse:
+      type: object
+      properties:
+        isVerified:
+          type: boolean
+      required:
+        - isVerified
+    ChargeCardInput:
+      type: object
+      properties:
+        paymentFlowId:
+          type: string
+          description: Id of the related payment flow being paid
+        cardNumber:
+          type: string
+          description: Card number
+        expiryMonth:
+          type: number
+          description: Card expiry month
+        expiryYear:
+          type: number
+          description: Card expiry year
+        amount:
+          type: number
+          description: Total amount to be paid in ISK (not cents)
+        cvc:
+          type: string
+          description: Card cvc
+      required:
+        - paymentFlowId
+        - cardNumber
+        - expiryMonth
+        - expiryYear
+        - amount
+        - cvc
+    ChargeCardResponse:
+      type: object
+      properties:
+        acquirerReferenceNumber:
+          type: string
+          description: Acquirer reference number
+        transactionID:
+          type: string
+          description: Transaction ID
+        authorizationCode:
+          type: string
+          description: Authorization code
+        transactionLifecycleId:
+          type: string
+          description: Transaction lifecycle ID
+        maskedCardNumber:
+          type: string
+          description: Masked card number
+        isSuccess:
+          type: boolean
+          description: Indicates if the transaction was successful
+        cardInformation:
+          description: Card information
+          allOf:
+            - $ref: '#/components/schemas/CardInformation'
+        authorizationIdentifier:
+          type: string
+          description: Authorization identifier
+        responseCode:
+          type: string
+          description: Response code from the charge
+        responseDescription:
+          type: string
+          description: Description of the response
+        responseTime:
+          type: string
+          description: Response time of the charge
+        correlationId:
+          type: string
+          description: Correlation ID for tracking
+      required:
+        - acquirerReferenceNumber
+        - transactionID
+        - authorizationCode
+        - transactionLifecycleId
+        - maskedCardNumber
+        - isSuccess
+        - cardInformation
+        - authorizationIdentifier
+        - responseCode
+        - responseDescription
+        - responseTime
+        - correlationId
+    CreateInvoiceInput:
+      type: object
+      properties:
+        paymentFlowId:
+          type: string
+          description: Id of the related payment flow being paid later with an invoice
+      required:
+        - paymentFlowId
+    CreateInvoiceResponse:
+      type: object
+      properties:
+        isSuccess:
+          type: boolean
+          description: Indicates if the transaction was successful
+        responseCode:
+          type: string
+          description: Response code from the charge
+        correlationId:
+          type: string
+          description: Correlation ID for tracking
+      required:
+        - isSuccess
+        - correlationId

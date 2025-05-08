@@ -1,0 +1,269 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Vehicle {
+  vehicleId: String!
+  vehicleType: String!
+  vehicleColor: String!
+  newregDate: DateTime
+  vinNumber: String!
+  mileage: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+  recyclingRequests: [RecyclingRequest!]
+  plateLost: Boolean
+  plateCount: Float
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type VehicleConnection {
+  pageInfo: PageInfo!
+  count: Float!
+  items: [Vehicle!]!
+}
+
+type Municipality {
+  companyId: ID!
+  companyName: String!
+}
+
+type RecyclingRequest {
+  id: String!
+  vehicleId: String!
+  recyclingPartnerId: String!
+  recyclingPartner: RecyclingPartner!
+  requestType: RecyclingRequestTypes!
+  nameOfRequestor: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+enum RecyclingRequestTypes {
+  pendingRecycle
+  handOver
+  deregistered
+  cancelled
+  paymentInitiated
+  paymentFailed
+}
+
+type VehicleInformation {
+  permno: String!
+  type: String!
+  color: String!
+  vinNumber: String!
+  firstRegDate: String!
+  isRecyclable: Boolean!
+  hasCoOwner: Boolean!
+  status: String!
+}
+
+type Traffic {
+  permno: String!
+  outInStatus: String!
+  useStatus: String!
+  useStatusName: String!
+  useDate: String!
+}
+
+type RecyclingPartner {
+  companyId: ID!
+  companyName: String!
+  address: String!
+  postnumber: String!
+  city: String!
+  email: String
+  nationalId: String
+  website: String
+  phone: String!
+  active: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isMunicipality: Boolean!
+  municipalityId: String
+  recyclingRequests: [RecyclingRequest!]!
+  municipality: Municipality
+}
+
+type SkilavottordUser {
+  nationalId: ID!
+  name: String!
+  role: Role!
+  partnerId: String
+}
+
+enum Role {
+  developer
+  recyclingCompany
+  recyclingCompanyAdmin
+  recyclingFund
+  citizen
+  municipality
+}
+
+type AccessControl {
+  nationalId: ID!
+  name: String!
+  role: AccessControlRole!
+  email: String
+  phone: String
+  recyclingLocation: String
+  partnerId: String
+  recyclingPartner: RecyclingPartner
+}
+
+enum AccessControlRole {
+  developer
+  recyclingCompany
+  recyclingCompanyAdmin
+  recyclingFund
+  municipality
+}
+
+type Gdpr {
+  nationalId: String!
+  gdprStatus: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Query {
+  skilavottordUser: SkilavottordUser
+  skilavottordAccessControls: [AccessControl!]!
+  skilavottordAccessControlsByRecyclingPartner: [AccessControl!]!
+  skilavottordAllRecyclingRequests: [RecyclingRequest!]!
+  skilavottordUserRecyclingRequest(permno: String!): [RecyclingRequest!]!
+  skilavottordRecyclingRequests(permno: String!): [RecyclingRequest!]!
+  skilavottordDeRegisterVehicle(vehiclePermno: String!, recyclingPartner: String!, mileage: Int): Boolean!
+  skilavottordVehicleReadyToDeregistered(permno: String!): Vehicle!
+  skilavottordAllDeregisteredVehicles(first: Int!, after: String!): VehicleConnection!
+  skilavottordRecyclingPartnerVehicles(first: Int!, after: String!): VehicleConnection!
+  skilavottordVehicleById(permno: String!): Vehicle!
+  skilavottordVehicles: [VehicleInformation!]!
+  skilavottordTraffic(permno: String!): Traffic!
+  skilavottordFjarsyslaSkilagjald(vehiclePermno: String!, guid: String!): Boolean!
+  skilavottordAllRecyclingPartners: [RecyclingPartner!]!
+  skilavottordRecyclingPartners(isMunicipalityPage: Boolean, municipalityId: String): [RecyclingPartner!]!
+  skilavottordAllActiveRecyclingPartners: [RecyclingPartner!]!
+  skilavottordRecyclingPartner(input: RecyclingPartnerInput!): RecyclingPartner!
+  skilavottordRecyclingPartnerActive(input: RecyclingPartnerInput!): Boolean!
+  skilavottordGdpr: Gdpr
+  skilavottordAllGdprs: [Gdpr!]!
+  skilavottordAllMunicipalities: [Municipality!]!
+}
+
+input RecyclingPartnerInput {
+  companyId: String!
+}
+
+type Mutation {
+  createSkilavottordAccessControl(input: CreateAccessControlInput!): AccessControl!
+  updateSkilavottordAccessControl(input: UpdateAccessControlInput!): AccessControl!
+  deleteSkilavottordAccessControl(input: DeleteAccessControlInput!): Boolean!
+  createSkilavottordRecyclingRequest(requestType: RecyclingRequestTypes!, permno: String!): RecyclingRequestResponse!
+  createSkilavottordRecyclingRequestAppSys(input: CreateRecyclingRequestInput!): RecyclingRequestResponse!
+  createSkilavottordVehicleAppSys(input: CreateVehicleInput!): Boolean!
+  createSkilavottordVehicle(permno: String!): Boolean!
+  updateSkilavottordVehicleInfo(permno: String!, mileage: Float!, plateCount: Float, plateLost: Boolean!): Boolean!
+  createSkilavottordRecyclingPartner(input: CreateRecyclingPartnerInput!): RecyclingPartner!
+  updateSkilavottordRecyclingPartner(input: UpdateRecyclingPartnerInput!): RecyclingPartner!
+  createSkilavottordVehicleOwnerAppSys(input: CreateOwnerInput!): Boolean!
+  createSkilavottordVehicleOwner(name: String!): Boolean!
+  createSkilavottordGdpr(gdprStatus: String!): Boolean!
+}
+
+input CreateAccessControlInput {
+  nationalId: String!
+  name: String!
+  role: AccessControlRole!
+  partnerId: String
+  email: String!
+  phone: String!
+  recyclingLocation: String
+}
+
+input UpdateAccessControlInput {
+  nationalId: String!
+  name: String!
+  role: AccessControlRole!
+  partnerId: String
+  email: String!
+  phone: String!
+  recyclingLocation: String
+}
+
+input DeleteAccessControlInput {
+  nationalId: String!
+}
+
+union RecyclingRequestResponse = RequestErrors | RequestStatus
+
+type RequestErrors {
+  message: String!
+  operation: String!
+}
+
+type RequestStatus {
+  status: Boolean!
+}
+
+input CreateRecyclingRequestInput {
+  permno: String!
+  requestType: RecyclingRequestTypes!
+  fullName: String!
+}
+
+input CreateVehicleInput {
+  permno: String!
+  mileage: Float!
+  vin: String!
+  make: String!
+  firstRegistrationDate: DateTime
+  color: String!
+}
+
+input CreateRecyclingPartnerInput {
+  companyId: String!
+  companyName: String!
+  address: String!
+  postnumber: String!
+  city: String!
+  website: String
+  phone: String!
+  active: Boolean!
+  nationalId: String!
+  email: String!
+  isMunicipality: Boolean!
+  municipalityId: String
+}
+
+input UpdateRecyclingPartnerInput {
+  companyId: String!
+  companyName: String!
+  address: String!
+  postnumber: String!
+  city: String!
+  website: String
+  phone: String!
+  active: Boolean!
+  nationalId: String!
+  email: String!
+  isMunicipality: Boolean
+  municipalityId: String
+}
+
+input CreateOwnerInput {
+  name: String!
+}

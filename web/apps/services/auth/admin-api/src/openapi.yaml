@@ -1,0 +1,2141 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /v2/me/tenants:
+    get:
+      operationId: MeTenantsController_findAll
+      description: Get all tenants for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TenantDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+  /v2/me/tenants/{tenantId}:
+    get:
+      operationId: MeTenantsController_findById
+      description: Get tenant by id for the current user.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+  /v2/me/tenants/{tenantId}/clients:
+    get:
+      operationId: MeClientsController_findByTenantId
+      description: Get all clients for the specified tenant.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminClientDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+    post:
+      operationId: MeClientsController_create
+      description: Create a new client for the specified tenant.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreateClientDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminClientDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '409':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+  /v2/me/tenants/{tenantId}/clients/{clientId}:
+    get:
+      operationId: MeClientsController_findByTenantIdAndClientId
+      description: Get client by id and tenant for the current user.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: clientId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: includeArchived
+          required: true
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminClientDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+    patch:
+      operationId: MeClientsController_update
+      description: Update a client with partial set of properties.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: clientId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminPatchClientDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminClientDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+    delete:
+      operationId: MeClientsController_delete
+      description: Delete a client.
+      parameters:
+        - name: clientId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+  /v2/me/tenants/{tenantId}/clients/{clientId}/secrets:
+    get:
+      operationId: MeClientSecretsController_findAll
+      description: Get all client secrets for the specified client and tenant.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: clientId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientSecretDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+    post:
+      operationId: MeClientSecretsController_create
+      description: Create a new client secret for the specified tenant and client.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: clientId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientSecretDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '409':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+  /v2/me/tenants/{tenantId}/clients/{clientId}/secrets/{secretId}:
+    delete:
+      operationId: MeClientSecretsController_delete
+      description: Delete a client secret for the specified tenant and client.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: clientId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: secretId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+  /v1/identity-confirmation:
+    post:
+      operationId: IdentityConfirmationController_identityConfirmation
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentityConfirmationInputDto'
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+  /v2/providers:
+    get:
+      operationId: ProvidersController_getDelegationProviders
+      description: Fetch all delegationProviders and their delegationTypes
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDelegationProviderDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+  /v2/me/tenants/{tenantId}/scopes:
+    get:
+      operationId: MeScopesController_findAllByTenantId
+      description: Get all scopes by tenant id.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminScopeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+    post:
+      operationId: MeScopesController_create
+      description: Creates api scope for specific tenant.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreateScopeDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminScopeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+  /v2/me/tenants/{tenantId}/scopes/{scopeName}:
+    get:
+      operationId: MeScopesController_findByTenantIdAndScopeName
+      description: Get scope by name and tenant id.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: scopeName
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminScopeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+    patch:
+      operationId: MeScopesController_update
+      description: Update a scope with partial set of properties.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: scopeName
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminPatchScopeDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminScopeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+  /v2/me/tenants/{tenantId}/clients/{clientId}/scopes:
+    get:
+      operationId: MeClientsScopesController_findAll
+      description: Gets all allowed scopes for the specified client and tenant.
+      parameters:
+        - name: tenantId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: clientId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminScopeDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - admin
+      security:
+        - ias:
+            - '@admin.island.is/auth'
+            - '@admin.island.is/auth:admin'
+  /delegation-admin:
+    get:
+      operationId: DelegationAdminController_getDelegationAdmin
+      parameters:
+        - name: X-Query-National-Id
+          required: true
+          in: header
+          description: fetch delegations for this national id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegationAdminCustomDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - delegation-admin
+    post:
+      operationId: DelegationAdminController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaperDelegationDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegationDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '409':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - delegation-admin
+  /delegation-admin/zendesk:
+    post:
+      operationId: DelegationAdminController_createByZendeskId
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZendeskWebhookInputDto'
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - delegation-admin
+  /delegation-admin/revert-zendesk:
+    post:
+      operationId: DelegationAdminController_deleteByZendeskId
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZendeskWebhookInputDto'
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - delegation-admin
+  /delegation-admin/{delegationId}:
+    delete:
+      operationId: DelegationAdminController_delete
+      parameters:
+        - name: delegationId
+          required: true
+          in: path
+          description: The id of the delegation to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - delegation-admin
+info:
+  title: IdentityServer Admin api
+  description: Api for administration.
+  version: '2.0'
+  contact: {}
+tags:
+  - name: auth-admin-api
+    description: ''
+servers: []
+components:
+  securitySchemes:
+    ias:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://identity-server.dev01.devland.is/connect/authorize
+          tokenUrl: https://identity-server.dev01.devland.is/connect/token
+          scopes:
+            openid: Default openid scope
+      description: >-
+        Authentication and authorization using island.is authentication service
+        (IAS).
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    TranslatedValueDto:
+      type: object
+      properties:
+        locale:
+          type: string
+          description: The locale of the translated value
+          example: is
+        value:
+          type: string
+          description: The translated value
+      required:
+        - locale
+        - value
+    TenantDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: '@island.is'
+        displayName:
+          example: Ísland.is mínar síður
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedValueDto'
+        contactEmail:
+          type: string
+          example: island@example.is
+      required:
+        - name
+        - displayName
+        - contactEmail
+    HttpProblemResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: number
+          description: The HTTP status code
+        detail:
+          type: string
+          description: >-
+            A human-readable explanation specific to this occurrence of the
+            problem
+        instance:
+          type: string
+          description: >-
+            A URI reference that identifies the specific occurrence of the
+            problem.
+      required:
+        - type
+        - title
+    ClientType:
+      type: string
+      enum:
+        - native
+        - web
+        - machine
+        - spa
+    RefreshTokenExpiration:
+      type: string
+      enum:
+        - Sliding
+        - Absolute
+    AdminClientClaimDto:
+      type: object
+      properties:
+        type:
+          type: string
+          description: >-
+            The type of the claim use as the key in the JWT token along with
+            client claim prefix.
+        value:
+          type: string
+          description: The value of the claim.
+      required:
+        - type
+        - value
+    ClientSso:
+      type: string
+      enum:
+        - disabled
+        - enabled
+    AdminClientDto:
+      type: object
+      properties:
+        clientId:
+          type: string
+        clientType:
+          example: web
+          $ref: '#/components/schemas/ClientType'
+        displayName:
+          example:
+            - locale: is
+              value: Mínar síður ísland.is
+            - locale: en
+              value: My pages on island.is
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedValueDto'
+        tenantId:
+          type: string
+          description: The id of the tenant that the client belongs to
+          example: '@island.is'
+        redirectUris:
+          type: array
+          items:
+            type: string
+        postLogoutRedirectUris:
+          type: array
+          items:
+            type: string
+        absoluteRefreshTokenLifetime:
+          type: number
+          description: Absolute lifetime of refresh token in seconds
+        slidingRefreshTokenLifetime:
+          type: number
+          description: Sliding lifetime of refresh token in seconds
+        refreshTokenExpiration:
+          description: >-
+            Indicates if refresh token should expire after inactivity (Sliding)
+            described in `slidingRefreshTokenLifetime` or fixed point in time
+            (Absolute) described in `absoluteRefreshTokenLifetime`
+          $ref: '#/components/schemas/RefreshTokenExpiration'
+        supportedDelegationTypes:
+          description: >-
+            The supported delegation types for the client, will be used instead
+            of support delegation type boolean fields
+          type: array
+          items:
+            type: string
+        supportsCustomDelegation:
+          type: boolean
+          deprecated: true
+          description: Use supportedDelegationTypes instead
+        supportsLegalGuardians:
+          type: boolean
+          deprecated: true
+          description: Use supportedDelegationTypes instead
+        supportsProcuringHolders:
+          type: boolean
+          deprecated: true
+          description: Use supportedDelegationTypes instead
+        supportsPersonalRepresentatives:
+          type: boolean
+          deprecated: true
+          description: Use supportedDelegationTypes instead
+        promptDelegations:
+          type: boolean
+        requireApiScopes:
+          type: boolean
+        requireConsent:
+          type: boolean
+        allowOfflineAccess:
+          type: boolean
+        requirePkce:
+          type: boolean
+        supportTokenExchange:
+          type: boolean
+          description: >-
+            Indicates if the client supports token exchange grant. Only
+            available for machine clients.
+        accessTokenLifetime:
+          type: number
+        singleSession:
+          type: boolean
+        customClaims:
+          description: Dictionary of custom claims added to access tokens.
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminClientClaimDto'
+        allowedAcr:
+          description: Array of allowed acr values for the client.
+          example: '[eidas-loa-high]'
+          type: array
+          items:
+            type: string
+        sso:
+          example: disabled
+          $ref: '#/components/schemas/ClientSso'
+      required:
+        - clientId
+        - clientType
+        - displayName
+        - tenantId
+        - redirectUris
+        - postLogoutRedirectUris
+        - absoluteRefreshTokenLifetime
+        - slidingRefreshTokenLifetime
+        - refreshTokenExpiration
+        - supportedDelegationTypes
+        - supportsCustomDelegation
+        - supportsLegalGuardians
+        - supportsProcuringHolders
+        - supportsPersonalRepresentatives
+        - promptDelegations
+        - requireApiScopes
+        - requireConsent
+        - allowOfflineAccess
+        - requirePkce
+        - supportTokenExchange
+        - accessTokenLifetime
+        - singleSession
+        - allowedAcr
+        - sso
+    CreateClientType:
+      type: string
+      enum:
+        - machine
+        - native
+        - web
+    AdminCreateClientDto:
+      type: object
+      properties:
+        displayName:
+          example:
+            - locale: is
+              value: Mínar síður ísland.is
+            - locale: en
+              value: My pages on island.is
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedValueDto'
+        redirectUris:
+          type: array
+          items:
+            type: string
+        postLogoutRedirectUris:
+          type: array
+          items:
+            type: string
+        absoluteRefreshTokenLifetime:
+          type: number
+          description: Absolute lifetime of refresh token in seconds
+        slidingRefreshTokenLifetime:
+          type: number
+          description: Sliding lifetime of refresh token in seconds
+        refreshTokenExpiration:
+          description: >-
+            Indicates if refresh token should expire after inactivity (Sliding)
+            described in `slidingRefreshTokenLifetime` or fixed point in time
+            (Absolute) described in `absoluteRefreshTokenLifetime`
+          $ref: '#/components/schemas/RefreshTokenExpiration'
+        supportsCustomDelegation:
+          type: boolean
+          deprecated: true
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+        supportsLegalGuardians:
+          type: boolean
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+          deprecated: true
+        supportsProcuringHolders:
+          type: boolean
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+          deprecated: true
+        supportsPersonalRepresentatives:
+          type: boolean
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+          deprecated: true
+        promptDelegations:
+          type: boolean
+          description: Only super users can update this value.
+        requireApiScopes:
+          type: boolean
+          description: Only super users can update this value.
+        requireConsent:
+          type: boolean
+          description: Only super users can update this value.
+        allowOfflineAccess:
+          type: boolean
+          description: Only super users can update this value.
+        requirePkce:
+          type: boolean
+          description: Only super users can update this value.
+        supportTokenExchange:
+          type: boolean
+          description: >-
+            Indicates if the client supports token exchange grant. Only
+            available for machine clients and only super users can update this
+            value
+        accessTokenLifetime:
+          type: number
+          description: Only super users can update this value.
+        singleSession:
+          type: boolean
+          description: Only super users can update this value.
+        customClaims:
+          description: >-
+            Dictionary of custom claims added to access tokens. Only super users
+            can update this value.
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminClientClaimDto'
+        addedScopes:
+          description: Scopes to grant to client.
+          type: array
+          items:
+            type: string
+        removedScopes:
+          description: Scopes to revoke from client.
+          type: array
+          items:
+            type: string
+        contactEmail:
+          type: string
+          description: Contact email for owner
+        allowedAcr:
+          description: Array of allowed acr values for the client.
+          example: '[eidas-loa-high]'
+          type: array
+          items:
+            type: string
+        sso:
+          example: enabled
+          $ref: '#/components/schemas/ClientSso'
+        clientId:
+          type: string
+          example: '@domain.is/client-id'
+        clientType:
+          example: spa
+          $ref: '#/components/schemas/CreateClientType'
+        clientName:
+          type: string
+          example: Client name
+        supportedDelegationTypes:
+          example:
+            - Custom
+          type: array
+          items:
+            type: string
+      required:
+        - clientId
+        - clientType
+        - clientName
+        - supportedDelegationTypes
+    AdminPatchClientDto:
+      type: object
+      properties:
+        displayName:
+          example:
+            - locale: is
+              value: Mínar síður ísland.is
+            - locale: en
+              value: My pages on island.is
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedValueDto'
+        redirectUris:
+          type: array
+          items:
+            type: string
+        postLogoutRedirectUris:
+          type: array
+          items:
+            type: string
+        absoluteRefreshTokenLifetime:
+          type: number
+          description: Absolute lifetime of refresh token in seconds
+        slidingRefreshTokenLifetime:
+          type: number
+          description: Sliding lifetime of refresh token in seconds
+        refreshTokenExpiration:
+          description: >-
+            Indicates if refresh token should expire after inactivity (Sliding)
+            described in `slidingRefreshTokenLifetime` or fixed point in time
+            (Absolute) described in `absoluteRefreshTokenLifetime`
+          $ref: '#/components/schemas/RefreshTokenExpiration'
+        addedDelegationTypes:
+          description: Only super users can update this value.
+          type: array
+          items:
+            type: string
+        removedDelegationTypes:
+          description: Only super users can update this value.
+          type: array
+          items:
+            type: string
+        supportsCustomDelegation:
+          type: boolean
+          deprecated: true
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+        supportsLegalGuardians:
+          type: boolean
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+          deprecated: true
+        supportsProcuringHolders:
+          type: boolean
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+          deprecated: true
+        supportsPersonalRepresentatives:
+          type: boolean
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+          deprecated: true
+        promptDelegations:
+          type: boolean
+          description: Only super users can update this value.
+        requireApiScopes:
+          type: boolean
+          description: Only super users can update this value.
+        requireConsent:
+          type: boolean
+          description: Only super users can update this value.
+        allowOfflineAccess:
+          type: boolean
+          description: Only super users can update this value.
+        requirePkce:
+          type: boolean
+          description: Only super users can update this value.
+        supportTokenExchange:
+          type: boolean
+          description: >-
+            Indicates if the client supports token exchange grant. Only
+            available for machine clients and only super users can update this
+            value
+        accessTokenLifetime:
+          type: number
+          description: Only super users can update this value.
+        singleSession:
+          type: boolean
+          description: Only super users can update this value.
+        customClaims:
+          description: >-
+            Dictionary of custom claims added to access tokens. Only super users
+            can update this value.
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminClientClaimDto'
+        addedScopes:
+          description: Scopes to grant to client.
+          type: array
+          items:
+            type: string
+        removedScopes:
+          description: Scopes to revoke from client.
+          type: array
+          items:
+            type: string
+        contactEmail:
+          type: string
+          description: Contact email for owner
+        allowedAcr:
+          description: Array of allowed acr values for the client.
+          example: '[eidas-loa-high]'
+          type: array
+          items:
+            type: string
+        sso:
+          example: enabled
+          $ref: '#/components/schemas/ClientSso'
+    ClientSecretDto:
+      type: object
+      properties:
+        secretId:
+          type: string
+        clientId:
+          type: string
+        decryptedValue:
+          type: string
+      required:
+        - secretId
+        - clientId
+    IdentityConfirmationInputDto:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        number:
+          type: string
+      required:
+        - id
+        - type
+        - number
+    DelegationTypeDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: PersonalRepresentative:health
+        providerId:
+          type: string
+          example: talsmannagrunnur
+        name:
+          type: string
+          example: 'Personal Representative: Health'
+        description:
+          type: string
+          example: Personal representative delegation type for right type health
+      required:
+        - id
+        - providerId
+        - name
+        - description
+    DelegationProviderDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        delegationTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DelegationTypeDto'
+      required:
+        - id
+        - name
+        - description
+        - delegationTypes
+    PageInfoDto:
+      type: object
+      properties:
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPreviousPage:
+          type: boolean
+          example: false
+        startCursor:
+          type: string
+          example: WyIwM2JmMWUwOS1hNWEwLTQyNDMtOTAxOC1mY2FhYjg4NTVkMTYiXQ==
+        endCursor:
+          type: string
+          example: WyJmODY1MDAzMS03YTFkLTRhOTAtOWI2OC00ODg1YjlkZDZjZDgiXQ==
+      required:
+        - hasNextPage
+        - hasPreviousPage
+        - startCursor
+        - endCursor
+    PaginatedDelegationProviderDto:
+      type: object
+      properties:
+        data:
+          nullable: true
+          type: array
+          items:
+            $ref: '#/components/schemas/DelegationProviderDto'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+        totalCount:
+          type: number
+      required:
+        - data
+        - pageInfo
+        - totalCount
+    AdminScopeDTO:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: true
+        name:
+          type: string
+          example: set_name
+        domainName:
+          type: string
+          example: '@island.is'
+        order:
+          type: number
+          example: 0
+          default: 0
+        groupId:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+        showInDiscoveryDocument:
+          type: boolean
+          example: true
+        required:
+          type: boolean
+          example: false
+        emphasize:
+          type: boolean
+          example: false
+        grantToAuthenticatedUser:
+          type: boolean
+          example: false
+        grantToLegalGuardians:
+          type: boolean
+          deprecated: true
+          description: Use supportedDelegationTypes instead
+        grantToProcuringHolders:
+          type: boolean
+          deprecated: true
+          description: Use supportedDelegationTypes instead
+        grantToPersonalRepresentatives:
+          type: boolean
+          deprecated: true
+          description: Use supportedDelegationTypes instead
+        allowExplicitDelegationGrant:
+          type: boolean
+          deprecated: true
+          description: Use supportedDelegationTypes instead
+        automaticDelegationGrant:
+          type: boolean
+          example: false
+        supportedDelegationTypes:
+          example:
+            - Custom
+          type: array
+          items:
+            type: string
+        alsoForDelegatedUser:
+          type: boolean
+          example: false
+        isAccessControlled:
+          type: boolean
+          example: false
+        displayName:
+          example:
+            - locale: is
+              value: Samnefni á umfangi
+            - locale: en
+              value: Scope alias name
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedValueDto'
+        description:
+          example:
+            - locale: is
+              value: Lýsing á umfangi
+            - locale: en
+              value: Scope description
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedValueDto'
+      required:
+        - enabled
+        - name
+        - domainName
+        - order
+        - groupId
+        - showInDiscoveryDocument
+        - required
+        - emphasize
+        - grantToAuthenticatedUser
+        - grantToLegalGuardians
+        - grantToProcuringHolders
+        - grantToPersonalRepresentatives
+        - allowExplicitDelegationGrant
+        - automaticDelegationGrant
+        - supportedDelegationTypes
+        - alsoForDelegatedUser
+        - isAccessControlled
+        - displayName
+        - description
+    AdminCreateScopeDto:
+      type: object
+      properties:
+        displayName:
+          example:
+            - locale: is
+              value: Samnefni á umfangi
+            - locale: en
+              value: Scope alias name
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedValueDto'
+        description:
+          example:
+            - locale: is
+              value: Lýsing á umfangi
+            - locale: en
+              value: Scope description
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedValueDto'
+        grantToAuthenticatedUser:
+          type: boolean
+          example: false
+        grantToLegalGuardians:
+          type: boolean
+          deprecated: true
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+        grantToProcuringHolders:
+          type: boolean
+          deprecated: true
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+        allowExplicitDelegationGrant:
+          type: boolean
+          deprecated: true
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+        isAccessControlled:
+          type: boolean
+          example: false
+        automaticDelegationGrant:
+          type: boolean
+          example: false
+        grantToPersonalRepresentatives:
+          type: boolean
+          deprecated: true
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+        name:
+          type: string
+          example: '@island.is'
+        supportedDelegationTypes:
+          example:
+            - Custom
+          type: array
+          items:
+            type: string
+      required:
+        - name
+    AdminPatchScopeDto:
+      type: object
+      properties:
+        displayName:
+          example:
+            - locale: is
+              value: Samnefni á umfangi
+            - locale: en
+              value: Scope alias name
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedValueDto'
+        description:
+          example:
+            - locale: is
+              value: Lýsing á umfangi
+            - locale: en
+              value: Scope description
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedValueDto'
+        grantToAuthenticatedUser:
+          type: boolean
+          example: false
+        grantToLegalGuardians:
+          type: boolean
+          deprecated: true
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+        grantToProcuringHolders:
+          type: boolean
+          deprecated: true
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+        allowExplicitDelegationGrant:
+          type: boolean
+          deprecated: true
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+        isAccessControlled:
+          type: boolean
+          example: false
+        automaticDelegationGrant:
+          type: boolean
+          example: false
+        grantToPersonalRepresentatives:
+          type: boolean
+          deprecated: true
+          description: Use addedDelegationTypes or removedDelegationTypes instead
+        addedDelegationTypes:
+          example:
+            - Custom
+          type: array
+          items:
+            type: string
+        removedDelegationTypes:
+          example:
+            - Custom
+          type: array
+          items:
+            type: string
+    AuthDelegationType:
+      type: string
+      enum:
+        - ProcurationHolder
+        - LegalGuardian
+        - Custom
+        - PersonalRepresentative
+        - LegalGuardianMinor
+        - LegalRepresentative
+        - GeneralMandate
+    AuthDelegationProvider:
+      type: string
+      enum:
+        - thjodskra
+        - fyrirtaekjaskra
+        - talsmannagrunnur
+        - delegationdb
+        - syslumenn
+    DelegationScopeDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        delegationId:
+          type: string
+        scopeName:
+          type: string
+        displayName:
+          type: string
+        validFrom:
+          format: date-time
+          type: string
+        validTo:
+          format: date-time
+          type: string
+          nullable: true
+      required:
+        - delegationId
+        - scopeName
+        - displayName
+        - validFrom
+    DelegationDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        fromNationalId:
+          type: string
+        fromName:
+          type: string
+        toNationalId:
+          type: string
+        toName:
+          type: string
+          nullable: true
+        validTo:
+          format: date-time
+          type: string
+          nullable: true
+        type:
+          $ref: '#/components/schemas/AuthDelegationType'
+        provider:
+          $ref: '#/components/schemas/AuthDelegationProvider'
+        referenceId:
+          type: string
+          nullable: true
+        createdByNationalId:
+          type: string
+          nullable: true
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DelegationScopeDTO'
+        domainName:
+          type: string
+          nullable: true
+      required:
+        - fromNationalId
+        - fromName
+        - toNationalId
+        - type
+        - provider
+    DelegationAdminCustomDto:
+      type: object
+      properties:
+        incoming:
+          nullable: false
+          default: []
+          type: array
+          items:
+            $ref: '#/components/schemas/DelegationDTO'
+        outgoing:
+          nullable: false
+          default: []
+          type: array
+          items:
+            $ref: '#/components/schemas/DelegationDTO'
+      required:
+        - incoming
+        - outgoing
+    CreatePaperDelegationDto:
+      type: object
+      properties:
+        fromNationalId:
+          type: string
+        toNationalId:
+          type: string
+        referenceId:
+          type: string
+        validTo:
+          format: date-time
+          type: string
+          nullable: true
+      required:
+        - fromNationalId
+        - toNationalId
+        - referenceId
+    ZendeskWebhookInputDto:
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id

@@ -1,0 +1,126 @@
+{
+  "possibleTypes": {
+    "AuthDelegation": [
+      "AuthCustomDelegation",
+      "AuthGeneralMandate",
+      "AuthLegalGuardianDelegation",
+      "AuthLegalGuardianMinorDelegation",
+      "AuthLegalRepresentativeDelegation",
+      "AuthPersonalRepresentativeDelegation",
+      "AuthProcuringHolderDelegation"
+    ],
+    "AuthScopeTreeNode": ["AuthApiScope", "AuthApiScopeGroup"],
+    "BulletEntry": ["IconBullet", "NumberBulletGroup"],
+    "CategoryPage": ["Article", "Manual"],
+    "DocumentsV2Base": ["DocumentsV2Category", "DocumentsV2Type"],
+    "EducationCompulsorySchoolGradeCategory": [
+      "EducationCompulsorySchoolGradeCategoryText",
+      "EducationCompulsorySchoolGradeCategoryWeighted"
+    ],
+    "Identity": ["IdentityCompany", "IdentityPerson"],
+    "IntellectualPropertiesPatent": [
+      "IntellectualPropertiesPatentEP",
+      "IntellectualPropertiesPatentIS",
+      "IntellectualPropertiesSPC"
+    ],
+    "IntellectualProperty": [
+      "IntellectualPropertiesDesign",
+      "IntellectualPropertiesPatentEP",
+      "IntellectualPropertiesPatentIS",
+      "IntellectualPropertiesSPC",
+      "IntellectualPropertiesTrademark"
+    ],
+    "Items": [
+      "AnchorPage",
+      "Article",
+      "LifeEventPage",
+      "Link",
+      "Manual",
+      "ManualChapterItem",
+      "News",
+      "OrganizationPage",
+      "OrganizationSubpage",
+      "ProjectPage",
+      "SubArticle",
+      "SupportQNA"
+    ],
+    "OccupationalLicensesLicenseResult": [
+      "OccupationalLicense",
+      "OccupationalLicensesError"
+    ],
+    "Page": [
+      "AnchorPage",
+      "Article",
+      "ArticleCategory",
+      "LifeEventPage",
+      "News",
+      "OrganizationPage",
+      "OrganizationSubpage",
+      "ProjectPage",
+      "SubArticle"
+    ],
+    "Slice": [
+      "AccordionSlice",
+      "AnchorPageListSlice",
+      "Asset",
+      "BulletListSlice",
+      "Chart",
+      "ChartComponent",
+      "ChartNumberBox",
+      "ConnectedComponent",
+      "ContactUs",
+      "Districts",
+      "EmailSignup",
+      "Embed",
+      "EmbeddedVideo",
+      "EventSlice",
+      "FaqList",
+      "FeaturedArticles",
+      "FeaturedEvents",
+      "FeaturedLinks",
+      "FeaturedSupportQNAs",
+      "Form",
+      "GenericList",
+      "GrantCardsList",
+      "GraphCard",
+      "HeadingSlice",
+      "Html",
+      "Image",
+      "IntroLinkImage",
+      "LatestEventsSlice",
+      "LatestGenericListItems",
+      "LatestNewsSlice",
+      "LinkCard",
+      "LinkCardSection",
+      "LogoListSlice",
+      "MultipleStatistics",
+      "OneColumnText",
+      "OrganizationParentSubpageList",
+      "OverviewLinks",
+      "PowerBiSlice",
+      "ProcessEntry",
+      "SectionWithImage",
+      "SectionWithVideo",
+      "SidebarCard",
+      "SliceDropdown",
+      "Statistics",
+      "Stepper",
+      "StorySlice",
+      "TabSection",
+      "TableSlice",
+      "TeamList",
+      "TellUsAStory",
+      "TimelineSlice",
+      "TwoColumnText"
+    ],
+    "VehicleMileagePostResponse": [
+      "VehicleMileageDetail",
+      "VehiclesMileageUpdateError"
+    ],
+    "VehicleMileagePutResponse": [
+      "VehicleMileagePutModel",
+      "VehiclesMileageUpdateError"
+    ],
+    "VerifyLicenseBarcodeDataUnion": ["LicenseDriverLicenseData"]
+  }
+}

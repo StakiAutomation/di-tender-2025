@@ -1,0 +1,70 @@
+{
+  "name": "ws",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/rsk/ws/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/rsk/ws",
+        "main": "apps/rsk/ws/src/main.ts",
+        "tsConfig": "apps/rsk/ws/tsconfig.app.json",
+        "assets": [
+          "apps/rsk/ws/src/assets",
+          {
+            "glob": "**/*.graphql",
+            "input": "apps/rsk/ws/src",
+            "output": "."
+          }
+        ],
+        "generatePackageJson": true,
+        "webpackConfig": "apps/rsk/ws/webpack.config.js"
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "ws:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "ws:build:development"
+        },
+        "production": {
+          "buildTarget": "ws:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/rsk/ws/jest.config.ts"
+      }
+    },
+    "codegen/backend-schema": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cross-env INIT_SCHEMA=true yarn ts-node -P apps/rsk/ws/tsconfig.json scripts/build-graphql-schema.ts apps/rsk/ws/src/app/app.module"
+      },
+      "outputs": ["{projectRoot}/src/api.graphql"]
+    }
+  }
+}

@@ -1,0 +1,1989 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /api/financial-aid/staff/nationalId:
+    get:
+      operationId: StaffController_getStaffByNationalId
+      parameters: []
+      responses:
+        '200':
+          description: Gets staff by nationalId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffModel'
+      tags:
+        - staff
+  /api/financial-aid/staff/id/{id}:
+    get:
+      operationId: StaffController_getStaffById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gets staff by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffModel'
+      tags:
+        - staff
+    put:
+      operationId: StaffController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStaffDto'
+      responses:
+        '200':
+          description: Updates an existing staff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffModel'
+      tags:
+        - staff
+  /api/financial-aid/staff/municipality:
+    get:
+      operationId: StaffController_getStaffForMunicipality
+      parameters: []
+      responses:
+        '200':
+          description: Gets staff for municipality
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaffModel'
+      tags:
+        - staff
+  /api/financial-aid/staff:
+    post:
+      operationId: StaffController_createStaff
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStaffDto'
+      responses:
+        '200':
+          description: Creates staff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffModel'
+      tags:
+        - staff
+  /api/financial-aid/staff/municipality/{municipalityId}:
+    get:
+      operationId: StaffController_numberOfUsersForMunicipality
+      parameters:
+        - name: municipalityId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Counts users for municipality
+          content:
+            application/json:
+              schema:
+                type: number
+      tags:
+        - staff
+  /api/financial-aid/staff/users/{municipalityId}:
+    get:
+      operationId: StaffController_getUsers
+      parameters:
+        - name: municipalityId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gets admin users by municipality id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaffModel'
+      tags:
+        - staff
+  /api/financial-aid/staff/admins:
+    get:
+      operationId: StaffController_getAdmins
+      parameters: []
+      responses:
+        '200':
+          description: Gets admins
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaffModel'
+      tags:
+        - staff
+  /api/financial-aid/staff/allAdminUsers/{municipalityId}:
+    get:
+      operationId: StaffController_allAdminUsers
+      parameters:
+        - name: municipalityId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gets admin users by municipality id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaffModel'
+      tags:
+        - staff
+  /api/financial-aid/staff/supervisors:
+    get:
+      operationId: StaffController_getSupervisors
+      parameters: []
+      responses:
+        '200':
+          description: Gets supervisors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaffModel'
+      tags:
+        - staff
+  /api/financial-aid/application/nationalId:
+    get:
+      operationId: ApplicationController_getCurrentApplication
+      parameters: []
+      responses:
+        '200':
+          description: Checks if user has a current application for this period
+          content:
+            application/json:
+              schema:
+                type: string
+      tags:
+        - application
+  /api/financial-aid/application/find/{nationalId}:
+    get:
+      operationId: ApplicationController_findApplication
+      parameters:
+        - name: nationalId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Searches for application by nationalId
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationModel'
+      tags:
+        - application
+  /api/financial-aid/application/spouse:
+    get:
+      operationId: ApplicationController_spouse
+      parameters: []
+      responses:
+        '200':
+          description: Checking if user is spouse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpouseResponse'
+      tags:
+        - application
+  /api/financial-aid/application/state/{stateUrl}:
+    get:
+      operationId: ApplicationController_getAll
+      parameters:
+        - name: stateUrl
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gets all existing applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationModel'
+      tags:
+        - application
+  /api/financial-aid/application/id/{id}:
+    get:
+      operationId: ApplicationController_getById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationModel'
+      tags:
+        - application
+    put:
+      operationId: ApplicationController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplicationDto'
+      responses:
+        '200':
+          description: Updates an existing application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationModel'
+      tags:
+        - application
+  /api/financial-aid/application/filters:
+    get:
+      operationId: ApplicationController_getAllFilters
+      parameters: []
+      responses:
+        '200':
+          description: Gets all existing applications filters
+      tags:
+        - application
+  /api/financial-aid/application/{id}/{stateUrl}:
+    put:
+      operationId: ApplicationController_updateTable
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: stateUrl
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplicationDto'
+      responses:
+        '200':
+          description: Updates an existing application and returns application table
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateApplicationTableResponse'
+      tags:
+        - application
+  /api/financial-aid/application:
+    post:
+      operationId: ApplicationController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApplicationDto'
+      responses:
+        '201':
+          description: Creates a new application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationModel'
+      tags:
+        - application
+  /api/financial-aid/application/event:
+    post:
+      operationId: ApplicationController_createEvent
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApplicationEventDto'
+      responses:
+        '201':
+          description: Creates a new application event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationEventModel'
+      tags:
+        - application
+  /api/financial-aid/application/filter:
+    post:
+      operationId: ApplicationController_filter
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterApplicationsDto'
+      responses:
+        '200':
+          description: Filter applications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilterApplicationsResponse'
+      tags:
+        - application
+  /api/financial-aid/application/sendSpouseEmail:
+    post:
+      operationId: ApplicationController_sendSpouseEmail
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpouseEmailDto'
+      responses:
+        '200':
+          description: >-
+            Sends email to applicant and spouse to inform that the application
+            is waiting for the spouse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpouseEmailResponse'
+      tags:
+        - application
+  /api/financial-aid/file/url:
+    post:
+      operationId: FileController_createSignedUrl
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetSignedUrlDto'
+      responses:
+        '201':
+          description: Creates a new signed url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignedUrlModel'
+      tags:
+        - files
+  /api/financial-aid/file/url/{id}:
+    get:
+      operationId: FileController_createSignedUrlForId
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Creates a new signed url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignedUrlModel'
+      tags:
+        - files
+  /api/financial-aid/file/{applicationId}:
+    get:
+      operationId: FileController_createSignedUrlForAllFiles
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Creates a new signed url for all files for application id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignedUrlModel'
+      tags:
+        - files
+  /api/financial-aid/file:
+    post:
+      operationId: FileController_createFiles
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFilesDto'
+      responses:
+        '201':
+          description: Uploads files
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFilesModel'
+      tags:
+        - files
+  /api/financial-aid/municipality/id/{id}:
+    get:
+      operationId: MunicipalityController_getById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gets municipality by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MunicipalityModel'
+      tags:
+        - municipality
+  /api/financial-aid/municipality/ids:
+    get:
+      operationId: MunicipalityController_getByMunicipalityIds
+      parameters: []
+      responses:
+        '200':
+          description: Gets municipalities by ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MunicipalityModel'
+      tags:
+        - municipality
+  /api/financial-aid/municipality:
+    post:
+      operationId: MunicipalityController_create
+      parameters: []
+      responses:
+        '201':
+          description: Creates a new municipality
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MunicipalityModel'
+      tags:
+        - municipality
+    get:
+      operationId: MunicipalityController_getAllMunicipalities
+      parameters: []
+      responses:
+        '200':
+          description: Gets municipalities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MunicipalityModel'
+      tags:
+        - municipality
+    put:
+      operationId: MunicipalityController_updateMunicipality
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMunicipalityDto'
+      responses:
+        '200':
+          description: Updates municipality
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MunicipalityModel'
+      tags:
+        - municipality
+  /api/financial-aid/municipality/activity/{id}:
+    put:
+      operationId: MunicipalityController_updateMunicipalityActivity
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MunicipalityActivityDto'
+      responses:
+        '200':
+          description: Updates activity for municipality
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MunicipalityModel'
+      tags:
+        - municipality
+  /api/financial-aid/apiKeys:
+    get:
+      operationId: ApiUserController_getApiKeysByMunicipalityCodes
+      parameters: []
+      responses:
+        '200':
+          description: Gets api info by municipality codes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiUserModel'
+      tags:
+        - apiKeys
+    post:
+      operationId: ApiUserController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApiKeyDto'
+      responses:
+        '201':
+          description: Creates a new api key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserModel'
+      tags:
+        - apiKeys
+  /api/financial-aid/apiKeys/{id}:
+    put:
+      operationId: ApiUserController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Updates an existing api key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserModel'
+      tags:
+        - apiKeys
+    delete:
+      operationId: ApiUserController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deletes an existing api key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteApiKeyResponse'
+      tags:
+        - apiKeys
+  /api/financial-aid/open-api-applications/getAll:
+    get:
+      operationId: OpenApiApplicationController_getAll
+      parameters:
+        - name: startDate
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: endDate
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: state
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gets all existing applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationModel'
+      tags:
+        - application
+  /api/financial-aid/open-api-applications/id/{id}:
+    get:
+      operationId: OpenApiApplicationController_getApplicationPdfById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PdfApplicationResponse'
+      tags:
+        - application
+  /api/financial-aid/personalTaxReturn/id/{id}:
+    get:
+      operationId: PersonalTaxReturnController_municipalitiesPersonalTaxReturn
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Fetches personal tax return and uploads it to s3.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalTaxReturnResponse'
+      tags:
+        - personalTaxReturn
+  /api/financial-aid/personalTaxReturn/directTaxPayments:
+    get:
+      operationId: PersonalTaxReturnController_municipalitiesDirectTaxPayments
+      parameters: []
+      responses:
+        '200':
+          description: Fetches direct tax payments for last three months from user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectTaxPaymentsResponse'
+      tags:
+        - personalTaxReturn
+info:
+  title: Financial Aid Backend
+  description: This is the backend for the financial aid.
+  version: '1.0'
+  contact: {}
+tags:
+  - name: financial-aid
+    description: ''
+servers: []
+components:
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    StaffModel:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        nationalId:
+          type: string
+        municipalityIds:
+          type: array
+          items:
+            type: string
+        roles:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        usePseudoName:
+          type: boolean
+        phoneNumber:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        nickname:
+          type: string
+        email:
+          type: string
+      required:
+        - id
+        - name
+        - nationalId
+        - municipalityIds
+        - roles
+        - active
+        - usePseudoName
+        - phoneNumber
+        - created
+        - modified
+        - nickname
+        - email
+    UpdateStaffDto:
+      type: object
+      properties:
+        active:
+          type: boolean
+        name:
+          type: string
+        nationalId:
+          type: string
+        nickname:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+        municipalityIds:
+          type: array
+          items:
+            type: string
+        email:
+          type: string
+        usePseudoName:
+          type: boolean
+      required:
+        - active
+        - name
+        - nationalId
+        - nickname
+        - roles
+        - municipalityIds
+        - email
+        - usePseudoName
+    CreateStaffDto:
+      type: object
+      properties:
+        nationalId:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+        municipalityIds:
+          type: array
+          items:
+            type: string
+        municipalityNames:
+          type: array
+          items:
+            type: string
+      required:
+        - nationalId
+        - email
+        - name
+        - roles
+        - municipalityIds
+        - municipalityNames
+    ApplicationFileModel:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          format: date-time
+          type: string
+        applicationId:
+          type: string
+        name:
+          type: string
+        key:
+          type: string
+        size:
+          type: number
+        type:
+          type: string
+          enum:
+            - TaxReturn
+            - Income
+            - Other
+            - SpouseFiles
+            - ChildrenFiles
+      required:
+        - id
+        - created
+        - applicationId
+        - name
+        - key
+        - size
+        - type
+    ApplicationEventModel:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          format: date-time
+          type: string
+        applicationId:
+          type: string
+        eventType:
+          type: string
+          enum:
+            - New
+            - InProgress
+            - DataNeeded
+            - Rejected
+            - Approved
+            - StaffComment
+            - UserComment
+            - FileUpload
+            - SpouseFileUpload
+            - AssignCase
+            - DateChanged
+        comment:
+          type: string
+        staffName:
+          type: string
+        staffNationalId:
+          type: string
+        emailSent:
+          type: boolean
+      required:
+        - id
+        - created
+        - applicationId
+        - eventType
+        - comment
+        - staffName
+        - staffNationalId
+        - emailSent
+    ChildrenModel:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        applicationId:
+          type: string
+        name:
+          type: string
+        nationalId:
+          type: string
+        school:
+          type: string
+        livesWithApplicant:
+          type: boolean
+        livesWithBothParents:
+          type: boolean
+      required:
+        - id
+        - created
+        - modified
+        - applicationId
+        - name
+        - nationalId
+        - school
+        - livesWithApplicant
+        - livesWithBothParents
+    DeductionFactorsModel:
+      type: object
+      properties:
+        id:
+          type: string
+        amountId:
+          type: string
+        description:
+          type: string
+        amount:
+          type: number
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+      required:
+        - id
+        - amountId
+        - description
+        - amount
+        - created
+        - modified
+    AmountModel:
+      type: object
+      properties:
+        id:
+          type: string
+        applicationId:
+          type: string
+        aidAmount:
+          type: number
+        income:
+          type: number
+        childrenAidAmount:
+          type: number
+        decemberAidAmount:
+          type: number
+        deductionFactors:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeductionFactorsModel'
+        personalTaxCredit:
+          type: number
+        spousePersonalTaxCredit:
+          type: number
+        tax:
+          type: number
+        finalAmount:
+          type: number
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+      required:
+        - id
+        - applicationId
+        - aidAmount
+        - income
+        - childrenAidAmount
+        - decemberAidAmount
+        - deductionFactors
+        - personalTaxCredit
+        - spousePersonalTaxCredit
+        - tax
+        - finalAmount
+        - created
+        - modified
+    DirectTaxPaymentModel:
+      type: object
+      properties:
+        id:
+          type: string
+        applicationId:
+          type: string
+        totalSalary:
+          type: number
+        payerNationalId:
+          type: string
+        personalAllowance:
+          type: number
+        withheldAtSource:
+          type: number
+        month:
+          type: number
+        year:
+          type: number
+        userType:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+      required:
+        - id
+        - applicationId
+        - totalSalary
+        - payerNationalId
+        - personalAllowance
+        - withheldAtSource
+        - month
+        - year
+        - userType
+        - created
+        - modified
+    ApplicationModel:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        appliedDate:
+          format: date-time
+          type: string
+        nationalId:
+          type: string
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+        homeCircumstances:
+          type: string
+          enum:
+            - Unknown
+            - WithParents
+            - WithOthers
+            - OwnPlace
+            - RegisteredLease
+            - UnregisteredLease
+            - Other
+        homeCircumstancesCustom:
+          type: string
+        employment:
+          type: string
+          enum:
+            - Working
+            - Unemployed
+            - CannotWork
+            - Other
+        employmentCustom:
+          type: string
+        student:
+          type: boolean
+        studentCustom:
+          type: string
+        usePersonalTaxCredit:
+          type: boolean
+        hasIncome:
+          type: boolean
+        bankNumber:
+          type: string
+        ledger:
+          type: string
+        accountNumber:
+          type: string
+        interview:
+          type: boolean
+        formComment:
+          type: string
+        childrenComment:
+          type: string
+        spouseFormComment:
+          type: string
+        state:
+          type: string
+          enum:
+            - New
+            - InProgress
+            - DataNeeded
+            - Rejected
+            - Approved
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationFileModel'
+        rejection:
+          type: string
+        staffId:
+          type: string
+        staff:
+          $ref: '#/components/schemas/StaffModel'
+        familyStatus:
+          type: string
+          enum:
+            - Cohabitation
+            - UnregisteredCohabitation
+            - Married
+            - MarriedNotLivingTogether
+            - NotCohabitation
+        spouseName:
+          type: string
+        spouseNationalId:
+          type: string
+        spousePhoneNumber:
+          type: string
+        spouseEmail:
+          type: string
+        applicationEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationEventModel'
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChildrenModel'
+        amount:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/AmountModel'
+        city:
+          type: string
+        streetName:
+          type: string
+        postalCode:
+          type: string
+        municipalityCode:
+          type: string
+        directTaxPayments:
+          type: array
+          items:
+            $ref: '#/components/schemas/DirectTaxPaymentModel'
+        applicationSystemId:
+          type: string
+        hasFetchedDirectTaxPayment:
+          type: boolean
+        spouseHasFetchedDirectTaxPayment:
+          type: boolean
+        navSuccess:
+          type: boolean
+      required:
+        - id
+        - created
+        - modified
+        - appliedDate
+        - nationalId
+        - name
+        - phoneNumber
+        - email
+        - homeCircumstances
+        - homeCircumstancesCustom
+        - employment
+        - employmentCustom
+        - student
+        - studentCustom
+        - usePersonalTaxCredit
+        - hasIncome
+        - bankNumber
+        - ledger
+        - accountNumber
+        - interview
+        - formComment
+        - childrenComment
+        - spouseFormComment
+        - state
+        - files
+        - rejection
+        - staffId
+        - staff
+        - familyStatus
+        - spouseName
+        - spouseNationalId
+        - spousePhoneNumber
+        - spouseEmail
+        - applicationEvents
+        - children
+        - amount
+        - city
+        - streetName
+        - postalCode
+        - municipalityCode
+        - directTaxPayments
+        - applicationSystemId
+        - hasFetchedDirectTaxPayment
+        - spouseHasFetchedDirectTaxPayment
+        - navSuccess
+    SpouseResponse:
+      type: object
+      properties:
+        hasPartnerApplied:
+          type: boolean
+        hasFiles:
+          type: boolean
+        applicantName:
+          type: string
+        applicantSpouseEmail:
+          type: string
+      required:
+        - hasPartnerApplied
+        - hasFiles
+        - applicantName
+        - applicantSpouseEmail
+    CreateAmountDto:
+      type: object
+      properties:
+        applicationId:
+          type: string
+        aidAmount:
+          type: number
+        income:
+          type: number
+        childrenAidAmount:
+          type: number
+        decemberAidAmount:
+          type: number
+        personalTaxCredit:
+          type: number
+        spousePersonalTaxCredit:
+          type: number
+        tax:
+          type: number
+        finalAmount:
+          type: number
+        deductionFactors:
+          type: array
+          items:
+            type: string
+      required:
+        - applicationId
+        - aidAmount
+        - income
+        - childrenAidAmount
+        - decemberAidAmount
+        - personalTaxCredit
+        - spousePersonalTaxCredit
+        - tax
+        - finalAmount
+        - deductionFactors
+    UpdateApplicationDto:
+      type: object
+      properties:
+        state:
+          type: string
+        event:
+          type: string
+        appliedDate:
+          type: string
+        rejection:
+          type: string
+        comment:
+          type: string
+        staffId:
+          type: string
+        spouseFormComment:
+          type: string
+        spouseEmail:
+          type: string
+        spousePhoneNumber:
+          type: string
+        spouseName:
+          type: string
+        amount:
+          $ref: '#/components/schemas/CreateAmountDto'
+        directTaxPayments:
+          type: array
+          items:
+            type: string
+        spouseHasFetchedDirectTaxPayment:
+          type: boolean
+        navSuccess:
+          type: boolean
+      required:
+        - state
+        - event
+        - appliedDate
+        - rejection
+        - comment
+        - staffId
+        - spouseFormComment
+        - spouseEmail
+        - spousePhoneNumber
+        - spouseName
+        - amount
+        - directTaxPayments
+        - spouseHasFetchedDirectTaxPayment
+        - navSuccess
+    ApplicationFilterResponse:
+      type: object
+      properties:
+        New:
+          type: number
+        InProgress:
+          type: number
+        DataNeeded:
+          type: number
+        Rejected:
+          type: number
+        Approved:
+          type: number
+        MyCases:
+          type: number
+      required:
+        - New
+        - InProgress
+        - DataNeeded
+        - Rejected
+        - Approved
+        - MyCases
+    UpdateApplicationTableResponse:
+      type: object
+      properties:
+        applications:
+          type: array
+          items:
+            type: string
+        filters:
+          $ref: '#/components/schemas/ApplicationFilterResponse'
+      required:
+        - applications
+        - filters
+    CreateApplicationDto:
+      type: object
+      properties:
+        name:
+          type: string
+        nationalId:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+        homeCircumstances:
+          type: string
+        homeCircumstancesCustom:
+          type: string
+        employment:
+          type: string
+        employmentCustom:
+          type: string
+        student:
+          type: boolean
+        studentCustom:
+          type: string
+        usePersonalTaxCredit:
+          type: boolean
+        bankNumber:
+          type: string
+        ledger:
+          type: string
+        accountNumber:
+          type: string
+        interview:
+          type: boolean
+        hasIncome:
+          type: boolean
+        formComment:
+          type: string
+        childrenComment:
+          type: string
+        state:
+          type: string
+        files:
+          type: array
+          items:
+            type: string
+        amount:
+          type: number
+        spouseName:
+          type: string
+        spouseNationalId:
+          type: string
+        spouseEmail:
+          type: string
+        spousePhoneNumber:
+          type: string
+        spouseFormComment:
+          type: string
+        familyStatus:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+        municipalityCode:
+          type: string
+        streetName:
+          type: string
+        directTaxPayments:
+          type: array
+          items:
+            type: string
+        children:
+          type: array
+          items:
+            type: string
+        applicationSystemId:
+          type: string
+        hasFetchedDirectTaxPayment:
+          type: boolean
+        spouseHasFetchedDirectTaxPayment:
+          type: boolean
+      required:
+        - name
+        - nationalId
+        - phoneNumber
+        - email
+        - homeCircumstances
+        - homeCircumstancesCustom
+        - employment
+        - employmentCustom
+        - student
+        - studentCustom
+        - usePersonalTaxCredit
+        - bankNumber
+        - ledger
+        - accountNumber
+        - interview
+        - hasIncome
+        - formComment
+        - childrenComment
+        - state
+        - files
+        - amount
+        - spouseName
+        - spouseNationalId
+        - spouseEmail
+        - spousePhoneNumber
+        - spouseFormComment
+        - familyStatus
+        - city
+        - postalCode
+        - municipalityCode
+        - streetName
+        - directTaxPayments
+        - children
+        - applicationSystemId
+        - hasFetchedDirectTaxPayment
+        - spouseHasFetchedDirectTaxPayment
+    CreateApplicationEventDto:
+      type: object
+      properties:
+        applicationId:
+          type: string
+        eventType:
+          type: string
+        comment:
+          type: string
+        staffNationalId:
+          type: string
+        staffName:
+          type: string
+        emailSent:
+          type: boolean
+      required:
+        - applicationId
+        - eventType
+        - comment
+        - staffNationalId
+        - staffName
+        - emailSent
+    FilterApplicationsDto:
+      type: object
+      properties:
+        defaultStates:
+          type: array
+          items:
+            type: string
+        states:
+          type: array
+          items:
+            type: string
+        staff:
+          type: array
+          items:
+            type: string
+        page:
+          type: number
+        startDate:
+          type: string
+        endDate:
+          type: string
+      required:
+        - defaultStates
+        - states
+        - staff
+        - page
+        - startDate
+        - endDate
+    FilterApplicationsResponse:
+      type: object
+      properties:
+        applications:
+          type: array
+          items:
+            type: string
+        totalCount:
+          type: number
+        minDateCreated:
+          format: date-time
+          type: string
+        staffList:
+          type: array
+          items:
+            type: string
+      required:
+        - applications
+        - totalCount
+        - minDateCreated
+        - staffList
+    SpouseEmailDto:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        spouseName:
+          type: string
+        spouseEmail:
+          type: string
+        municipalityCode:
+          type: string
+        created:
+          format: date-time
+          type: string
+        applicationSystemId:
+          type: string
+      required:
+        - name
+        - email
+        - spouseName
+        - spouseEmail
+        - municipalityCode
+        - created
+        - applicationSystemId
+    SpouseEmailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
+    GetSignedUrlDto:
+      type: object
+      properties:
+        fileName:
+          type: string
+        folder:
+          type: string
+      required:
+        - fileName
+        - folder
+    SignedUrlModel:
+      type: object
+      properties:
+        url:
+          type: string
+        key:
+          type: string
+      required:
+        - url
+        - key
+    CreateFilesDto:
+      type: object
+      properties:
+        files:
+          type: array
+          items:
+            type: string
+      required:
+        - files
+    CreateFilesModel:
+      type: object
+      properties:
+        success:
+          type: boolean
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationFileModel'
+      required:
+        - success
+        - files
+    AidModel:
+      type: object
+      properties:
+        id:
+          type: string
+        municipalityId:
+          type: string
+        ownPlace:
+          type: number
+        registeredRenting:
+          type: number
+        unregisteredRenting:
+          type: number
+        livesWithParents:
+          type: number
+        unknown:
+          type: number
+        withOthers:
+          type: number
+        type:
+          type: string
+          enum:
+            - Individual
+            - Cohabitation
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+      required:
+        - id
+        - municipalityId
+        - ownPlace
+        - registeredRenting
+        - unregisteredRenting
+        - livesWithParents
+        - unknown
+        - withOthers
+        - type
+        - created
+        - modified
+    MunicipalityModel:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        municipalityId:
+          type: string
+        active:
+          type: boolean
+        homepage:
+          type: string
+        individualAidId:
+          type: string
+        individualAid:
+          $ref: '#/components/schemas/AidModel'
+        cohabitationAidId:
+          type: string
+        cohabitationAid:
+          $ref: '#/components/schemas/AidModel'
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        email:
+          type: string
+        rulesHomepage:
+          type: string
+        usingNav:
+          type: boolean
+        navUrl:
+          type: string
+        navUsername:
+          type: string
+        navPassword:
+          type: string
+        childrenAid:
+          type: string
+          enum:
+            - NotDefined
+            - Institution
+            - Applicant
+        decemberCompensation:
+          type: number
+      required:
+        - id
+        - name
+        - municipalityId
+        - active
+        - homepage
+        - individualAidId
+        - individualAid
+        - cohabitationAidId
+        - cohabitationAid
+        - created
+        - modified
+        - email
+        - rulesHomepage
+        - usingNav
+        - navUrl
+        - navUsername
+        - navPassword
+        - childrenAid
+        - decemberCompensation
+    UpdateMunicipalityDto:
+      type: object
+      properties:
+        individualAid:
+          type: object
+        cohabitationAid:
+          type: object
+        homepage:
+          type: string
+        rulesHomepage:
+          type: string
+        email:
+          type: string
+        usingNav:
+          type: boolean
+        navUrl:
+          type: string
+        navUsername:
+          type: string
+        navPassword:
+          type: string
+        childrenAid:
+          type: string
+        decemberCompensation:
+          type: number
+        municipalityId:
+          type: string
+      required:
+        - individualAid
+        - cohabitationAid
+        - homepage
+        - rulesHomepage
+        - email
+        - usingNav
+        - navUrl
+        - navUsername
+        - navPassword
+        - childrenAid
+        - decemberCompensation
+        - municipalityId
+    MunicipalityActivityDto:
+      type: object
+      properties:
+        active:
+          type: boolean
+      required:
+        - active
+    ApiUserModel:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        municipalityCode:
+          type: string
+        name:
+          type: string
+        apiKey:
+          type: string
+      required:
+        - id
+        - created
+        - modified
+        - municipalityCode
+        - name
+        - apiKey
+    CreateApiKeyDto:
+      type: object
+      properties:
+        name:
+          type: string
+        apiKey:
+          type: string
+        municipalityCode:
+          type: string
+      required:
+        - name
+        - apiKey
+        - municipalityCode
+    DeleteApiKeyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
+    PdfApplicationResponse:
+      type: object
+      properties:
+        file:
+          type: string
+          description: Base64 encoded PDF file
+          format: base64
+      required:
+        - file
+    PersonalTaxReturnResponse:
+      type: object
+      properties: {}
+    DirectTaxPaymentsResponse:
+      type: object
+      properties: {}

@@ -1,0 +1,1552 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /v1/applications/{id}:
+    get:
+      operationId: UniversityApplicationController_getApplicationById
+      description: Get application by ID (only status for now) for logged in user
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Application ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Application
+    patch:
+      operationId: UniversityApplicationController_updateApplication
+      description: Update application (only status for now) for logged in user
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Application ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplicationDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Application
+  /v1/applications:
+    post:
+      operationId: UniversityApplicationController_createApplication
+      description: Create application for logged in user
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApplicationDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '409':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Application
+  /v1/application-programs:
+    get:
+      operationId: ProgramController_getApplicationPrograms
+      description: Get all programs with relevant information for the application
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: >-
+            Limits the number of results in a request. The server should have a
+            default value for this field.
+          schema:
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The client provides the value of startCursor from the previous
+            response pageInfo to query the previous page of limit number of data
+            items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The client provides the value of endCursor from the previous
+            response to query the next page of limit number of data items.
+          schema:
+            type: string
+        - name: active
+          required: false
+          in: query
+          description: >-
+            If true, will return only active programs. If false, will return
+            only inactive programs. If undefined, will return both active and
+            inactive.
+          schema:
+            type: boolean
+        - name: year
+          required: false
+          in: query
+          description: Starting semester year
+          schema:
+            type: number
+        - name: season
+          required: false
+          in: query
+          description: Starting semester season
+          schema:
+            enum:
+              - FALL
+              - SPRING
+              - SUMMER
+            type: string
+        - name: universityId
+          required: false
+          in: query
+          description: University ID
+          schema:
+            type: string
+        - name: degreeType
+          required: false
+          in: query
+          description: Degree type
+          schema:
+            enum:
+              - UNDERGRADUATE
+              - POSTGRADUATE
+              - DOCTORAL
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationProgramsResponse'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Program
+  /v1/programs:
+    get:
+      operationId: ProgramController_getPrograms
+      description: Get all programs
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: >-
+            Limits the number of results in a request. The server should have a
+            default value for this field.
+          schema:
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The client provides the value of startCursor from the previous
+            response pageInfo to query the previous page of limit number of data
+            items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The client provides the value of endCursor from the previous
+            response to query the next page of limit number of data items.
+          schema:
+            type: string
+        - name: active
+          required: false
+          in: query
+          description: >-
+            If true, will return only active programs. If false, will return
+            only inactive programs. If undefined, will return both active and
+            inactive.
+          schema:
+            type: boolean
+        - name: year
+          required: false
+          in: query
+          description: Starting semester year
+          schema:
+            type: number
+        - name: season
+          required: false
+          in: query
+          description: Starting semester season
+          schema:
+            enum:
+              - FALL
+              - SPRING
+              - SUMMER
+            type: string
+        - name: universityId
+          required: false
+          in: query
+          description: University ID
+          schema:
+            type: string
+        - name: degreeType
+          required: false
+          in: query
+          description: Degree type
+          schema:
+            enum:
+              - UNDERGRADUATE
+              - POSTGRADUATE
+              - DOCTORAL
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgramsResponse'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Program
+  /v1/programs/{id}:
+    get:
+      operationId: ProgramController_getProgramById
+      description: Get program by ID
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Program ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Program
+  /v1/duration-in-years:
+    get:
+      operationId: ProgramController_getDurationInYears
+      description: Get all possible values for duration in years
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - Program
+  /v1/universities:
+    get:
+      operationId: UniversityController_getUniversities
+      description: Get all universities
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversitiesResponse'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - University
+info:
+  title: University Gateway
+  description: >-
+    API for communication between island.is application system and university
+    gateway DB, and between university gateway DB and universities system
+    (MySchool and Ugla)
+  version: '1.0'
+  contact: {}
+tags:
+  - name: University Gateway API
+    description: ''
+servers:
+  - url: http://localhost:3380
+components:
+  securitySchemes:
+    ias:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://identity-server.dev01.devland.is/connect/authorize
+          tokenUrl: https://identity-server.dev01.devland.is/connect/token
+          scopes:
+            openid: ''
+            profile: ''
+            '@island.is/university-gateway': ''
+      description: >-
+        Authentication and authorization using island.is authentication service
+        (IAS).
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    Application:
+      type: object
+      properties:
+        id:
+          type: string
+          description: >-
+            Application ID, should be the same application GUID that is used in
+            island.is application system
+          example: 00000000-0000-0000-0000-000000000000
+        externalId:
+          type: string
+          description: External ID for the application (from University)
+          example: ABC12345
+        nationalId:
+          type: string
+          description: Applicant national id
+          example: '1234567890'
+        universityId:
+          type: string
+          description: University ID
+          example: 00000000-0000-0000-0000-000000000000
+        programId:
+          type: string
+          description: Program ID
+          example: 00000000-0000-0000-0000-000000000000
+        programModeOfDelivery:
+          type: string
+          description: The mode of delivery selected in the application
+          example: ON_SITE
+          enum:
+            - ON_SITE
+            - REMOTE
+            - ONLINE
+            - MIXED
+        status:
+          type: string
+          description: Application status
+          example: IN_REVIEW
+          enum:
+            - IN_REVIEW
+            - IN_PROGRESS
+            - ACCEPTED_BY_UNIVERSITY
+            - ACCEPTED_BY_UNIVERSITY_WITH_CONDITION
+            - ACCEPTED_BY_UNIVERSITY_AND_STUDENT
+            - REJECTED_BY_STUDENT_REASON_CANCELLED
+            - REJECTED_BY_STUDENT_REASON_OTHER_ACCEPTED
+            - REJECTED_BY_UNIVERSITY_REASON_INSUFFICIENT
+            - REJECTED_BY_UNIVERSITY_REASON_NO_AVAILABILITY
+            - CANCELLED_BY_STUDENT
+            - PAYMENT_COMPLETE
+      required:
+        - id
+        - nationalId
+        - universityId
+        - programId
+        - programModeOfDelivery
+        - status
+    HttpProblemResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: number
+          description: The HTTP status code
+        detail:
+          type: string
+          description: >-
+            A human-readable explanation specific to this occurrence of the
+            problem
+        instance:
+          type: string
+          description: >-
+            A URI reference that identifies the specific occurrence of the
+            problem.
+      required:
+        - type
+        - title
+    CreateApplicationApplicantDto:
+      type: object
+      properties:
+        givenName:
+          type: string
+          description: Given name
+          example: Jón
+        middleName:
+          type: string
+          description: Middle name
+          example: Þór
+        familyName:
+          type: string
+          description: Family name
+          example: Jónsson
+        genderCode:
+          type: string
+          description: Gender code
+          example: '1'
+        citizenshipCode:
+          type: string
+          description: Citizenship
+          example: IS
+        streetAddress:
+          type: string
+          description: Street address for legal domicile
+          example: Borgartún 37
+        postalCode:
+          type: string
+          description: Postal code for legal domicile
+          example: '105'
+        city:
+          type: string
+          description: City for legal domicile
+          example: Reykjavík
+        municipalityCode:
+          type: string
+          description: Municipality code for legal domicile
+          example: Höfuðborgarsvæðið
+        countryCode:
+          type: string
+          description: Country code for legal domicile
+          example: IS
+        email:
+          type: string
+          description: Email
+          example: jon.jonsson@island.is
+        phone:
+          type: string
+          description: Phone number
+          example: '+3548123456'
+      required:
+        - givenName
+        - familyName
+        - genderCode
+        - citizenshipCode
+        - streetAddress
+        - postalCode
+        - city
+        - municipalityCode
+        - countryCode
+        - email
+        - phone
+    CreateApplicationFileDto:
+      type: object
+      properties:
+        fileName:
+          type: string
+          description: File name
+          example: cv.txt
+        fileUrl:
+          type: string
+          description: A public download link to a s3 file
+          example: ''
+      required:
+        - fileName
+        - fileUrl
+    CreateApplicationEducationDto:
+      type: object
+      properties:
+        schoolName:
+          type: string
+          description: School name
+          example: Menntaskólinn í Reykjavík
+        degree:
+          type: string
+          description: Degree type name
+          example: Stúdentspróf
+        degreeName:
+          type: string
+          description: Degree name
+          example: Félagsfræðibraut
+        degreeCountry:
+          type: string
+          description: Degree country
+          example: Ísland
+        finishedUnits:
+          type: string
+          description: Finished units
+          example: '180'
+        degreeStartDate:
+          type: string
+          description: Degree start date
+          example: 27.05.2022
+        degreeEndDate:
+          type: string
+          description: Degree end date
+          example: 27.05.2022
+        moreDetails:
+          type: string
+          description: More details about education
+          example: Will be finishing in October
+        degreeAttachments:
+          description: List of education degree attachments
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateApplicationFileDto'
+    CreateApplicationWorkExperienceDto:
+      type: object
+      properties:
+        company:
+          type: string
+          description: Company name
+          example: Origo
+        jobTitle:
+          type: string
+          description: Job title
+          example: Programmer
+      required:
+        - company
+        - jobTitle
+    CreateApplicationExtraFieldsDto:
+      type: object
+      properties:
+        fieldType:
+          type: string
+          description: What type of field should be displayed in the application form
+          example: UPLOAD
+          enum:
+            - UPLOAD
+            - CHECKBOX
+            - TEXT_INPUT
+            - TEXT_AREA
+            - DROPDOWN
+            - DATA_PROVIDER
+            - APPROVAL_PROVIDER
+            - TESTING_SITE
+            - PERSON
+        externalKey:
+          type: string
+          description: External key for field
+          example: cv_field
+        value:
+          type: object
+          description: Field value
+          example: some_base_64_string
+      required:
+        - fieldType
+        - externalKey
+        - value
+    CreateApplicationDto:
+      type: object
+      properties:
+        universityId:
+          type: string
+          description: University ID
+          example: 00000000-0000-0000-0000-000000000000
+        applicationId:
+          type: string
+          description: Application ID
+          example: 00000000-0000-0000-0000-000000000000
+        programId:
+          type: string
+          description: Program ID
+          example: 00000000-0000-0000-0000-000000000000
+        modeOfDelivery:
+          type: string
+          description: What mode of delivery was selected in the application
+          example: ON_SITE
+          enum:
+            - ON_SITE
+            - REMOTE
+            - ONLINE
+            - MIXED
+        applicant:
+          description: Information about applicant
+          allOf:
+            - $ref: '#/components/schemas/CreateApplicationApplicantDto'
+        preferredLanguage:
+          type: string
+          description: >-
+            Preferred languange, should be language user used when filling out
+            application in application system
+          example: IS
+        educationOption:
+          type: string
+          description: The chosen type of former education chosen
+          example: DIPLOMA
+          enum:
+            - DIPLOMA
+            - NOTFINISHED
+            - THIRDLEVEL
+            - EXEMPTION
+        educationList:
+          description: List of education
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateApplicationEducationDto'
+        workExperienceList:
+          description: List of work experience
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateApplicationWorkExperienceDto'
+        extraFieldList:
+          description: Extra application fields
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateApplicationExtraFieldsDto'
+      required:
+        - universityId
+        - applicationId
+        - programId
+        - modeOfDelivery
+        - applicant
+        - educationList
+        - workExperienceList
+        - extraFieldList
+    UpdateApplicationDto:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Application status
+          example: IN_REVIEW
+          enum:
+            - IN_REVIEW
+            - IN_PROGRESS
+            - ACCEPTED_BY_UNIVERSITY
+            - ACCEPTED_BY_UNIVERSITY_WITH_CONDITION
+            - ACCEPTED_BY_UNIVERSITY_AND_STUDENT
+            - REJECTED_BY_STUDENT_REASON_CANCELLED
+            - REJECTED_BY_STUDENT_REASON_OTHER_ACCEPTED
+            - REJECTED_BY_UNIVERSITY_REASON_INSUFFICIENT
+            - REJECTED_BY_UNIVERSITY_REASON_NO_AVAILABILITY
+            - CANCELLED_BY_STUDENT
+            - PAYMENT_COMPLETE
+      required:
+        - status
+    University:
+      type: object
+      properties:
+        id:
+          type: string
+          description: University ID
+          example: 00000000-0000-0000-0000-000000000000
+        nationalId:
+          type: string
+          description: University national ID
+          example: 123456-7890
+        contentfulKey:
+          type: string
+          description: Contentful key for university
+          example: UniversityOfIceland
+      required:
+        - id
+        - nationalId
+        - contentfulKey
+    ProgramModeOfDelivery:
+      type: object
+      properties:
+        modeOfDelivery:
+          type: string
+          description: Modes of deliveries available for the program
+          example: ON_SITE
+          enum:
+            - ON_SITE
+            - REMOTE
+            - ONLINE
+            - MIXED
+      required:
+        - modeOfDelivery
+    ProgramExtraApplicationField:
+      type: object
+      properties:
+        externalKey:
+          type: string
+          description: External key for field
+          example: cv_field
+        nameIs:
+          type: string
+          description: Field name (Icelandic)
+          example: Ferilskrá
+        nameEn:
+          type: string
+          description: Field name (English)
+          example: CV
+        descriptionIs:
+          type: string
+          description: Field description (Icelandic)
+          example: Fusce sit amet pellentesque magna.
+        descriptionEn:
+          type: string
+          description: Field description (English)
+          example: Phasellus nisi turpis, rutrum vitae congue sed.
+        required:
+          type: boolean
+          description: Is this field required?
+          example: true
+        fieldType:
+          type: string
+          description: What type of field should be displayed in the application form
+          example: UPLOAD
+          enum:
+            - UPLOAD
+            - CHECKBOX
+            - TEXT_INPUT
+            - TEXT_AREA
+            - DROPDOWN
+            - DATA_PROVIDER
+            - APPROVAL_PROVIDER
+            - TESTING_SITE
+            - PERSON
+        uploadAcceptedFileType:
+          type: string
+          description: >-
+            If field type is UPLOAD, then this field is required and should list
+            up all file types that should be accepted
+          example: .pdf, .jpg, .jpeg, .png
+        options:
+          type: string
+          description: >-
+            If using field type dropdown or testing site, this should be a list
+            of options in selection field, semi-comma separated
+          example: Option 1;Option 2;Option 3
+      required:
+        - externalKey
+        - nameIs
+        - nameEn
+        - required
+        - fieldType
+    Program:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Program ID
+          example: 00000000-0000-0000-0000-000000000000
+        externalId:
+          type: string
+          description: External ID for the program (from University)
+          example: ABC12345
+        nameIs:
+          type: string
+          description: Program name (Icelandic)
+          example: Tölvunarfræði
+        nameEn:
+          type: string
+          description: Program name (English)
+          example: Computer science
+        specializationExternalId:
+          type: string
+          description: External ID for the specialization(from University)
+          example: ABC12345
+        specializationNameIs:
+          type: string
+          description: Specialization name (Icelandic)
+          example: Tölvunarfræði
+        specializationNameEn:
+          type: string
+          description: Specialization name (English)
+          example: Computer science
+        universityId:
+          type: string
+          description: University ID
+          example: 00000000-0000-0000-0000-000000000000
+        universityDetails:
+          description: University details
+          allOf:
+            - $ref: '#/components/schemas/University'
+        departmentNameIs:
+          type: string
+          description: Name of the department that the program belongs to (Icelandic)
+          example: Verkfræði og náttúruvísindasvið
+        departmentNameEn:
+          type: string
+          description: Name of the department that the program belongs to (English)
+          example: Engineering and Natural Sciences
+        startingSemesterYear:
+          type: number
+          description: Which year this program started on
+          example: 2023
+        startingSemesterSeason:
+          type: string
+          description: Which season this program started on
+          example: FALL
+          enum:
+            - FALL
+            - SPRING
+            - SUMMER
+        applicationStartDate:
+          format: date-time
+          type: string
+          description: When the application period for this program starts
+          example: 2023-05-01T00:00:00.000Z
+        applicationEndDate:
+          format: date-time
+          type: string
+          description: When the application period for this program ends
+          example: 2023-08-01T00:00:00.000Z
+        schoolAnswerDate:
+          format: date-time
+          type: string
+          description: Last date for school to accept/decline student into program
+          example: 2023-08-15T00:00:00.000Z
+        studentAnswerDate:
+          format: date-time
+          type: string
+          description: >-
+            Last date for student to accept enrollment in school (after school
+            accepts student)
+          example: 2023-09-01T00:00:00.000Z
+        degreeType:
+          type: string
+          description: Degree type
+          example: UNDERGRADUATE
+          enum:
+            - UNDERGRADUATE
+            - POSTGRADUATE
+            - DOCTORAL
+        degreeAbbreviation:
+          type: string
+          description: Degree abbreviation
+          example: BSc
+        credits:
+          type: number
+          description: Number of course credits (in ECTS)
+          example: 180
+        descriptionIs:
+          type: string
+          description: Program description (Icelandic)
+          example: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        descriptionEn:
+          type: string
+          description: Program description (English)
+          example: Mauris a justo arcu. Orci varius natoque penatibus.
+        durationInYears:
+          type: number
+          description: Total duration for this program (in years)
+          example: 3
+        costPerYear:
+          type: number
+          description: Cost for program (per year)
+          example: 75000
+        iscedCode:
+          type: string
+          description: ISCED code for program
+          example: '481'
+        modeOfDelivery:
+          description: Modes of deliveries available for the program
+          type: array
+          items:
+            $ref: '#/components/schemas/ProgramModeOfDelivery'
+        active:
+          type: boolean
+          description: >-
+            Whether the program is active and should be displayed on the
+            external web
+          example: true
+        applicationPeriodOpen:
+          type: boolean
+          description: >-
+            Whether the application period for the program is open and
+            applications can be submitted
+          example: true
+        applicationInUniversityGateway:
+          type: boolean
+          description: >-
+            Whether applications for the program should be submitted via
+            University Gateway or the application portals of each university
+          example: true
+        externalUrlIs:
+          type: string
+          description: >-
+            External url  for the program from the university web page
+            (Icelandic)
+          example: https://www.ru.is/grunnnam/tolvunarfraedi
+        externalUrlEn:
+          type: string
+          description: External url  for the program from the university web page (English)
+          example: https://en.ru.is/st/dcs/undergraduate-study/bsc-computer-science
+        admissionRequirementsIs:
+          type: string
+          description: Admission requirements for program (Icelandic)
+          example: Nemandinn verður að hafa klárað stúdentspróf
+        admissionRequirementsEn:
+          type: string
+          description: Admission requirements for program (English)
+          example: The student needs to have finished the matriculation exam
+        studyRequirementsIs:
+          type: string
+          description: Study requirements for program (Icelandic)
+          example: Nemandinn verður að vera með lágmarkseinkunn 6 í öllum áföngum
+        studyRequirementsEn:
+          type: string
+          description: Study requirements for program (English)
+          example: The student must have a minimum grade of 6 in all courses
+        costInformationIs:
+          type: string
+          description: Cost information for program (Icelandic)
+          example: Það verður að borga 10.000 kr staðfestingargjald fyrir 1. ágúst
+        costInformationEn:
+          type: string
+          description: Cost information for program (English)
+          example: A confirmation fee of ISK 10.000 must be paid before August 1
+        arrangementIs:
+          type: string
+          description: Arrangement for program (skipulag náms) (Icelandic)
+          example: >-
+            Á fyrsta ári er 60 einingar, á öðru 60 einingar og á þriðja 60
+            einingar
+        arrangementEn:
+          type: string
+          description: Arrangement for program (English)
+          example: >-
+            The first year is 60 credits, the second 60 credits and the third 60
+            credits
+        allowException:
+          type: boolean
+          description: Whether the program allows applicants to apply using exception
+          example: true
+        allowThirdLevelQualification:
+          type: boolean
+          description: >-
+            Whether the program allows applicants to apply using third level
+            qualification
+          example: true
+        extraApplicationFields:
+          description: >-
+            Extra application fields that should be displayed in the application
+            for the program
+          type: array
+          items:
+            $ref: '#/components/schemas/ProgramExtraApplicationField'
+      required:
+        - id
+        - externalId
+        - nameIs
+        - nameEn
+        - universityId
+        - universityDetails
+        - departmentNameIs
+        - departmentNameEn
+        - startingSemesterYear
+        - startingSemesterSeason
+        - applicationStartDate
+        - applicationEndDate
+        - degreeType
+        - degreeAbbreviation
+        - credits
+        - descriptionIs
+        - descriptionEn
+        - durationInYears
+        - iscedCode
+        - modeOfDelivery
+        - active
+        - applicationPeriodOpen
+        - applicationInUniversityGateway
+        - allowException
+        - allowThirdLevelQualification
+        - extraApplicationFields
+    PageInfoDto:
+      type: object
+      properties:
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPreviousPage:
+          type: boolean
+          example: false
+        startCursor:
+          type: string
+          example: WyIwM2JmMWUwOS1hNWEwLTQyNDMtOTAxOC1mY2FhYjg4NTVkMTYiXQ==
+        endCursor:
+          type: string
+          example: WyJmODY1MDAzMS03YTFkLTRhOTAtOWI2OC00ODg1YjlkZDZjZDgiXQ==
+      required:
+        - hasNextPage
+        - hasPreviousPage
+        - startCursor
+        - endCursor
+    ApplicationProgramsResponse:
+      type: object
+      properties:
+        totalCount:
+          type: number
+          description: Total number of items in result (for pagination)
+        data:
+          description: Program application data
+          type: array
+          items:
+            $ref: '#/components/schemas/Program'
+        pageInfo:
+          description: Page information (for pagination)
+          allOf:
+            - $ref: '#/components/schemas/PageInfoDto'
+      required:
+        - totalCount
+        - data
+        - pageInfo
+    ProgramBase:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Program ID
+          example: 00000000-0000-0000-0000-000000000000
+        externalId:
+          type: string
+          description: External ID for the program (from University)
+          example: ABC12345
+        nameIs:
+          type: string
+          description: Program name (Icelandic)
+          example: Tölvunarfræði
+        nameEn:
+          type: string
+          description: Program name (English)
+          example: Computer science
+        specializationExternalId:
+          type: string
+          description: External ID for the specialization(from University)
+          example: ABC12345
+        specializationNameIs:
+          type: string
+          description: Specialization name (Icelandic)
+          example: Tölvunarfræði
+        specializationNameEn:
+          type: string
+          description: Specialization name (English)
+          example: Computer science
+        universityId:
+          type: string
+          description: University ID
+          example: 00000000-0000-0000-0000-000000000000
+        universityDetails:
+          description: University details
+          allOf:
+            - $ref: '#/components/schemas/University'
+        departmentNameIs:
+          type: string
+          description: Name of the department that the program belongs to (Icelandic)
+          example: Verkfræði og náttúruvísindasvið
+        departmentNameEn:
+          type: string
+          description: Name of the department that the program belongs to (English)
+          example: Engineering and Natural Sciences
+        startingSemesterYear:
+          type: number
+          description: Which year this program started on
+          example: 2023
+        startingSemesterSeason:
+          type: string
+          description: Which season this program started on
+          example: FALL
+          enum:
+            - FALL
+            - SPRING
+            - SUMMER
+        applicationStartDate:
+          format: date-time
+          type: string
+          description: When the application period for this program starts
+          example: 2023-05-01T00:00:00.000Z
+        applicationEndDate:
+          format: date-time
+          type: string
+          description: When the application period for this program ends
+          example: 2023-08-01T00:00:00.000Z
+        schoolAnswerDate:
+          format: date-time
+          type: string
+          description: Last date for school to accept/decline student into program
+          example: 2023-08-15T00:00:00.000Z
+        studentAnswerDate:
+          format: date-time
+          type: string
+          description: >-
+            Last date for student to accept enrollment in school (after school
+            accepts student)
+          example: 2023-09-01T00:00:00.000Z
+        degreeType:
+          type: string
+          description: Degree type
+          example: UNDERGRADUATE
+          enum:
+            - UNDERGRADUATE
+            - POSTGRADUATE
+            - DOCTORAL
+        degreeAbbreviation:
+          type: string
+          description: Degree abbreviation
+          example: BSc
+        credits:
+          type: number
+          description: Number of course credits (in ECTS)
+          example: 180
+        descriptionIs:
+          type: string
+          description: Program description (Icelandic)
+          example: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        descriptionEn:
+          type: string
+          description: Program description (English)
+          example: Mauris a justo arcu. Orci varius natoque penatibus.
+        durationInYears:
+          type: number
+          description: Total duration for this program (in years)
+          example: 3
+        costPerYear:
+          type: number
+          description: Cost for program (per year)
+          example: 75000
+        iscedCode:
+          type: string
+          description: ISCED code for program
+          example: '481'
+        modeOfDelivery:
+          description: Modes of deliveries available for the program
+          type: array
+          items:
+            $ref: '#/components/schemas/ProgramModeOfDelivery'
+        active:
+          type: boolean
+          description: >-
+            Whether the program is active and should be displayed on the
+            external web
+          example: true
+        applicationPeriodOpen:
+          type: boolean
+          description: >-
+            Whether the application period for the program is open and
+            applications can be submitted
+          example: true
+        applicationInUniversityGateway:
+          type: boolean
+          description: >-
+            Whether applications for the program should be submitted via
+            University Gateway or the application portals of each university
+          example: true
+      required:
+        - id
+        - externalId
+        - nameIs
+        - nameEn
+        - universityId
+        - universityDetails
+        - departmentNameIs
+        - departmentNameEn
+        - startingSemesterYear
+        - startingSemesterSeason
+        - applicationStartDate
+        - applicationEndDate
+        - degreeType
+        - degreeAbbreviation
+        - credits
+        - descriptionIs
+        - descriptionEn
+        - durationInYears
+        - iscedCode
+        - modeOfDelivery
+        - active
+        - applicationPeriodOpen
+        - applicationInUniversityGateway
+    ProgramsResponse:
+      type: object
+      properties:
+        totalCount:
+          type: number
+          description: Total number of items in result (for pagination)
+        data:
+          description: Program data
+          type: array
+          items:
+            $ref: '#/components/schemas/ProgramBase'
+        pageInfo:
+          description: Page information (for pagination)
+          allOf:
+            - $ref: '#/components/schemas/PageInfoDto'
+      required:
+        - totalCount
+        - data
+        - pageInfo
+    UniversitiesResponse:
+      type: object
+      properties:
+        data:
+          description: University data
+          type: array
+          items:
+            $ref: '#/components/schemas/University'
+      required:
+        - data
+externalDocs:
+  description: swagger.json
+  url: /api/swagger-json

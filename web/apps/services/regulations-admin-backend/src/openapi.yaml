@@ -1,0 +1,840 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /api/draft_regulation:
+    post:
+      operationId: DraftRegulationController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDraftRegulationDto'
+      responses:
+        '201':
+          description: Creates a new DraftRegulation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftRegulationModel'
+      tags:
+        - draft_regulations
+  /api/draft_regulation/{id}:
+    put:
+      operationId: DraftRegulationController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDraftRegulationDto'
+      responses:
+        '200':
+          description: Updates an existing DraftRegulation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftRegulationModel'
+      tags:
+        - draft_regulations
+    delete:
+      operationId: DraftRegulationController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+      tags:
+        - draft_regulations
+    get:
+      operationId: DraftRegulationController_getById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gets a DraftRegulation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftRegulationTemplate'
+      tags:
+        - draft_regulations
+  /api/draft_regulations:
+    get:
+      operationId: DraftRegulationController_getAll
+      parameters:
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Gets all DraftRegulations with status draft and proposal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListModel'
+      tags:
+        - draft_regulations
+  /api/draft_regulations_shipped:
+    get:
+      operationId: DraftRegulationController_getAllShipped
+      parameters: []
+      responses:
+        '200':
+          description: Gets all DraftRegulations with status shipped
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DraftRegulationShippedModel'
+      tags:
+        - draft_regulations
+  /api/draft_regulation_impacts/{name}:
+    get:
+      operationId: DraftRegulationController_getImpactsByName
+      parameters:
+        - name: name
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gets all DraftRegulationImpacts by RegName
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DraftImpactModel'
+      tags:
+        - draft_regulations
+  /api/draft_author:
+    post:
+      operationId: DraftAuthorController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDraftAuthorDto'
+      responses:
+        '201':
+          description: Creates a new DraftAuthor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftAuthorModel'
+      tags:
+        - draft_author
+  /api/draft_regulation_change:
+    post:
+      operationId: DraftRegulationChangeController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDraftRegulationChangeDto'
+      responses:
+        '201':
+          description: Creates a new DraftRegulationChange
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftRegulationChangeModel'
+      tags:
+        - draft_regulation_change
+  /api/draft_regulation_change/{id}:
+    put:
+      operationId: DraftRegulationChangeController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDraftRegulationChangeDto'
+      responses:
+        '200':
+          description: Updates an existing DraftRegulationChange
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftRegulationChangeModel'
+      tags:
+        - draft_regulation_change
+    delete:
+      operationId: DraftRegulationChangeController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+      tags:
+        - draft_regulation_change
+  /api/draft_regulation_cancel:
+    post:
+      operationId: DraftRegulationCancelController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDraftRegulationCancelDto'
+      responses:
+        '201':
+          description: Creates a new DraftRegulationCancel
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftRegulationCancelModel'
+      tags:
+        - draft_regulation_cancel
+  /api/draft_regulation_cancel/{id}:
+    put:
+      operationId: DraftRegulationCancelController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDraftRegulationCancelDto'
+      responses:
+        '200':
+          description: Updates an existing user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftRegulationCancelModel'
+      tags:
+        - draft_regulation_cancel
+    delete:
+      operationId: DraftRegulationCancelController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+      tags:
+        - draft_regulation_cancel
+  /api/draft_regulation_cancel/{draftId}:
+    delete:
+      operationId: DraftRegulationCancelController_deleteRegulationDraftCancels
+      parameters:
+        - name: draftId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+      tags:
+        - draft_regulation_cancel
+info:
+  title: Regulations admin - backend
+  description: Backend services for regulations admin.
+  version: '1.0'
+  contact: {}
+tags:
+  - name: regulations-admin
+    description: ''
+servers: []
+components:
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    CreateDraftRegulationDto:
+      type: object
+      properties:
+        type:
+          type: string
+    DraftRegulationChangeModel:
+      type: object
+      properties:
+        id:
+          type: string
+        changing_id:
+          type: string
+        regulation:
+          type: string
+        date:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
+        appendixes:
+          type: array
+          items:
+            type: string
+        dropped:
+          type: boolean
+        comments:
+          type: string
+        diff:
+          type: string
+      required:
+        - id
+        - changing_id
+        - regulation
+        - date
+        - title
+        - text
+        - appendixes
+        - dropped
+        - comments
+        - diff
+    DraftRegulationCancelModel:
+      type: object
+      properties:
+        id:
+          type: string
+        changing_id:
+          type: string
+        regulation:
+          type: string
+        dropped:
+          type: boolean
+        date:
+          type: string
+      required:
+        - id
+        - changing_id
+        - regulation
+        - dropped
+        - date
+    DraftRegulationModel:
+      type: object
+      properties:
+        id:
+          type: string
+        drafting_status:
+          type: string
+        name:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
+        appendixes:
+          type: array
+          items:
+            type: string
+        comments:
+          type: string
+        drafting_notes:
+          type: string
+        ideal_publish_date:
+          type: string
+        ministry:
+          type: string
+        signature_date:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        signature_text:
+          type: string
+        effective_date:
+          type: string
+        type:
+          type: string
+        authors:
+          type: array
+          items:
+            type: string
+        law_chapters:
+          type: array
+          items:
+            type: string
+        signed_document_url:
+          type: string
+        fast_track:
+          type: boolean
+        changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DraftRegulationChangeModel'
+        cancels:
+          type: array
+          items:
+            $ref: '#/components/schemas/DraftRegulationCancelModel'
+      required:
+        - id
+        - drafting_status
+        - name
+        - title
+        - text
+        - appendixes
+        - comments
+        - drafting_notes
+        - ideal_publish_date
+        - ministry
+        - signature_date
+        - created
+        - modified
+        - signature_text
+        - effective_date
+        - type
+        - authors
+        - law_chapters
+        - signed_document_url
+        - fast_track
+    AppendixModel:
+      type: object
+      properties:
+        title:
+          type: string
+        text:
+          type: string
+        diff:
+          type: string
+      required:
+        - title
+        - text
+    UpdateDraftRegulationDto:
+      type: object
+      properties:
+        draftingStatus:
+          type: string
+        name:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
+        appendixes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppendixModel'
+        comments:
+          type: string
+        draftingNotes:
+          type: string
+        idealPublishDate:
+          type: string
+        ministry:
+          type: string
+        signatureDate:
+          type: string
+        signatureText:
+          type: string
+        effectiveDate:
+          type: string
+        type:
+          type: string
+        authors:
+          type: array
+          items:
+            type: string
+        signedDocumentUrl:
+          type: string
+        lawChapters:
+          type: array
+          items:
+            type: string
+        fastTrack:
+          type: boolean
+      required:
+        - draftingStatus
+        - title
+        - text
+        - draftingNotes
+    PagingModel:
+      type: object
+      properties:
+        page:
+          type: number
+        pages:
+          type: number
+    TaskListModel:
+      type: object
+      properties:
+        drafts:
+          type: array
+          items:
+            type: string
+        paging:
+          $ref: '#/components/schemas/PagingModel'
+      required:
+        - drafts
+    DraftRegulationShippedModel:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        name:
+          type: string
+        idealPublishDate:
+          type: string
+        draftingStatus:
+          type: string
+      required:
+        - id
+        - title
+        - name
+        - idealPublishDate
+        - draftingStatus
+    DraftRegulationTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+        draftingStatus:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
+        appendixes:
+          type: array
+          items:
+            type: string
+        comments:
+          type: string
+        name:
+          type: string
+        draftingNotes:
+          type: string
+        authors:
+          type: array
+          items:
+            type: string
+        lawChapters:
+          type: array
+          items:
+            type: string
+        idealPublishDate:
+          type: string
+        fastTrack:
+          type: boolean
+        effectiveDate:
+          type: string
+        signatureDate:
+          type: string
+        signatureText:
+          type: string
+        signedDocumentUrl:
+          type: string
+        type:
+          type: string
+        ministry:
+          type: string
+        impacts:
+          type: object
+      required:
+        - id
+        - draftingStatus
+        - title
+        - text
+        - appendixes
+        - comments
+        - draftingNotes
+        - authors
+        - signatureText
+    DraftImpactModel:
+      type: object
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+        regTitle:
+          type: string
+        id:
+          type: string
+        changingId:
+          type: string
+        date:
+          type: string
+        dropped:
+          type: boolean
+        title:
+          type: string
+        diff:
+          type: string
+        text:
+          type: string
+        appendixes:
+          type: array
+          items:
+            type: string
+        comments:
+          type: string
+      required:
+        - type
+        - name
+        - regTitle
+        - id
+    CreateDraftAuthorDto:
+      type: object
+      properties:
+        name:
+          type: string
+        authorId:
+          type: string
+      required:
+        - name
+        - authorId
+    DraftAuthorModel:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        authorId:
+          type: string
+      required:
+        - id
+        - name
+        - authorId
+    CreateDraftRegulationChangeDto:
+      type: object
+      properties:
+        changingId:
+          type: string
+        regulation:
+          type: string
+        date:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
+        appendixes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppendixModel'
+        comments:
+          type: string
+        diff:
+          type: string
+      required:
+        - changingId
+        - regulation
+        - date
+        - title
+        - text
+    UpdateDraftRegulationChangeDto:
+      type: object
+      properties:
+        date:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
+        appendixes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppendixModel'
+        comments:
+          type: string
+        diff:
+          type: string
+    CreateDraftRegulationCancelDto:
+      type: object
+      properties:
+        changingId:
+          type: string
+        regulation:
+          type: string
+        date:
+          type: string
+      required:
+        - changingId
+        - regulation
+        - date
+    UpdateDraftRegulationCancelDto:
+      type: object
+      properties:
+        date:
+          type: string

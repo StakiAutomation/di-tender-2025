@@ -1,0 +1,3434 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Image {
+  id: ID!
+  url: String!
+  title: String!
+  description: String
+  contentType: String!
+  width: Int!
+  height: Int!
+}
+
+type Link {
+  id: ID!
+  text: String!
+  url: String!
+  intro: String
+  labels: [String!]
+  date: String!
+}
+
+type ArticleCategory {
+  id: ID!
+  title: String!
+  slug: String!
+  description: String
+}
+
+type ArticleGroup {
+  title: String!
+  slug: String!
+  description: String
+  importance: Float
+}
+
+type ArticleSubgroup {
+  title: String!
+  importance: Float
+  slug: String!
+}
+
+type OrganizationTag {
+  id: ID!
+  title: String!
+}
+
+type Asset {
+  typename: String!
+  id: ID!
+  url: String!
+  title: String!
+  contentType: String!
+}
+
+type Html {
+  typename: String!
+  id: ID!
+  document: JSON!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type TimelineEvent {
+  id: ID!
+  title: String!
+  date: String!
+  numerator: Int
+  denominator: Int
+  label: String!
+  body: Html
+  tags: [String!]
+  link: String!
+}
+
+type Story {
+  label: String!
+  title: String!
+  logo: Image!
+  readMoreText: String!
+  date: String!
+  intro: String!
+  link: String!
+  linkedPage: String
+  body: String
+}
+
+type LinkCard {
+  id: ID!
+  title: String!
+  body: String!
+  linkUrl: String!
+  linkText: String
+}
+
+type LinkCardSection {
+  id: ID!
+  title: String!
+  cards: [LinkCard!]!
+}
+
+type GenericTagGroup {
+  id: ID!
+  title: String!
+  slug: String!
+}
+
+type GenericTag {
+  id: ID!
+  title: String!
+  slug: String!
+  genericTagGroup: GenericTagGroup
+}
+
+type EmbeddedVideo {
+  id: ID!
+  title: String!
+  url: String!
+  thumbnailImageUrl: String
+}
+
+type News {
+  id: ID!
+  slug: String!
+  title: String!
+  subtitle: String!
+  intro: String
+  image: Image
+  featuredImage: Image
+  date: String!
+  content: [Slice!]
+  genericTags: [GenericTag!]!
+  fullWidthImageInContent: Boolean
+  initialPublishDate: String
+  organization: Organization
+  signLanguageVideo: EmbeddedVideo
+}
+
+union Slice = TimelineSlice | HeadingSlice | LinkCard | LinkCardSection | StorySlice | LogoListSlice | LatestNewsSlice | BulletListSlice | Statistics | ProcessEntry | FaqList | ConnectedComponent | EmbeddedVideo | SectionWithImage | SectionWithVideo | TabSection | TeamList | ContactUs | TellUsAStory | Html | Image | Asset | Districts | FeaturedArticles | OneColumnText | TwoColumnText | MultipleStatistics | AccordionSlice | OverviewLinks | EventSlice | Form | Stepper | GraphCard | AnchorPageListSlice | SidebarCard | PowerBiSlice | TableSlice | EmailSignup | FeaturedSupportQNAs | SliceDropdown | Embed | LatestEventsSlice | Chart | ChartComponent | ChartNumberBox | FeaturedEvents | GenericList | LatestGenericListItems | FeaturedLinks | GrantCardsList | OrganizationParentSubpageList | IntroLinkImage
+
+type TimelineSlice {
+  id: ID!
+  title: String!
+  intro: String!
+  events: [TimelineEvent!]!
+  hasBorderAbove: Boolean
+}
+
+type HeadingSlice {
+  id: ID!
+  title: String!
+  body: String!
+}
+
+type StorySlice {
+  id: ID!
+  readMoreText: String!
+  stories: [Story!]!
+}
+
+type LogoListSlice {
+  id: ID!
+  title: String!
+  body: String!
+  images: [Image!]!
+}
+
+type LatestNewsSlice {
+  id: ID!
+  title: String!
+  tag: String!
+  readMoreText: String!
+  news: [News!]!
+  readMoreLink: Link
+}
+
+type BulletListSlice {
+  id: ID!
+  bullets: [BulletEntry!]!
+  dividerOnTop: Boolean
+}
+
+union BulletEntry = IconBullet | NumberBulletGroup
+
+type IconBullet {
+  id: ID!
+  title: String!
+  body: String!
+  icon: Image!
+  url: String
+  linkText: String
+}
+
+type NumberBulletGroup {
+  id: ID!
+  defaultVisible: Int!
+  bullets: [NumberBullet!]!
+}
+
+type FaqList {
+  id: ID!
+  title: String!
+  questions: [QuestionAndAnswer!]!
+  showTitle: Boolean
+}
+
+type ConnectedComponent {
+  id: ID!
+  title: String!
+  type: String
+  json: JSON
+  configJson: JSON
+  translationStrings: JSONObject
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+type SectionWithImage {
+  id: ID!
+  title: String!
+  image: Image
+  content: [Slice!]
+}
+
+type SectionWithVideo {
+  id: ID!
+  title: String!
+  showTitle: Boolean
+  video: EmbeddedVideo
+  html: Html
+  locale: String!
+  link: Link
+  showDividerOnTop: Boolean
+}
+
+type TeamList {
+  id: ID!
+  teamMembers: [TeamMember!]!
+  variant: String
+  filterTags: [GenericTag!]
+  teamMemberOrder: GetTeamMembersInputOrderBy
+  showSearchInput: Boolean
+}
+
+enum GetTeamMembersInputOrderBy {
+  Name
+  Manual
+}
+
+type ContactUs {
+  id: ID!
+  title: String!
+  required: String!
+  invalidPhone: String!
+  invalidEmail: String!
+  labelName: String!
+  labelPhone: String!
+  labelEmail: String!
+  labelSubject: String!
+  labelMessage: String!
+  submitButtonText: String!
+  successMessage: String!
+  errorMessage: String!
+}
+
+type TellUsAStory {
+  id: ID!
+  introTitle: String!
+  introDescription: Html
+  introImage: Image
+  firstSectionTitle: String!
+  organizationLabel: String!
+  organizationPlaceholder: String!
+  organizationInputErrorMessage: String!
+  dateOfStoryLabel: String!
+  dateOfStoryPlaceholder: String!
+  dateOfStoryInputErrorMessage: String!
+  secondSectionTitle: String!
+  subjectLabel: String!
+  subjectPlaceholder: String!
+  subjectInputErrorMessage: String
+  messageLabel: String!
+  messagePlaceholder: String!
+  messageInputErrorMessage: String!
+  thirdSectionTitle: String!
+  instructionsDescription: Html
+  instructionsImage: Image!
+  instructionsTitle: String!
+  nameLabel: String!
+  namePlaceholder: String!
+  nameInputErrorMessage: String!
+  emailLabel: String!
+  emailPlaceholder: String!
+  emailInputErrorMessage: String!
+  publicationAllowedLabel: String!
+  submitButtonTitle: String!
+  SuccessMessageTitle: String!
+  successMessage: Html
+  errorMessageTitle: String!
+  errorMessage: Html
+}
+
+type Districts {
+  id: ID!
+  title: String!
+  description: String
+  image: Image
+  links: [Link!]!
+  hasBorderAbove: Boolean
+}
+
+type FeaturedArticles {
+  id: ID!
+  title: String!
+  image: Image
+  articles: [ArticleReference!]!
+  automaticallyFetchArticles: Boolean
+  sortBy: String!
+  resolvedArticles: [Article!]!
+  link: Link
+  hasBorderAbove: Boolean
+  introText: [Slice!]
+}
+
+type TwoColumnText {
+  id: ID!
+  rightTitle: String
+  rightContent: [Slice!]
+  rightLink: Link
+  leftTitle: String
+  leftContent: [Slice!]
+  leftLink: Link
+  dividerOnTop: Boolean
+  onlyUseOneTitle: Boolean
+}
+
+type MultipleStatistics {
+  id: ID!
+  title: String!
+  statistics: [Statistics!]!
+  link: Link
+  hasBorderAbove: Boolean
+}
+
+type AccordionSlice {
+  id: ID!
+  title: String!
+  type: String!
+  accordionItems: [OneColumnText!]
+  hasBorderAbove: Boolean
+  showTitle: Boolean
+  titleHeadingLevel: String
+}
+
+type OverviewLinks {
+  id: ID!
+  titleAbove: String
+  overviewLinks: [IntroLinkImage!]!
+  link: Link
+  hasBorderAbove: Boolean
+  linkData: OverviewLinksLinkData
+}
+
+type EventSlice {
+  id: ID!
+  title: String!
+  subtitle: String!
+  date: String!
+  link: Link
+  backgroundImage: Image
+}
+
+type Form {
+  id: ID!
+  title: String!
+  intro: String!
+  defaultFieldNamespace: JSON
+  fields: [FormField!]!
+  successText: String!
+  aboutYouHeadingText: String!
+  questionsHeadingText: String!
+  recipientFormFieldDecider: FormField
+  recipientList: [String!]
+}
+
+type AnchorPageListSlice {
+  id: ID!
+  title: String!
+  pages: [AnchorPage!]!
+}
+
+type SidebarCard {
+  id: ID!
+  type: String!
+  title: String!
+  contentString: String!
+  link: Link
+  image: Image
+}
+
+type PowerBiSlice {
+  id: ID!
+  title: String!
+  powerBiEmbedProps: JSON
+  workspaceId: String
+  reportId: String
+  owner: String
+  powerBiEmbedPropsFromServer: GetPowerBiEmbedPropsFromServerResponse
+}
+
+type TableSlice {
+  id: ID!
+  title: String!
+  tableContent: JSON
+}
+
+type FeaturedSupportQNAs {
+  id: ID!
+  renderedTitle: String
+  link: Link
+  supportQNAs: [SupportQNA!]
+  resolvedSupportQNAs: [SupportQNA!]!
+  automaticallyFetchSupportQNAs: Boolean
+}
+
+type SliceDropdown {
+  id: ID!
+  dropdownLabel: String
+  slices: [OneColumnText!]!
+  alphabeticallyOrdered: Boolean
+}
+
+type Embed {
+  id: ID!
+  title: String!
+  embedUrl: String
+  altText: String
+  aspectRatio: String
+}
+
+type LatestEventsSlice {
+  id: ID!
+  title: String!
+  events: [Event!]!
+}
+
+type Chart {
+  id: ID!
+  title: String!
+  chartDescription: String!
+  alternativeDescription: String!
+  displayAsCard: Boolean!
+  startExpanded: Boolean!
+  components: [ChartComponent!]!
+  dateFrom: String
+  dateTo: String
+  numberOfDataPoints: Float
+  sourceData: String
+  flipAxis: Boolean
+  xAxisKey: String
+  xAxisFormat: String
+  xAxisValueType: String
+  customStyleConfig: String
+  reduceAndRoundValue: Boolean
+  yAxisLabel: String
+}
+
+type ChartNumberBox {
+  id: ID!
+  title: String!
+  numberBoxDescription: String!
+  sourceDataKey: String!
+  valueType: String!
+  displayChangeMonthOverMonth: Boolean!
+  displayChangeYearOverYear: Boolean!
+  numberBoxDate: String
+  reduceAndRoundValue: Boolean
+  displayTimestamp: Boolean
+}
+
+type FeaturedEvents {
+  id: ID!
+  organization: String
+  resolvedEventList: EventList!
+  namespace: JSONObject!
+  noEventsFoundText: [Slice!]
+}
+
+type LatestGenericListItems {
+  id: ID!
+  title: String!
+  genericList: GenericList
+  seeMorePage: Page
+  seeMoreLinkText: String!
+  itemResponse: GenericListItemResponse
+}
+
+union Page = Article | SubArticle | AnchorPage | LifeEventPage | News | ArticleCategory | OrganizationPage | OrganizationSubpage | ProjectPage
+
+type FeaturedLinks {
+  id: ID!
+  title: String!
+  featuredLinks: [Featured!]
+}
+
+type GrantCardsList {
+  id: ID!
+  title: String!
+  displayTitle: Boolean
+  resolvedGrantsList: GrantList
+  namespace: JSONObject!
+  maxNumberOfCards: Int
+  sorting: GrantCardsListSorting
+}
+
+enum GrantCardsListSorting {
+  ALPHABETICAL
+  MOST_RECENTLY_UPDATED_FIRST
+}
+
+type OrganizationParentSubpageList {
+  id: ID!
+  title: String!
+  pageLinkVariant: OrganizationParentSubpageListVariant!
+  pageLinks: [OrganizationParentSubpageListPageLink!]!
+  seeMoreLink: Link
+}
+
+enum OrganizationParentSubpageListVariant {
+  ServiceCard
+  ProfileCardWithTitleAbove
+}
+
+type NumberBullet {
+  id: ID!
+  title: String!
+  body: String!
+}
+
+type Statistic {
+  id: ID!
+  value: String!
+  label: String!
+}
+
+type Statistics {
+  id: ID!
+  title: String!
+  statistics: [Statistic!]!
+}
+
+type ProcessEntry {
+  id: ID!
+  processTitle: String!
+  processLink: String!
+  openLinkInModal: Boolean
+  buttonText: String!
+}
+
+type QuestionAndAnswer {
+  id: ID!
+  question: String!
+  answer: [Slice!]!
+  publishDate: String
+}
+
+type TabContent {
+  tabTitle: String!
+  contentTitle: String
+  image: Image
+  body: [Slice!]
+}
+
+type TabSection {
+  id: ID!
+  title: String!
+  tabs: [TabContent!]!
+}
+
+type TeamMemberTagGroup {
+  groupId: String!
+  groupLabel: String!
+  tagLabels: [String!]!
+}
+
+type TeamMember {
+  id: ID!
+  name: String!
+  title: String!
+  email: String
+  phone: String
+  image: Image
+  imageOnSelect: Image
+  filterTags: [GenericTag!]
+  intro: [Slice!]
+  tagGroups: [TeamMemberTagGroup!]
+  createdAt: String
+}
+
+type TeamMemberResponseInput {
+  teamListId: String!
+  lang: String!
+  page: Int
+  size: Int
+  queryString: String
+  tags: [String!]
+  tagGroups: JSON
+  orderBy: GetTeamMembersInputOrderBy
+}
+
+type ArticleReference {
+  id: ID!
+  title: String!
+  slug: String!
+  intro: String!
+  group: ArticleGroup
+  category: ArticleCategory
+  organization: [Organization!]
+  processEntry: ProcessEntry
+  processEntryButtonText: String!
+}
+
+type OneColumnText {
+  id: ID!
+  title: String!
+  link: Link
+  content: [Slice!]
+  dividerOnTop: Boolean
+  showTitle: Boolean
+}
+
+type ReferenceLink {
+  slug: String!
+  type: String!
+}
+
+type IntroLinkImage {
+  id: ID!
+  title: String!
+  intro: Html
+  introHtml: Html
+  image: Image
+  leftImage: Boolean!
+  linkTitle: String!
+  link: ReferenceLink
+  openLinkInNewTab: Boolean!
+}
+
+type OverviewLinksLinkDataCategoryCardItem {
+  title: String!
+  description: String!
+  href: String!
+}
+
+type OverviewLinksLinkData {
+  variant: OverviewLinksLinkDataVariant!
+  categoryCardItems: [OverviewLinksLinkDataCategoryCardItem!]!
+}
+
+enum OverviewLinksLinkDataVariant {
+  IntroLinkImage
+  CategoryCard
+}
+
+type FormField {
+  id: ID!
+  title: String!
+  name: String
+  placeholder: String!
+  type: String!
+  required: Boolean!
+  options: [String!]!
+  emailConfig: JSON
+  informationText: String
+}
+
+type Step {
+  id: ID!
+  title: String!
+  slug: String!
+  stepType: String
+  subtitle: [Slice!]
+  config: String
+}
+
+type Stepper {
+  id: ID!
+  title: String!
+  steps: [Step!]
+  config: String
+}
+
+type GraphCard {
+  id: ID!
+  graphTitle: String!
+  graphDescription: String!
+  organization: String
+  data: String!
+  datakeys: String!
+  type: String!
+  displayAsCard: Boolean!
+  organizationLogo: Image
+}
+
+type AnchorPage {
+  id: ID!
+  title: String!
+  shortTitle: String
+  slug: String!
+  intro: String
+  shortIntro: String
+  image: Image
+  thumbnail: Image
+  tinyThumbnail: Image
+  content: [Slice!]!
+  category: ArticleCategory
+  seeMoreText: String
+  pageType: String
+  featuredImage: Image
+}
+
+type GetPowerBiEmbedPropsFromServerResponse {
+  accessToken: String
+  embedUrl: String
+}
+
+type EmailSignup {
+  id: ID!
+  title: String!
+  description: String
+  formFields: [FormField!]
+  signupType: String
+  configuration: JSON
+  translations: JSON
+}
+
+type SupportCategory {
+  id: ID!
+  title: String
+  description: String
+  organization: Organization
+  slug: String
+  importance: Float!
+}
+
+type SupportSubCategory {
+  title: String!
+  description: String
+  slug: String
+  importance: Float!
+}
+
+type SupportQNA {
+  id: ID!
+  title: String!
+  answer: [Slice!]!
+  slug: String!
+  organization: Organization
+  category: SupportCategory
+  subCategory: SupportSubCategory
+  importance: Float!
+  relatedLinks: [Link!]!
+  contactLink: String!
+}
+
+type EventLocation {
+  streetAddress: String
+  floor: String
+  postalCode: String
+  useFreeText: Boolean
+  freeText: String
+}
+
+type EventTime {
+  startTime: String
+  endTime: String
+}
+
+type Event {
+  id: ID!
+  organization: Organization
+  title: String!
+  slug: String!
+  startDate: String!
+  endDate: String!
+  time: EventTime!
+  location: EventLocation!
+  content: [Slice!]
+  video: EmbeddedVideo
+  thumbnailImage: Image
+  contentImage: Image
+  fullWidthImageInContent: Boolean
+  featuredImage: Image
+  firstPublishedAt: String
+}
+
+type ChartComponent {
+  id: ID!
+  label: String!
+  type: String!
+  sourceDataKey: String!
+  interval: Float
+  stackId: String
+  values: String
+}
+
+type EventList {
+  total: Int!
+  items: [Event!]!
+}
+
+type GenericListItemResponseInput {
+  genericListId: String!
+  lang: String!
+  page: Int
+  size: Int
+  queryString: String
+  tags: [String!]
+  tagGroups: JSON
+  orderBy: GetGenericListItemsInputOrderBy
+}
+
+enum GetGenericListItemsInputOrderBy {
+  DATE
+  TITLE
+  PUBLISH_DATE
+}
+
+type GenericList {
+  id: ID!
+  searchInputPlaceholder: String
+  itemType: GenericListItemType
+  filterTags: [GenericTag!]
+  defaultOrder: GetGenericListItemsInputOrderBy
+  showSearchInput: Boolean
+}
+
+enum GenericListItemType {
+  NonClickable
+  Clickable
+}
+
+type SubArticle {
+  id: ID!
+  title: String!
+  slug: String!
+  parent: ArticleReference
+  body: [Slice!]!
+  showTableOfContents: Boolean
+  signLanguageVideo: EmbeddedVideo
+  stepper: Stepper
+}
+
+type LinkGroup {
+  id: ID!
+  name: String!
+  primaryLink: Link
+  childrenLinks: [Link!]!
+}
+
+type OrganizationTheme {
+  gradientStartColor: String!
+  gradientEndColor: String!
+  useGradientColor: Boolean
+  backgroundColor: String
+  mobileBackgroundColor: String
+  fullWidth: Boolean
+  textColor: String
+  imagePadding: String
+  imageIsFullHeight: Boolean
+  imageObjectFit: String
+  imageObjectPosition: String
+  titleSectionPaddingLeft: Int
+}
+
+type AlertBanner {
+  id: ID!
+  showAlertBanner: Boolean!
+  bannerVariant: String!
+  title: String
+  description: String
+  linkTitle: String
+  link: ReferenceLink
+  isDismissable: Boolean!
+  dismissedForDays: Int!
+  servicePortalPaths: [String!]
+}
+
+type OrganizationPageTopLevelNavigationLink {
+  label: String!
+  href: String!
+}
+
+type OrganizationPageTopLevelNavigation {
+  links: [OrganizationPageTopLevelNavigationLink!]!
+}
+
+type OrganizationPage {
+  id: ID!
+  title: String!
+  slug: String!
+  description: String!
+  theme: String!
+  themeProperties: OrganizationTheme!
+  slices: [Slice!]!
+  bottomSlices: [Slice!]!
+  secondaryNewsTags: [GenericTag!]
+  menuLinks: [LinkGroup!]!
+  secondaryMenu: LinkGroup
+  organization: Organization
+  featuredImage: Image
+  sidebarCards: [Slice!]
+  externalLinks: [Link!]
+  alertBanner: AlertBanner
+  defaultHeaderImage: Image
+  topLevelNavigation: OrganizationPageTopLevelNavigation
+  canBeFoundInSearchResults: Boolean
+  showPastEventsOption: Boolean
+}
+
+type OrganizationSubpage {
+  id: ID!
+  title: String!
+  shortTitle: String
+  slug: String!
+  url: [String!]!
+  intro: String
+  description: [Slice!]
+  links: [Link!]
+  slices: [Slice!]
+  showTableOfContents: Boolean!
+  sliceCustomRenderer: String
+  sliceExtraText: String
+  organizationPage: OrganizationPage!
+  featuredImage: Image
+  signLanguageVideo: EmbeddedVideo
+  bottomSlices: [Slice!]
+}
+
+type ProjectSubpage {
+  id: ID!
+  title: String!
+  shortTitle: String
+  slug: String!
+  content: [Slice!]
+  renderSlicesAsTabs: Boolean!
+  slices: [Slice!]!
+  showTableOfContents: Boolean!
+  bottomSlices: [Slice!]
+}
+
+type Namespace {
+  namespace: String!
+  fields: String!
+}
+
+type ProjectPageThemeProperties {
+  gradientStartColor: String!
+  gradientEndColor: String!
+  useGradientColor: Boolean
+  backgroundColor: String
+  mobileBackgroundColor: String
+  fullWidth: Boolean
+  textColor: String
+  imagePadding: String
+  imageIsFullHeight: Boolean
+  imageObjectFit: String
+  imageObjectPosition: String
+  titleSectionPaddingLeft: Int
+}
+
+type ProjectPage {
+  id: ID!
+  title: String!
+  slug: String!
+  theme: String!
+  sidebar: Boolean!
+  sidebarLinks: [LinkGroup!]!
+  secondarySidebar: LinkGroup
+  subtitle: String!
+  intro: String!
+  content: [Slice!]
+  stepper: Stepper
+  slices: [Slice!]!
+  bottomSlices: [Slice!]!
+  newsTag: GenericTag
+  projectSubpages: [ProjectSubpage!]!
+  featuredImage: Image
+  defaultHeaderImage: Image
+  defaultHeaderBackgroundColor: String!
+  themeProperties: ProjectPageThemeProperties
+  featuredDescription: String!
+  footerConfig: JSON
+  footerItems: [FooterItem!]
+  backLink: Link
+  contentIsFullWidth: Boolean
+  namespace: Namespace
+  alertBanner: AlertBanner
+}
+
+type Featured {
+  title: String!
+  attention: Boolean!
+  thing: ReferenceLink
+}
+
+type LifeEventPage {
+  id: ID!
+  title: String!
+  shortTitle: String
+  slug: String!
+  intro: String
+  shortIntro: String
+  image: Image
+  thumbnail: Image
+  tinyThumbnail: Image
+  featuredImage: Image
+  content: [Slice!]!
+  featured: [Featured!]!
+  organizations: [Organization!]!
+  category: ArticleCategory
+  relatedLifeEvents: [LifeEventPage!]!
+  seeMoreText: String
+}
+
+type GenericListItem {
+  id: ID!
+  genericList: GenericList
+  title: String!
+  date: String
+  cardIntro: [Slice!]!
+  content: [Slice!]
+  slug: String
+  assetUrl: String
+  externalUrl: String
+  filterTags: [GenericTag!]
+  image: Image
+  fullWidthImageInContent: Boolean
+}
+
+type GenericListItemResponse {
+  input: GenericListItemResponseInput!
+  items: [GenericListItem!]!
+  total: Int!
+}
+
+type OrganizationFund {
+  id: ID!
+  title: String!
+  link: ReferenceLink
+  featuredImage: Image
+  parentOrganization: Organization!
+}
+
+type Grant {
+  id: ID!
+  name: String!
+  lastUpdateTimestamp: String!
+  description: String
+  applicationId: String
+  applicationUrl: ReferenceLink
+  applicationButtonLabel: String
+  specialEmphasis: [Slice!]!
+  whoCanApply: [Slice!]!
+  howToApply: [Slice!]!
+  answeringQuestions: [Slice!]!
+  applicationHints: [Slice!]!
+  dateFrom: String
+  dateTo: String
+  status: GrantStatus
+  statusText: String
+  files: [Asset!]
+  supportLinks: [Link!]
+  categoryTags: [GenericTag!]
+  typeTag: GenericTag
+  fund: OrganizationFund
+}
+
+enum GrantStatus {
+  CLOSED
+  CLOSED_OPENING_SOON
+  CLOSED_OPENING_SOON_WITH_ESTIMATION
+  CLOSED_WITH_NOTE
+  OPEN
+  OPEN_WITH_NOTE
+  ALWAYS_OPEN
+  INVALID
+  UNKNOWN
+}
+
+type GrantList {
+  total: Int!
+  items: [Grant!]!
+}
+
+type OrganizationParentSubpageListPageLink {
+  id: ID!
+  label: String!
+  href: String!
+  thumbnailImageHref: String
+  tinyThumbnailImageHref: String
+  pageLinkIntro: String!
+}
+
+type FooterItem {
+  id: ID!
+  title: String!
+  link: Link
+  content: [Slice!]
+  serviceWebContent: [Slice!]
+}
+
+type Organization {
+  id: ID!
+  title: String!
+  shortTitle: String!
+  description: String
+  slug: String!
+  tag: [OrganizationTag!]!
+  logo: Image
+  link: String
+  footerConfig: JSON
+  footerItems: [FooterItem!]!
+  phone: String!
+  email: String!
+  serviceWebTitle: String
+  serviceWebEnabled: Boolean
+  serviceWebPopularQuestionCount: Float
+  namespace: Namespace
+  serviceWebFeaturedImage: Image
+  publishedMaterialSearchFilterGenericTags: [GenericTag!]!
+  showsUpOnTheOrganizationsPage: Boolean
+  hasALandingPage: Boolean
+  trackingDomain: String
+  referenceIdentifier: String
+  newsBottomSlices: [EmailSignup!]
+}
+
+type Article {
+  id: ID!
+  title: String!
+  slug: String!
+  shortTitle: String
+  intro: String
+  importance: Float
+  body: [Slice!]!
+  processEntry: ProcessEntry
+  category: ArticleCategory
+  otherCategories: [ArticleCategory!]
+  group: ArticleGroup
+  otherGroups: [ArticleGroup!]
+  subgroup: ArticleSubgroup
+  otherSubgroups: [ArticleSubgroup!]
+  organization: [Organization!]
+  relatedOrganization: [Organization!]
+  responsibleParty: [Organization!]
+  subArticles: [SubArticle!]!
+  relatedArticles: [Article!]
+  relatedContent: [Link!]
+  featuredImage: Image
+  showTableOfContents: Boolean
+  stepper: Stepper
+  processEntryButtonText: String
+  alertBanner: AlertBanner
+  activeTranslations: JSON
+  signLanguageVideo: EmbeddedVideo
+  keywords: [String!]
+}
+
+type TextFieldLocales {
+  is: String!
+  en: String!
+}
+
+type ContentSlug {
+  id: ID!
+  slug: TextFieldLocales
+  title: TextFieldLocales
+  url: TextFieldLocales
+  type: String!
+  activeTranslations: JSON
+}
+
+type Organizations {
+  items: [Organization!]!
+}
+
+type GenericPage {
+  title: String!
+  slug: String!
+  intro: String
+  mainContent: String
+  sidebar: String
+  misc: String
+}
+
+type MenuLink {
+  title: String!
+  link: ReferenceLink!
+}
+
+type MenuLinkWithChildren {
+  title: String!
+  link: ReferenceLink
+  childLinks: [MenuLink!]!
+}
+
+type Menu {
+  id: ID!
+  title: String!
+  links: [Link!]!
+  menuLinks: [MenuLinkWithChildren!]!
+}
+
+type GenericOverviewPage {
+  id: ID!
+  title: String!
+  pageIdentifier: String!
+  intro: Html
+  navigation: Menu!
+  overviewLinks: [IntroLinkImage!]!
+}
+
+type OrganizationTags {
+  items: [OrganizationTag!]!
+}
+
+type Url {
+  id: ID!
+  title: String
+  page: ReferenceLink
+  urlsList: [String!]!
+  explicitRedirect: String
+}
+
+type SubpageHeader {
+  subpageId: String!
+  title: String!
+  summary: String!
+  featuredImage: Image
+  body: [Slice!]
+}
+
+type ErrorPage {
+  id: ID!
+  errorCode: String!
+  title: String!
+  description: Html
+}
+
+type Auction {
+  id: ID!
+  title: String!
+  updatedAt: String!
+  date: String!
+  type: String!
+  content: [Slice!]
+  organization: Organization!
+}
+
+type FrontpageSlider {
+  title: String!
+  subtitle: String!
+  intro: Html
+  content: String!
+  link: String
+  animationJsonAsset: Asset
+}
+
+type LinkList {
+  title: String!
+  links: [Link!]!
+}
+
+type Frontpage {
+  id: ID!
+  title: String
+  heading: String
+  imageAlternativeText: String
+  image: Image
+  videos: [Image!]
+  imageMobile: Image
+  videosMobile: [Image!]
+  featured: [Featured!]!
+  slides: [FrontpageSlider!]!
+  namespace: Namespace
+  lifeEvents: [LifeEventPage!]!
+  linkList: LinkList
+}
+
+type StatisticsCard {
+  title: String!
+  statistic: String!
+  image: Image
+}
+
+type OpenDataPage {
+  id: ID!
+  pageTitle: String!
+  pageDescription: String!
+  pageHeaderGraph: GraphCard!
+  link: String!
+  linkTitle: String!
+  statisticsCardsSection: [StatisticsCard!]!
+  chartSectionTitle: String!
+  graphCards: [GraphCard!]!
+  externalLinkCardSelection: LinkCardSection!
+  externalLinkSectionTitle: String!
+  externalLinkSectionDescription: String!
+  externalLinkSectionImage: Image
+}
+
+type OpenDataSubpage {
+  id: ID!
+  pageTitle: String!
+  fundTitle: String!
+  fundDescription: String!
+  statisticsCards: [StatisticsCard!]!
+  graphCards: [GraphCard!]!
+  organizationLogo: Image
+}
+
+type ManualPageData {
+  id: ID!
+  title: String!
+  slug: String!
+}
+
+type ManualChapterItem {
+  id: ID!
+  title: String!
+  content: [Slice!]
+  manual: ManualPageData!
+  manualChapter: ManualPageData!
+}
+
+type ManualChapterChangelog {
+  items: [ManualChapterChangelogItem!]!
+}
+
+type ManualChapterChangelogItem {
+  dateOfChange: String!
+  textualDescription: String!
+}
+
+type ManualChapter {
+  id: ID!
+  title: String!
+  slug: String!
+  intro: String
+  description: [Slice!]
+  chapterItems: [ManualChapterItem!]!
+  changelog: ManualChapterChangelog
+}
+
+type Manual {
+  id: ID!
+  organization: Organization
+  title: String!
+  slug: String!
+  info: [Slice!]
+  description: [Slice!]
+  chapters: [ManualChapter!]!
+  category: ArticleCategory
+  otherCategories: [ArticleCategory!]
+  group: ArticleGroup
+  otherGroups: [ArticleGroup!]
+  subgroup: ArticleSubgroup
+  otherSubgroups: [ArticleSubgroup!]
+  importance: Float
+}
+
+type ServiceWebPageEmailConfigItem {
+  supportCategoryId: String!
+  emailList: [String!]!
+}
+
+type ServiceWebPageEmailConfig {
+  emails: [ServiceWebPageEmailConfigItem!]!
+}
+
+type ServiceWebPage {
+  id: ID!
+  title: String!
+  organization: Organization
+  slices: [Slice!]!
+  footerItems: [FooterItem!]
+  emailConfig: ServiceWebPageEmailConfig
+  contactFormDisclaimer: [Slice!]
+  alertBanner: AlertBanner
+}
+
+type OrganizationSubpageLink {
+  id: String
+  label: String!
+  href: String!
+}
+
+type OrganizationParentSubpage {
+  id: ID!
+  title: String!
+  childLinks: [OrganizationSubpageLink!]!
+}
+
+type GetBloodDonationRestrictionsInputModel {
+  page: Int
+  queryString: String
+  tagKeys: [String!]
+  lang: String!
+}
+
+type BloodDonationRestrictionListItem {
+  id: ID!
+  title: String!
+  hasCardText: Boolean!
+  cardText: [Slice!]!
+  description: String!
+  hasDetailedText: Boolean!
+  keywordsText: String!
+}
+
+type BloodDonationRestrictionList {
+  total: Int!
+  items: [BloodDonationRestrictionListItem!]!
+  input: GetBloodDonationRestrictionsInputModel!
+}
+
+type BloodDonationRestrictionDetails {
+  id: ID!
+  title: String!
+  description: String!
+  hasCardText: Boolean!
+  cardText: [Slice!]!
+  detailedText: [Slice!]!
+  hasDetailedText: Boolean!
+  keywordsText: String!
+}
+
+type BloodDonationRestrictionGenericTag {
+  key: ID!
+  label: String!
+}
+
+type BloodDonationRestrictionGenericTagList {
+  total: Int!
+  items: [BloodDonationRestrictionGenericTag!]!
+}
+
+type NewsList {
+  total: Int!
+  items: [News!]!
+}
+
+type GroupedMenu {
+  id: ID!
+  title: String!
+  menus: [Menu!]!
+}
+
+type EnhancedAsset {
+  id: ID!
+  title: String!
+  file: Asset
+  genericTags: [GenericTag!]!
+  releaseDate: String
+  organization: Organization!
+  description: String!
+}
+
+type EnhancedAssetSearchResult {
+  items: [EnhancedAsset!]!
+  total: Float!
+}
+
+type EntryTitle {
+  title: String!
+}
+
+type CustomPage {
+  id: ID!
+  uniqueIdentifier: String!
+  configJson: JSONObject
+  alertBanner: AlertBanner
+  translationStrings: JSONObject!
+  content: [Slice!]
+  ogTitle: String
+  ogDescription: String
+  ogImage: Image
+}
+
+type TeamMemberResponse {
+  input: TeamMemberResponseInput!
+  items: [TeamMember!]!
+  total: Int!
+}
+
+type OrganizationPageStandaloneSitemapLink {
+  label: String!
+  href: String!
+  description: String
+}
+
+type OrganizationPageStandaloneSitemap {
+  childLinks: [OrganizationPageStandaloneSitemapLink!]!
+}
+
+type OrganizationPageStandaloneSitemapLevel2Link {
+  label: String!
+  href: String!
+}
+
+type OrganizationPageStandaloneSitemapLevel2Category {
+  label: String!
+  href: String
+  childLinks: [OrganizationPageStandaloneSitemapLevel2Link!]!
+}
+
+type OrganizationPageStandaloneSitemapLevel2 {
+  label: String!
+  childCategories: [OrganizationPageStandaloneSitemapLevel2Category!]!
+}
+
+type Institution {
+  id: ID!
+  created: String
+  modified: String
+  type: InstitutionType
+  name: String
+  active: Boolean
+  defaultCourtId: ID
+  policeCaseNumberPrefix: String
+  nationalId: String
+}
+
+enum InstitutionType {
+  POLICE_PROSECUTORS_OFFICE
+  DISTRICT_PROSECUTORS_OFFICE
+  PUBLIC_PROSECUTORS_OFFICE
+  DISTRICT_COURT
+  COURT_OF_APPEALS
+  PRISON
+  PRISON_ADMIN
+  NATIONAL_COMMISSIONERS_OFFICE
+  COURT_ADMINISTRATION_OFFICE
+}
+
+type User {
+  id: ID!
+  created: String
+  modified: String
+  nationalId: String
+  name: String
+  title: String
+  mobileNumber: String
+  role: UserRole
+  email: String
+  institution: Institution
+  active: Boolean
+  latestLogin: String
+  loginCount: Int
+  canConfirmIndictment: Boolean
+}
+
+enum UserRole {
+  PROSECUTOR
+  PROSECUTOR_REPRESENTATIVE
+  PUBLIC_PROSECUTOR_STAFF
+  DISTRICT_COURT_JUDGE
+  DISTRICT_COURT_REGISTRAR
+  DISTRICT_COURT_ASSISTANT
+  COURT_OF_APPEALS_JUDGE
+  COURT_OF_APPEALS_REGISTRAR
+  COURT_OF_APPEALS_ASSISTANT
+  PRISON_SYSTEM_STAFF
+  LOCAL_ADMIN
+  ADMIN
+  DEFENDER
+}
+
+type CurrentUserResponse {
+  user: User
+  eligibleUsers: [User!]!
+}
+
+type Subpoena {
+  id: ID!
+  created: String
+  modified: String
+  policeSubpoenaId: String
+  defendantId: String
+  caseId: String
+  serviceStatus: ServiceStatus
+  serviceDate: String
+  servedBy: String
+  comment: String
+  defenderNationalId: String
+  arraignmentDate: String
+  location: String
+}
+
+enum ServiceStatus {
+  ELECTRONICALLY
+  DEFENDER
+  IN_PERSON
+  FAILED
+  EXPIRED
+}
+
+type Defendant {
+  id: ID!
+  created: String
+  modified: String
+  caseId: ID
+  noNationalId: Boolean
+  nationalId: String
+  name: String
+  gender: Gender
+  address: String
+  citizenship: String
+  defenderName: String
+  defenderNationalId: String
+  defenderEmail: String
+  defenderPhoneNumber: String
+  defendantPlea: DefendantPlea
+  serviceRequirement: ServiceRequirement
+  verdictViewDate: String
+  verdictAppealDeadline: String
+  verdictAppealDecision: VerdictAppealDecision
+  verdictAppealDate: String
+  isVerdictAppealDeadlineExpired: Boolean
+  defenderChoice: DefenderChoice
+  requestedDefenderChoice: DefenderChoice
+  requestedDefenderNationalId: String
+  requestedDefenderName: String
+  subpoenaType: SubpoenaType
+  subpoenas: [Subpoena!]
+  isDefenderChoiceConfirmed: Boolean
+  caseFilesSharedWithDefender: Boolean
+  isSentToPrisonAdmin: Boolean
+  sentToPrisonAdminDate: String
+  openedByPrisonAdminDate: String
+  punishmentType: PunishmentType
+  isAlternativeService: Boolean
+  alternativeServiceDescription: String
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum DefendantPlea {
+  GUILTY
+  NOT_GUILTY
+  NO_PLEA
+}
+
+enum ServiceRequirement {
+  REQUIRED
+  NOT_REQUIRED
+  NOT_APPLICABLE
+}
+
+enum VerdictAppealDecision {
+  ACCEPT
+  POSTPONE
+}
+
+enum DefenderChoice {
+  WAIVE
+  CHOOSE
+  DELAY
+  DELEGATE
+}
+
+enum SubpoenaType {
+  ABSENCE
+  ARREST
+}
+
+enum PunishmentType {
+  IMPRISONMENT
+  PROBATION
+  FINE
+  INDICTMENT_RULING_DECISION_FINE
+  SIGNED_FINE_INVITATION
+  OTHER
+}
+
+type DeleteDefendantResponse {
+  deleted: Boolean!
+}
+
+type CivilClaimant {
+  id: ID!
+  created: String
+  modified: String
+  caseId: ID
+  noNationalId: Boolean
+  name: String
+  nationalId: String
+  hasSpokesperson: Boolean
+  spokespersonIsLawyer: Boolean
+  spokespersonNationalId: String
+  spokespersonName: String
+  spokespersonEmail: String
+  spokespersonPhoneNumber: String
+  caseFilesSharedWithSpokesperson: Boolean
+  isSpokespersonConfirmed: Boolean
+}
+
+type DeleteCivilClaimantResponse {
+  deleted: Boolean!
+}
+
+type EventLog {
+  id: ID!
+  created: String
+  caseId: ID
+  eventType: EventType
+  nationalId: String
+  userRole: UserRole
+}
+
+enum EventType {
+  APPEAL_RESULT_ACCESSED
+  LOGIN
+  LOGIN_UNAUTHORIZED
+  LOGIN_BYPASS
+  LOGIN_BYPASS_UNAUTHORIZED
+  INDICTMENT_CONFIRMED
+  INDICTMENT_COMPLETED
+  INDICTMENT_REVIEWED
+  CASE_SENT_TO_COURT
+  CASE_RECEIVED_BY_COURT
+  INDICTMENT_SENT_TO_PUBLIC_PROSECUTOR
+}
+
+type CaseFile {
+  id: ID!
+  created: String
+  modified: String
+  caseId: ID
+  name: String
+  type: String
+  category: CaseFileCategory
+  state: CaseFileState
+  key: String
+  size: Int
+  policeCaseNumber: String
+  userGeneratedFilename: String
+  chapter: Int
+  orderWithinChapter: Int
+  displayDate: String
+  policeFileId: String
+  submittedBy: String
+  submissionDate: String
+  fileRepresentative: String
+}
+
+enum CaseFileCategory {
+  COURT_RECORD
+  RULING
+  CRIMINAL_RECORD
+  CRIMINAL_RECORD_UPDATE
+  COST_BREAKDOWN
+  CASE_FILE
+  CASE_FILE_RECORD
+  PROSECUTOR_CASE_FILE
+  DEFENDANT_CASE_FILE
+  PROSECUTOR_APPEAL_BRIEF
+  DEFENDANT_APPEAL_BRIEF
+  PROSECUTOR_APPEAL_BRIEF_CASE_FILE
+  DEFENDANT_APPEAL_BRIEF_CASE_FILE
+  PROSECUTOR_APPEAL_STATEMENT
+  DEFENDANT_APPEAL_STATEMENT
+  PROSECUTOR_APPEAL_STATEMENT_CASE_FILE
+  DEFENDANT_APPEAL_STATEMENT_CASE_FILE
+  PROSECUTOR_APPEAL_CASE_FILE
+  DEFENDANT_APPEAL_CASE_FILE
+  INDEPENDENT_DEFENDANT_CASE_FILE
+  CIVIL_CLAIMANT_LEGAL_SPOKESPERSON_CASE_FILE
+  CIVIL_CLAIMANT_SPOKESPERSON_CASE_FILE
+  APPEAL_COURT_RECORD
+  APPEAL_RULING
+  CIVIL_CLAIM
+  SENT_TO_PRISON_ADMIN_FILE
+}
+
+enum CaseFileState {
+  STORED_IN_RVG
+  STORED_IN_COURT
+  DELETED
+}
+
+type UpdateFilesResponse {
+  caseFiles: [CaseFile!]!
+}
+
+type PresignedPost {
+  url: String!
+  fields: JSON!
+  key: String!
+}
+
+type DeleteFileResponse {
+  success: Boolean!
+}
+
+type SignedUrl {
+  url: String!
+}
+
+type UploadFileToCourtResponse {
+  success: Boolean!
+}
+
+type Offense {
+  id: ID!
+  created: String
+  modified: String
+  indictmentCountId: ID
+  offense: IndictmentCountOffense!
+  substances: JSONObject
+}
+
+enum IndictmentCountOffense {
+  DRIVING_WITHOUT_LICENCE
+  DRIVING_WITHOUT_VALID_LICENSE
+  DRIVING_WITHOUT_EVER_HAVING_LICENSE
+  DRUNK_DRIVING
+  ILLEGAL_DRUGS_DRIVING
+  PRESCRIPTION_DRUGS_DRIVING
+  SPEEDING
+  OTHER
+}
+
+type IndictmentCount {
+  id: ID!
+  created: String
+  modified: String
+  caseId: ID
+  policeCaseNumber: String
+  vehicleRegistrationNumber: String
+  offenses: [Offense!]
+  lawsBroken: [[Float!]!]
+  incidentDescription: String
+  legalArguments: String
+  indictmentCountSubtypes: [IndictmentSubtype!]
+  recordedSpeed: Int
+  speedLimit: Int
+}
+
+enum IndictmentSubtype {
+  AGGRAVATED_ASSAULT
+  ALCOHOL_LAWS
+  ANIMAL_PROTECTION
+  ASSAULT_LEADING_TO_DEATH
+  ATTEMPTED_MURDER
+  BODILY_INJURY
+  BREAKING_AND_ENTERING
+  CHILD_PROTECTION_LAWS
+  COVER_UP
+  CUSTOMS_VIOLATION
+  DOMESTIC_VIOLENCE
+  EMBEZZLEMENT
+  FOREIGN_NATIONALS
+  FRAUD
+  INDECENT_EXPOSURE
+  INTIMATE_RELATIONS
+  LEGAL_ENFORCEMENT_LAWS
+  LOOTING
+  MAJOR_ASSAULT
+  MEDICINES_OFFENSE
+  MINOR_ASSAULT
+  MONEY_LAUNDERING
+  MURDER
+  NARCOTICS_OFFENSE
+  NAVAL_LAW_VIOLATION
+  OTHER_CRIMINAL_OFFENSES
+  OTHER_OFFENSES
+  POLICE_REGULATIONS
+  PROPERTY_DAMAGE
+  PUBLIC_SERVICE_VIOLATION
+  RAPE
+  SEXUAL_OFFENSES_OTHER_THAN_RAPE
+  TAX_VIOLATION
+  THEFT
+  THREAT
+  TRAFFIC_VIOLATION
+  UTILITY_THEFT
+  WEPONS_VIOLATION
+}
+
+type DeleteResponse {
+  deleted: Boolean!
+}
+
+type Victim {
+  id: ID!
+  created: String
+  modified: String
+  caseId: ID
+  name: String
+  hasNationalId: Boolean
+  nationalId: String
+  hasLawyer: Boolean
+  lawyerNationalId: String
+  lawyerName: String
+  lawyerEmail: String
+  lawyerPhoneNumber: String
+  lawyerAccessToRequest: RequestSharedWhen
+}
+
+enum RequestSharedWhen {
+  READY_FOR_COURT
+  ARRAIGNMENT_DATE_ASSIGNED
+  OBLIGATED
+}
+
+type CaseRepresentative {
+  nationalId: String
+  name: String!
+  caseFileCategory: CaseFileCategory!
+}
+
+type Recipient {
+  address: String
+  success: Boolean
+}
+
+type Notification {
+  id: ID!
+  created: String
+  caseId: ID
+  type: NotificationType
+  recipients: [Recipient!]
+}
+
+enum NotificationType {
+  ADVOCATE_ASSIGNED
+  APPEAL_CASE_FILES_UPDATED
+  APPEAL_COMPLETED
+  APPEAL_JUDGES_ASSIGNED
+  APPEAL_RECEIVED_BY_COURT
+  APPEAL_STATEMENT
+  APPEAL_TO_COURT_OF_APPEALS
+  APPEAL_WITHDRAWN
+  CASE_FILES_UPDATED
+  COURT_DATE
+  DEFENDANT_SELECTED_DEFENDER
+  DEFENDANTS_NOT_UPDATED_AT_COURT
+  DEFENDER_ASSIGNED
+  HEADS_UP
+  INDICTMENT_DENIED
+  INDICTMENT_RETURNED
+  INDICTMENT_SENT_TO_PRISON_ADMIN
+  INDICTMENT_SENT_TO_PUBLIC_PROSECUTOR
+  INDICTMENT_VERDICT_INFO
+  INDICTMENT_WITHDRAWN_FROM_PRISON_ADMIN
+  INDICTMENTS_WAITING_FOR_CONFIRMATION
+  MODIFIED
+  READY_FOR_COURT
+  RECEIVED_BY_COURT
+  REVOKED
+  RULING
+  SERVICE_FAILED
+  SERVICE_SUCCESSFUL
+  SPOKESPERSON_ASSIGNED
+}
+
+type DateLog {
+  date: String
+  location: String
+}
+
+type Case {
+  id: ID!
+  modified: String
+  created: String
+  origin: CaseOrigin
+  type: CaseType
+  indictmentSubtypes: JSONObject
+  description: String
+  state: CaseState
+  policeCaseNumbers: [String!]
+  defendants: [Defendant!]
+  defenderName: String
+  defenderNationalId: String
+  defenderEmail: String
+  defenderPhoneNumber: String
+  requestSharedWithDefender: RequestSharedWithDefender
+  isHeightenedSecurityLevel: Boolean
+  court: Institution
+  leadInvestigator: String
+  arrestDate: String
+  requestedCourtDate: String
+  translator: String
+  requestedValidToDate: String
+  demands: String
+  lawsBroken: String
+  legalBasis: String
+  legalProvisions: [CaseLegalProvisions!]
+  requestedCustodyRestrictions: [CaseCustodyRestrictions!]
+  requestedOtherRestrictions: String
+  caseFacts: String
+  legalArguments: String
+  requestProsecutorOnlySession: Boolean
+  prosecutorOnlySessionRequest: String
+  comments: String
+  caseFilesComments: String
+  creatingProsecutor: User
+  prosecutor: User
+  sharedWithProsecutorsOffice: Institution
+  courtCaseNumber: String
+  sessionArrangements: SessionArrangements
+  arraignmentDate: DateLog
+  courtDate: DateLog
+  courtLocation: String
+  courtStartDate: String
+  courtEndTime: String
+  isClosedCourtHidden: Boolean
+  courtAttendees: String
+  prosecutorDemands: String
+  courtDocuments: [JSONObject!]
+  sessionBookings: String
+  courtCaseFacts: String
+  introduction: String
+  courtLegalArguments: String
+  ruling: String
+  decision: CaseDecision
+  validToDate: String
+  isValidToDateInThePast: Boolean
+  isCustodyIsolation: Boolean
+  isolationToDate: String
+  conclusion: String
+  endOfSessionBookings: String
+  accusedAppealDecision: CaseAppealDecision
+  accusedAppealAnnouncement: String
+  prosecutorAppealDecision: CaseAppealDecision
+  prosecutorAppealAnnouncement: String
+  accusedPostponedAppealDate: String
+  prosecutorPostponedAppealDate: String
+  isAppealDeadlineExpired: Boolean
+  isAppealGracePeriodExpired: Boolean
+  rulingDate: String
+  rulingSignatureDate: String
+  initialRulingDate: String
+  judge: User
+  registrar: User
+  courtRecordSignatory: User
+  courtRecordSignatureDate: String
+  parentCase: Case
+  childCase: Case
+  notifications: [Notification!]
+  caseFiles: [CaseFile!]
+  caseModifiedExplanation: String
+  rulingModifiedHistory: String
+  caseResentExplanation: String
+  openedByDefender: String
+  defendantWaivesRightToCounsel: Boolean
+  crimeScenes: JSONObject
+  indictmentIntroduction: String
+  indictmentCounts: [IndictmentCount!]
+  requestDriversLicenseSuspension: Boolean
+  appealState: CaseAppealState
+  isStatementDeadlineExpired: Boolean
+  statementDeadline: String
+  canBeAppealed: Boolean
+  canProsecutorAppeal: Boolean
+  canDefenderAppeal: Boolean
+  hasBeenAppealed: Boolean
+
+  """appeal deadline in R cases"""
+  appealDeadline: String
+  appealedByRole: UserRole
+  appealedDate: String
+  prosecutorStatementDate: String
+  defendantStatementDate: String
+  appealReceivedByCourtDate: String
+  appealConclusion: String
+  appealRulingDecision: CaseAppealRulingDecision
+  appealCaseNumber: String
+  appealAssistant: User
+  appealJudge1: User
+  appealJudge2: User
+  appealJudge3: User
+  appealRulingModifiedHistory: String
+  eventLogs: [EventLog!]
+  appealValidToDate: String
+  isAppealCustodyIsolation: Boolean
+  appealIsolationToDate: String
+  requestAppealRulingNotToBePublished: [UserRole!]
+  prosecutorsOffice: Institution
+  indictmentDeniedExplanation: String
+  indictmentReturnedExplanation: String
+  postponedIndefinitelyExplanation: String
+  indictmentRulingDecision: CaseIndictmentRulingDecision
+  indictmentReviewer: User
+  indictmentReviewDecision: IndictmentCaseReviewDecision
+
+  """appeal deadline for public prosecutor"""
+  indictmentAppealDeadline: String
+  indictmentVerdictViewedByAll: Boolean
+  indictmentVerdictAppealDeadlineExpired: Boolean
+  indictmentDecision: IndictmentDecision
+  courtSessionType: CourtSessionType
+  mergeCase: Case
+  mergedCases: [Case!]
+  mergeCaseNumber: String
+  civilClaimants: [CivilClaimant!]
+  civilDemands: String
+  hasCivilClaims: Boolean
+  isCompletedWithoutRuling: Boolean
+  caseSentToCourtDate: String
+  victims: [Victim!]
+  caseRepresentatives: [CaseRepresentative!]
+  publicProsecutorIsRegisteredInPoliceSystem: Boolean
+}
+
+enum CaseOrigin {
+  UNKNOWN
+  RVG
+  LOKE
+}
+
+enum CaseType {
+  INDICTMENT
+  ADMISSION_TO_FACILITY
+  CUSTODY
+  TRAVEL_BAN
+  AUTOPSY
+  BANKING_SECRECY_WAIVER
+  BODY_SEARCH
+  ELECTRONIC_DATA_DISCOVERY_INVESTIGATION
+  EXPULSION_FROM_HOME
+  INTERNET_USAGE
+  OTHER
+  PAROLE_REVOCATION
+  PHONE_TAPPING
+  PSYCHIATRIC_EXAMINATION
+  RESTRAINING_ORDER
+  RESTRAINING_ORDER_AND_EXPULSION_FROM_HOME
+  SEARCH_WARRANT
+  SOUND_RECORDING_EQUIPMENT
+  STATEMENT_FROM_MINOR
+  STATEMENT_IN_COURT
+  TELECOMMUNICATIONS
+  TRACKING_EQUIPMENT
+  VIDEO_RECORDING_EQUIPMENT
+}
+
+enum CaseState {
+  NEW
+  DRAFT
+  WAITING_FOR_CONFIRMATION
+  SUBMITTED
+  RECEIVED
+  WAITING_FOR_CANCELLATION
+  COMPLETED
+  ACCEPTED
+  REJECTED
+  DISMISSED
+  DELETED
+}
+
+enum RequestSharedWithDefender {
+  READY_FOR_COURT
+  COURT_DATE
+  NOT_SHARED
+}
+
+enum CaseLegalProvisions {
+  _95_1_A
+  _95_1_B
+  _95_1_C
+  _95_1_D
+  _95_2
+  _97_1
+  _99_1_B
+  _100_1
+}
+
+enum CaseCustodyRestrictions {
+  NECESSITIES
+  ISOLATION
+  VISITAION
+  COMMUNICATION
+  MEDIA
+  ALTERNATIVE_TRAVEL_BAN_REQUIRE_NOTIFICATION
+  WORKBAN
+}
+
+enum SessionArrangements {
+  ALL_PRESENT
+  ALL_PRESENT_SPOKESPERSON
+  PROSECUTOR_PRESENT
+  NONE_PRESENT
+}
+
+enum CaseDecision {
+  ACCEPTING
+  REJECTING
+  ACCEPTING_ALTERNATIVE_TRAVEL_BAN
+  ACCEPTING_PARTIALLY
+  DISMISSING
+}
+
+enum CaseAppealDecision {
+  APPEAL
+  ACCEPT
+  POSTPONE
+  NOT_APPLICABLE
+}
+
+enum CaseAppealState {
+  APPEALED
+  RECEIVED
+  COMPLETED
+  WITHDRAWN
+}
+
+enum CaseAppealRulingDecision {
+  ACCEPTING
+  REPEAL
+  CHANGED
+  CHANGED_SIGNIFICANTLY
+  DISMISSED_FROM_COURT_OF_APPEAL
+  DISMISSED_FROM_COURT
+  REMAND
+  DISCONTINUED
+}
+
+enum CaseIndictmentRulingDecision {
+  RULING
+  FINE
+  DISMISSAL
+  CANCELLATION
+  MERGE
+  WITHDRAWAL
+}
+
+enum IndictmentCaseReviewDecision {
+  APPEAL
+  ACCEPT
+}
+
+enum IndictmentDecision {
+  POSTPONING
+  SCHEDULING
+  POSTPONING_UNTIL_VERDICT
+  COMPLETING
+  REDISTRIBUTING
+}
+
+enum CourtSessionType {
+  MAIN_HEARING
+  OTHER
+  APPRAISER_SUMMONS
+  VERDICT
+  MAIN_HEARING_CONTINUATION
+  HEARING
+  ORAL_ARGUMENTS
+  RULING
+  ARRAIGNMENT
+}
+
+type RequestSignatureResponse {
+  controlCode: String!
+  documentToken: String!
+}
+
+type SendNotificationResponse {
+  notificationSent: Boolean!
+}
+
+type SignatureConfirmationResponse {
+  documentSigned: Boolean!
+  code: Int
+  message: String
+}
+
+type PoliceCaseFile {
+  id: ID!
+  name: String!
+  policeCaseNumber: String!
+  chapter: Int
+  displayDate: String
+  type: String
+}
+
+type PoliceCaseInfo {
+  policeCaseNumber: ID!
+  place: String
+  date: String
+  licencePlate: String
+}
+
+type UploadPoliceCaseFileResponse {
+  key: String!
+  size: Int!
+}
+
+type CaseListEntry {
+  id: ID!
+  created: String
+  courtDate: String
+  policeCaseNumbers: [String!]
+  state: CaseState
+  type: CaseType
+  defendants: [Defendant!]
+  courtCaseNumber: String
+  decision: CaseDecision
+  validToDate: String
+  isValidToDateInThePast: Boolean
+  initialRulingDate: String
+  rulingDate: String
+  rulingSignatureDate: String
+  courtEndTime: String
+  prosecutorAppealDecision: CaseAppealDecision
+  accusedAppealDecision: CaseAppealDecision
+  accusedPostponedAppealDate: String
+  prosecutorPostponedAppealDate: String
+  court: Institution
+  creatingProsecutor: User
+  prosecutor: User
+  judge: User
+  registrar: User
+  parentCaseId: ID
+  appealState: CaseAppealState
+  appealedDate: String
+  appealCaseNumber: String
+  appealRulingDecision: CaseAppealRulingDecision
+  prosecutorsOffice: Institution
+  postponedIndefinitelyExplanation: String
+  indictmentReviewer: User
+  indictmentReviewDecision: IndictmentCaseReviewDecision
+  indictmentAppealDeadline: String
+  indictmentVerdictViewedByAll: Boolean
+  indictmentVerdictAppealDeadlineExpired: Boolean
+  indictmentDecision: IndictmentDecision
+  indictmentRulingDecision: CaseIndictmentRulingDecision
+  courtSessionType: CourtSessionType
+  eventLogs: [EventLog!]
+  defendantsPunishmentType: PunishmentType
+  caseSentToCourtDate: String
+  isCompletedWithoutRuling: Boolean
+  publicProsecutorIsRegisteredInPoliceSystem: Boolean
+}
+
+type IndictmentCaseStatistics {
+  count: Float!
+  inProgressCount: Float!
+  rulingCount: Float!
+  averageRulingTimeMs: Float!
+  averageRulingTimeDays: Float!
+}
+
+type RequestCaseStatistics {
+  count: Float!
+  inProgressCount: Float!
+  completedCount: Float!
+}
+
+type ServiceStatusStatistics {
+  serviceStatus: ServiceStatus
+  count: Float!
+  averageServiceTimeMs: Float!
+  averageServiceTimeDays: Float!
+}
+
+type SubpoenaStatistics {
+  count: Float!
+  serviceStatusStatistics: [ServiceStatusStatistics!]!
+}
+
+type CaseStatistics {
+  count: Float!
+  requestCases: RequestCaseStatistics!
+  indictmentCases: IndictmentCaseStatistics!
+  subpoenas: SubpoenaStatistics!
+}
+
+type DeleteVictimResponse {
+  deleted: Boolean!
+}
+
+input GetTeamMembersInput {
+  teamListId: String!
+  lang: String = "is"
+  page: Int
+  size: Int
+  queryString: String
+  tags: [String!]
+  tagGroups: JSON
+  orderBy: GetTeamMembersInputOrderBy
+}
+
+input GetGenericListItemsInput {
+  genericListId: String!
+  lang: String = "is"
+  page: Int
+  size: Int
+  queryString: String
+  tags: [String!]
+  tagGroups: JSON
+  orderBy: GetGenericListItemsInputOrderBy
+}
+
+input GetBloodDonationRestrictionsInput {
+  page: Int
+  queryString: String
+  tagKeys: [String!]
+  lang: String = "is"
+}
+
+type Query {
+  users(input: UsersQueryInput): [User!]
+  user(input: UserQueryInput!): User
+  currentUser: CurrentUserResponse
+  case(input: CaseQueryInput!): Case
+  connectedCases(input: CaseQueryInput!): [Case!]
+  courtRecordSignatureConfirmation(input: SignatureConfirmationQueryInput!): SignatureConfirmationResponse
+  rulingSignatureConfirmation(input: SignatureConfirmationQueryInput!): SignatureConfirmationResponse
+  limitedAccessCase(input: CaseQueryInput!): Case
+  cases(input: CaseListQueryInput): [CaseListEntry!]
+  caseStatistics(input: CaseStatisticsInput): CaseStatistics
+  subpoena(input: SubpoenaQueryInput!): Subpoena
+  getSignedUrl(input: GetSignedUrlInput!): SignedUrl
+  limitedAccessGetSignedUrl(input: GetSignedUrlInput!): SignedUrl
+  institutions: [Institution!]
+  getTranslations(input: GetTranslationsInput!): JSON
+  getNamespace(input: GetNamespaceInput!): Namespace
+  getContentSlug(input: GetContentSlugInput!): ContentSlug
+  getAlertBanner(input: GetAlertBannerInput!): AlertBanner
+  getServicePortalAlertBanners(input: GetServicePortalAlertBannersInput!): [AlertBanner!]
+  getGenericPage(input: GetGenericPageInput!): GenericPage
+  getGenericOverviewPage(input: GetGenericOverviewPageInput!): GenericOverviewPage
+  getErrorPage(input: GetErrorPageInput!): ErrorPage
+  getOpenDataPage(input: GetOpenDataPageInput!): OpenDataPage!
+  getOpenDataSubpage(input: GetOpenDataSubpageInput!): OpenDataSubpage!
+  getOrganization(input: GetOrganizationInput!): Organization
+  getOrganizationByTitle(input: GetOrganizationByTitleInput!): Organization
+  getOrganizationByNationalId(input: GetOrganizationByNationalIdInput!): Organization
+  getOrganizationPage(input: GetOrganizationPageInput!): OrganizationPage
+  getOrganizationSubpage(input: GetOrganizationSubpageInput!): OrganizationSubpage
+  getOrganizationSubpageById(input: GetOrganizationSubpageByIdInput!): OrganizationSubpage
+  getServiceWebPage(input: GetServiceWebPageInput!): ServiceWebPage
+  getAuctions(input: GetAuctionsInput!): [Auction!]!
+  getAuction(input: GetAuctionInput!): Auction!
+  getProjectPage(input: GetProjectPageInput!): ProjectPage
+  getOrganizations(input: GetOrganizationsInput): Organizations!
+  getOrganizationTags(input: GetOrganizationTagsInput!): OrganizationTags
+  getAnchorPage(input: GetAnchorPageInput!): AnchorPage
+  getAnchorPages(input: GetAnchorPagesInput!): [AnchorPage!]!
+  getLifeEventPage(input: GetLifeEventPageInput!): LifeEventPage
+  getLifeEventsForOverview(input: GetLifeEventsInput!): [LifeEventPage!]!
+  getLifeEventsInCategory(input: GetLifeEventsInCategoryInput!): [LifeEventPage!]!
+  getUrl(input: GetUrlInput!): Url
+  getFrontpage(input: GetFrontpageInput!): Frontpage
+  getArticleCategories(input: GetArticleCategoriesInput!): [ArticleCategory!]!
+  getSingleArticle(input: GetSingleArticleInput!): Article
+  getArticles(input: GetArticlesInput!): [Article!]!
+  getGrants(input: GetGrantsInput!): GrantList!
+  getSingleGrant(input: GetSingleGrantInput!): Grant
+  getSingleNews(input: GetSingleNewsInput!): News
+  getSingleEvent(input: GetSingleEventInput!): Event
+  getEvents(input: GetEventsInput!): EventList!
+  getNewsDates(input: GetNewsDatesInput!): [String!]!
+  getNews(input: GetNewsInput!): NewsList!
+  getMenu(input: GetMenuInput!): Menu
+  getGroupedMenu(input: GetSingleMenuInput!): GroupedMenu
+  getSubpageHeader(input: GetSubpageHeaderInput!): SubpageHeader
+  getSingleSupportQNA(input: GetSingleSupportQNAInput!): SupportQNA
+  getFeaturedSupportQNAs(input: GetFeaturedSupportQNAsInput!): [SupportQNA!]!
+  getSupportQNAs(input: GetSupportQNAsInput!): [SupportQNA!]!
+  getSupportQNAsInCategory(input: GetSupportQNAsInCategoryInput!): [SupportQNA!]!
+  getSupportCategory(input: GetSupportCategoryInput!): SupportCategory
+  getSupportCategories(input: GetSupportCategoriesInput!): [SupportCategory!]!
+  getSupportCategoriesInOrganization(input: GetSupportCategoriesInOrganizationInput!): [SupportCategory!]!
+  getPublishedMaterial(input: GetPublishedMaterialInput!): EnhancedAssetSearchResult!
+  getTabSection(input: GetTabSectionInput!): TabSection
+  getGenericTagBySlug(input: GetGenericTagBySlugInput!): GenericTag
+  getGenericTagsInTagGroups(input: GetGenericTagsInTagGroupsInput!): [GenericTag!]
+  getSingleManual(input: GetSingleManualInput!): Manual
+  getCategoryPages(input: GetCategoryPagesInput!): [CategoryPage!]
+  getSingleEntryTitleById(input: GetSingleEntryTitleByIdInput!): EntryTitle
+  getCustomPage(input: GetCustomPageInput!): CustomPage
+  getCustomSubpage(input: GetCustomSubpageInput!): CustomPage
+  getGenericListItems(input: GetGenericListItemsInput!): GenericListItemResponse
+  getGenericListItemBySlug(input: GetGenericListItemBySlugInput!): GenericListItem
+  getTeamMembers(input: GetTeamMembersInput!): TeamMemberResponse
+  getOrganizationParentSubpage(input: GetOrganizationParentSubpageInput!): OrganizationParentSubpage
+  getOrganizationPageStandaloneSitemapLevel1(input: GetOrganizationPageStandaloneSitemapLevel1Input!): OrganizationPageStandaloneSitemap
+  getOrganizationPageStandaloneSitemapLevel2(input: GetOrganizationPageStandaloneSitemapLevel2Input!): OrganizationPageStandaloneSitemapLevel2
+  getBloodDonationRestrictionGenericTags(input: GetBloodDonationRestrictionGenericTagsInput!): BloodDonationRestrictionGenericTagList!
+  getBloodDonationRestrictions(input: GetBloodDonationRestrictionsInput!): BloodDonationRestrictionList!
+  getBloodDonationRestrictionDetails(input: GetBloodDonationRestrictionDetailsInput!): BloodDonationRestrictionDetails
+  policeCaseFiles(input: PoliceCaseFilesQueryInput!): [PoliceCaseFile!]
+  policeCaseInfo(input: PoliceCaseInfoQueryInput!): [PoliceCaseInfo!]
+}
+
+input UsersQueryInput {
+  role: [UserRole!]
+}
+
+input UserQueryInput {
+  id: ID!
+}
+
+input CaseQueryInput {
+  id: ID!
+}
+
+input SignatureConfirmationQueryInput {
+  caseId: ID!
+  documentToken: String!
+}
+
+input CaseListQueryInput {
+  appealState: [CaseAppealState!]
+}
+
+input CaseStatisticsInput {
+  fromDate: DateTime
+  toDate: DateTime
+  institutionId: String
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input SubpoenaQueryInput {
+  caseId: ID!
+  defendantId: ID!
+  subpoenaId: ID!
+}
+
+input GetSignedUrlInput {
+  id: ID!
+  caseId: ID!
+  mergedCaseId: ID
+}
+
+input GetTranslationsInput {
+  namespaces: [String!]!
+  lang: String!
+}
+
+input GetNamespaceInput {
+  namespace: String
+  lang: String = "is-IS"
+}
+
+input GetContentSlugInput {
+  id: String!
+}
+
+input GetAlertBannerInput {
+  id: String!
+  lang: String = "is-IS"
+}
+
+input GetServicePortalAlertBannersInput {
+  lang: String = "is-IS"
+}
+
+input GetGenericPageInput {
+  slug: String!
+  lang: String = "is-IS"
+}
+
+input GetGenericOverviewPageInput {
+  pageIdentifier: String!
+  lang: String = "is-IS"
+}
+
+input GetErrorPageInput {
+  errorCode: String!
+  lang: String = "is-IS"
+}
+
+input GetOpenDataPageInput {
+  lang: String = "is"
+}
+
+input GetOpenDataSubpageInput {
+  lang: String = "is"
+}
+
+input GetOrganizationInput {
+  slug: String
+  lang: String = "is-IS"
+}
+
+input GetOrganizationByTitleInput {
+  title: String!
+  lang: String = "is-IS"
+}
+
+input GetOrganizationByNationalIdInput {
+  nationalId: String!
+  lang: String = "is-IS"
+}
+
+input GetOrganizationPageInput {
+  slug: String!
+  lang: String = "is"
+}
+
+input GetOrganizationSubpageInput {
+  organizationSlug: String!
+  slug: String!
+  lang: String = "is"
+}
+
+input GetOrganizationSubpageByIdInput {
+  id: String!
+  lang: String = "is"
+}
+
+input GetServiceWebPageInput {
+  slug: String!
+  lang: String = "is"
+}
+
+input GetAuctionsInput {
+  lang: String = "is-IS"
+  organization: String
+  year: Float
+  month: Float
+}
+
+input GetAuctionInput {
+  id: String!
+  lang: String = "is-IS"
+}
+
+input GetProjectPageInput {
+  slug: String!
+  lang: String = "is-IS"
+}
+
+input GetOrganizationsInput {
+  lang: String
+  perPage: Int
+  organizationTitles: [String!]
+  referenceIdentifiers: [String!]
+}
+
+input GetOrganizationTagsInput {
+  lang: String
+}
+
+input GetAnchorPageInput {
+  slug: String!
+  lang: String = "is-IS"
+}
+
+input GetAnchorPagesInput {
+  lang: String = "is-IS"
+}
+
+input GetLifeEventPageInput {
+  slug: String!
+  lang: String = "is-IS"
+}
+
+input GetLifeEventsInput {
+  lang: String = "is-IS"
+}
+
+input GetLifeEventsInCategoryInput {
+  slug: String!
+  lang: String = "is-IS"
+}
+
+input GetUrlInput {
+  slug: String!
+  lang: String = "is-IS"
+}
+
+input GetFrontpageInput {
+  pageIdentifier: String!
+  lang: String = "is"
+}
+
+input GetArticleCategoriesInput {
+  lang: String = "is"
+  size: Int = 100
+}
+
+input GetSingleArticleInput {
+  slug: String!
+  lang: String = "is"
+}
+
+input GetArticlesInput {
+  lang: String = "is"
+  category: String
+  group: String
+  subgroup: String
+  organization: String
+  size: Int = 100
+  sort: SortField = TITLE
+}
+
+enum SortField {
+  TITLE
+  POPULAR
+  RELEASE_DATE
+}
+
+input GetGrantsInput {
+  search: String
+  lang: String = "is"
+  page: Int = 1
+  size: Int = 8
+  sort: GetGrantsInputSortByEnum
+  status: GetGrantsInputAvailabilityStatusEnum
+  categories: [String!]
+  types: [String!]
+  organizations: [String!]
+  funds: [String!]
+}
+
+enum GetGrantsInputSortByEnum {
+  ALPHABETICAL
+  RECENTLY_UPDATED
+}
+
+enum GetGrantsInputAvailabilityStatusEnum {
+  OPEN
+  CLOSED
+}
+
+input GetSingleGrantInput {
+  id: String!
+  lang: String = "is"
+}
+
+input GetSingleNewsInput {
+  slug: String!
+  lang: String = "is"
+}
+
+input GetSingleEventInput {
+  slug: String!
+  lang: String = "is"
+}
+
+input GetEventsInput {
+  lang: String = "is"
+  order: String = "desc"
+  page: Int = 1
+  size: Int = 10
+  organization: String
+  onlyIncludePastEvents: Boolean
+}
+
+input GetNewsDatesInput {
+  lang: String = "is"
+  order: String = "desc"
+  tags: [String!]
+  organization: String
+}
+
+input GetNewsInput {
+  lang: String = "is"
+  year: Int
+  month: Int
+  order: String = "desc"
+  page: Int = 1
+  size: Int = 10
+  tags: [String!]
+  organization: String
+}
+
+input GetMenuInput {
+  name: String!
+  lang: String = "is"
+}
+
+input GetSingleMenuInput {
+  id: String!
+  lang: String = "is"
+}
+
+input GetSubpageHeaderInput {
+  id: String!
+  lang: String = "is-IS"
+}
+
+input GetSingleSupportQNAInput {
+  slug: String!
+  lang: String = "is"
+}
+
+input GetFeaturedSupportQNAsInput {
+  organization: String
+  lang: String = "is"
+  size: Int = 10
+  category: String
+  subCategory: String
+}
+
+input GetSupportQNAsInput {
+  lang: String = "is-IS"
+}
+
+input GetSupportQNAsInCategoryInput {
+  lang: String = "is-IS"
+  slug: String!
+}
+
+input GetSupportCategoryInput {
+  lang: String = "is-IS"
+  slug: String!
+}
+
+input GetSupportCategoriesInput {
+  lang: String = "is-IS"
+}
+
+input GetSupportCategoriesInOrganizationInput {
+  lang: String = "is-IS"
+  slug: String!
+}
+
+input GetPublishedMaterialInput {
+  lang: String = "is"
+  size: Int
+  page: Int
+  organizationSlug: String
+  searchString: String = ""
+  tags: [String!]!
+  tagGroups: JSON!
+  sort: JSON!
+}
+
+input GetTabSectionInput {
+  lang: String = "is-IS"
+  id: String!
+}
+
+input GetGenericTagBySlugInput {
+  slug: String!
+  lang: String = "is-IS"
+}
+
+input GetGenericTagsInTagGroupsInput {
+  lang: String = "is-IS"
+  tagGroupSlugs: [String!]
+}
+
+input GetSingleManualInput {
+  slug: String!
+  lang: String = "is"
+}
+
+union CategoryPage = Article | Manual
+
+input GetCategoryPagesInput {
+  lang: String = "is"
+  category: String
+  group: String
+  subgroup: String
+  organization: String
+  size: Int = 100
+  sort: SortField = TITLE
+}
+
+input GetSingleEntryTitleByIdInput {
+  id: String!
+  lang: String = "is"
+}
+
+input GetCustomPageInput {
+  uniqueIdentifier: CustomPageUniqueIdentifier!
+  lang: String = "is"
+}
+
+enum CustomPageUniqueIdentifier {
+  PensionCalculator
+  OfficialJournalOfIceland
+  OfficialJournalOfIcelandHelp
+  Vacancies
+  Grants
+  DirectorateOfLabourMyPages
+  Verdicts
+  BloodDonationRestrictions
+}
+
+input GetCustomSubpageInput {
+  parentPageId: String!
+  lang: String = "is"
+  slug: String!
+}
+
+input GetGenericListItemBySlugInput {
+  slug: String!
+  lang: String = "is"
+}
+
+input GetOrganizationParentSubpageInput {
+  slug: String!
+  organizationPageSlug: String!
+  lang: String = "is"
+}
+
+input GetOrganizationPageStandaloneSitemapLevel1Input {
+  organizationPageSlug: String!
+  categorySlug: String!
+  lang: String = "is"
+}
+
+input GetOrganizationPageStandaloneSitemapLevel2Input {
+  organizationPageSlug: String!
+  categorySlug: String!
+  lang: String = "is"
+  subcategorySlug: String!
+}
+
+input GetBloodDonationRestrictionGenericTagsInput {
+  lang: String = "is"
+}
+
+input GetBloodDonationRestrictionDetailsInput {
+  id: String!
+  lang: String = "is-IS"
+}
+
+input PoliceCaseFilesQueryInput {
+  caseId: ID!
+}
+
+input PoliceCaseInfoQueryInput {
+  caseId: ID!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
+  createCase(input: CreateCaseInput!): Case
+  updateCase(input: UpdateCaseInput!): Case
+  transitionCase(input: TransitionCaseInput!): Case
+  requestCourtRecordSignature(input: RequestSignatureInput!): RequestSignatureResponse
+  requestRulingSignature(input: RequestSignatureInput!): RequestSignatureResponse
+  sendNotification(input: SendNotificationInput!): SendNotificationResponse
+  extendCase(input: ExtendCaseInput!): Case
+  createCourtCase(input: CreateCourtCaseInput!): Case
+  limitedAccessUpdateCase(input: UpdateCaseInput!): Case
+  limitedAccessTransitionCase(input: TransitionCaseInput!): Case
+  createDefendant(input: CreateDefendantInput!): Defendant
+  updateDefendant(input: UpdateDefendantInput!): Defendant
+  deleteDefendant(input: DeleteDefendantInput!): DeleteDefendantResponse
+  createCivilClaimant(input: CreateCivilClaimantInput!): CivilClaimant!
+  updateCivilClaimant(input: UpdateCivilClaimantInput!): CivilClaimant!
+  deleteCivilClaimant(input: DeleteCivilClaimantInput!): DeleteCivilClaimantResponse!
+  limitedAccessUpdateDefendant(input: UpdateDefendantInput!): Defendant
+  createIndictmentCount(input: CreateIndictmentCountInput!): IndictmentCount
+  updateIndictmentCount(input: UpdateIndictmentCountInput!): IndictmentCount
+  deleteIndictmentCount(input: DeleteIndictmentCountInput!): DeleteResponse
+  createOffense(input: CreateOffenseInput!): Offense
+  updateOffense(input: UpdateOffenseInput!): Offense
+  deleteOffense(input: DeleteOffenseInput!): DeleteResponse
+  createPresignedPost(input: CreatePresignedPostInput!): PresignedPost!
+  createFile(input: CreateFileInput!): CaseFile!
+  createDefendantFile(input: CreateDefendantFileInput!): CaseFile!
+  createCivilClaimantFile(input: CreateCivilClaimantFileInput!): CaseFile!
+  deleteFile(input: DeleteFileInput!): DeleteFileResponse!
+  uploadFileToCourt(input: UploadFileToCourtInput!): UploadFileToCourtResponse!
+  updateFiles(input: UpdateFilesInput!): UpdateFilesResponse!
+  limitedAccessCreatePresignedPost(input: CreatePresignedPostInput!): PresignedPost!
+  limitedAccessCreateFile(input: CreateFileInput!): CaseFile!
+  limitedAccessCreateDefendantFile(input: CreateDefendantFileInput!): CaseFile!
+  limitedAccessCreateCivilClaimantFile(input: CreateCivilClaimantFileInput!): CaseFile!
+  limitedAccessDeleteFile(input: DeleteFileInput!): DeleteFileResponse!
+  uploadPoliceCaseFile(input: UploadPoliceCaseFileInput!): UploadPoliceCaseFileResponse
+  createEventLog(input: CreateEventLogInput!): Boolean
+  createVictim(input: CreateVictimInput!): Victim!
+  updateVictim(input: UpdateVictimInput!): Victim!
+  deleteVictim(input: DeleteVictimInput!): DeleteVictimResponse!
+}
+
+input CreateUserInput {
+  nationalId: String!
+  name: String!
+  title: String!
+  mobileNumber: String!
+  email: String!
+  role: UserRole!
+  institutionId: ID!
+  active: Boolean!
+  canConfirmIndictment: Boolean!
+}
+
+input UpdateUserInput {
+  id: ID!
+  name: String
+  title: String
+  mobileNumber: String
+  email: String
+  active: Boolean
+  canConfirmIndictment: Boolean
+}
+
+input CreateCaseInput {
+  type: CaseType!
+  indictmentSubtypes: JSONObject
+  description: String
+  policeCaseNumbers: [String!]!
+  defenderName: String
+  defenderNationalId: String
+  defenderEmail: String
+  defenderPhoneNumber: String
+  requestSharedWithDefender: RequestSharedWithDefender
+  leadInvestigator: String
+  crimeScenes: JSONObject
+  prosecutorId: ID
+}
+
+input UpdateCaseInput {
+  id: ID!
+  type: CaseType
+  indictmentSubtypes: JSONObject
+  description: String
+  policeCaseNumbers: [String!]
+  defenderName: String
+  defenderNationalId: String
+  defenderEmail: String
+  defenderPhoneNumber: String
+  requestSharedWithDefender: RequestSharedWithDefender
+  isHeightenedSecurityLevel: Boolean
+  courtId: ID
+  leadInvestigator: String
+  arrestDate: String
+  requestedCourtDate: String
+  translator: String
+  requestedValidToDate: String
+  demands: String
+  lawsBroken: String
+  legalBasis: String
+  legalProvisions: [CaseLegalProvisions!]
+  requestedCustodyRestrictions: [CaseCustodyRestrictions!]
+  requestedOtherRestrictions: String
+  caseFacts: String
+  legalArguments: String
+  requestProsecutorOnlySession: Boolean
+  prosecutorOnlySessionRequest: String
+  comments: String
+  caseFilesComments: String
+  prosecutorId: ID
+  sharedWithProsecutorsOfficeId: ID
+  courtCaseNumber: String
+  sessionArrangements: SessionArrangements
+  arraignmentDate: UpdateDateLog
+  courtDate: UpdateDateLog
+  courtLocation: String
+  courtStartDate: String
+  courtEndTime: String
+  isClosedCourtHidden: Boolean
+  courtAttendees: String
+  prosecutorDemands: String
+  courtDocuments: [JSONObject!]
+  sessionBookings: String
+  courtCaseFacts: String
+  introduction: String
+  courtLegalArguments: String
+  ruling: String
+  decision: CaseDecision
+  validToDate: String
+  isCustodyIsolation: Boolean
+  isolationToDate: String
+  conclusion: String
+  endOfSessionBookings: String
+  accusedAppealDecision: CaseAppealDecision
+  accusedAppealAnnouncement: String
+  prosecutorAppealDecision: CaseAppealDecision
+  prosecutorAppealAnnouncement: String
+  rulingSignatureDate: String
+  judgeId: ID
+  registrarId: ID
+  caseModifiedExplanation: String
+  rulingModifiedHistory: String
+  caseResentExplanation: String
+  defendantWaivesRightToCounsel: Boolean
+  crimeScenes: JSONObject
+  indictmentIntroduction: String
+  requestDriversLicenseSuspension: Boolean
+  prosecutorStatementDate: String
+  defendantStatementDate: String
+  appealCaseNumber: String
+  appealAssistantId: ID
+  appealJudge1Id: ID
+  appealJudge2Id: ID
+  appealJudge3Id: ID
+  appealConclusion: String
+  appealRulingDecision: CaseAppealRulingDecision
+  appealRulingModifiedHistory: String
+  appealValidToDate: String
+  isAppealCustodyIsolation: Boolean
+  appealIsolationToDate: String
+  requestAppealRulingNotToBePublished: [UserRole!]
+  indictmentDeniedExplanation: String
+  indictmentReturnedExplanation: String
+  postponedIndefinitelyExplanation: String
+  indictmentRulingDecision: CaseIndictmentRulingDecision
+  indictmentReviewerId: ID
+  indictmentReviewDecision: IndictmentCaseReviewDecision
+  indictmentDecision: IndictmentDecision
+  courtSessionType: CourtSessionType
+  mergeCaseId: ID
+  mergeCaseNumber: String
+  civilDemands: String
+  hasCivilClaims: Boolean
+  isCompletedWithoutRuling: Boolean
+  publicProsecutorIsRegisteredInPoliceSystem: Boolean
+}
+
+input UpdateDateLog {
+  date: String
+  location: String
+}
+
+input TransitionCaseInput {
+  id: ID!
+  transition: CaseTransition!
+}
+
+enum CaseTransition {
+  ACCEPT
+  APPEAL
+  ASK_FOR_CANCELLATION
+  ASK_FOR_CONFIRMATION
+  COMPLETE
+  COMPLETE_APPEAL
+  DELETE
+  DENY_INDICTMENT
+  DISMISS
+  OPEN
+  RECEIVE
+  RECEIVE_APPEAL
+  REJECT
+  REOPEN
+  REOPEN_APPEAL
+  RETURN_INDICTMENT
+  SUBMIT
+  WITHDRAW_APPEAL
+  MOVE
+}
+
+input RequestSignatureInput {
+  caseId: ID!
+}
+
+input SendNotificationInput {
+  caseId: ID!
+  type: NotificationType!
+  eventOnly: Boolean
+}
+
+input ExtendCaseInput {
+  id: ID!
+}
+
+input CreateCourtCaseInput {
+  caseId: ID!
+}
+
+input CreateDefendantInput {
+  caseId: ID!
+  noNationalId: Boolean
+  nationalId: String
+  name: String
+  gender: Gender
+  address: String
+  citizenship: String
+}
+
+input UpdateDefendantInput {
+  caseId: ID!
+  defendantId: ID!
+  noNationalId: Boolean
+  nationalId: String
+  name: String
+  gender: Gender
+  address: String
+  citizenship: String
+  defenderName: String
+  defenderNationalId: String
+  defenderEmail: String
+  defenderPhoneNumber: String
+  defendantPlea: DefendantPlea
+  serviceRequirement: ServiceRequirement
+  verdictViewDate: String
+  verdictAppealDecision: VerdictAppealDecision
+  verdictAppealDate: String
+  defenderChoice: DefenderChoice
+  subpoenaType: SubpoenaType
+  isDefenderChoiceConfirmed: Boolean
+  caseFilesSharedWithDefender: Boolean
+  isSentToPrisonAdmin: Boolean
+  punishmentType: PunishmentType
+  isAlternativeService: Boolean
+  alternativeServiceDescription: String
+}
+
+input DeleteDefendantInput {
+  caseId: ID!
+  defendantId: ID!
+}
+
+input CreateCivilClaimantInput {
+  caseId: ID!
+}
+
+input UpdateCivilClaimantInput {
+  civilClaimantId: ID!
+  caseId: ID!
+  noNationalId: Boolean
+  name: String
+  nationalId: String
+  hasSpokesperson: Boolean
+  spokespersonIsLawyer: Boolean
+  spokespersonNationalId: String
+  spokespersonName: String
+  spokespersonEmail: String
+  spokespersonPhoneNumber: String
+  caseFilesSharedWithSpokesperson: Boolean
+  isSpokespersonConfirmed: Boolean
+}
+
+input DeleteCivilClaimantInput {
+  caseId: ID!
+  civilClaimantId: ID!
+}
+
+input CreateIndictmentCountInput {
+  caseId: ID!
+}
+
+input UpdateIndictmentCountInput {
+  caseId: ID!
+  indictmentCountId: ID!
+  policeCaseNumber: String
+  vehicleRegistrationNumber: String
+  lawsBroken: [[Float!]!]
+  incidentDescription: String
+  legalArguments: String
+  policeCaseNumberSubtypes: [IndictmentSubtype!]
+  indictmentCountSubtypes: [IndictmentSubtype!]
+  recordedSpeed: Int
+  speedLimit: Int
+}
+
+input DeleteIndictmentCountInput {
+  caseId: ID!
+  indictmentCountId: ID!
+}
+
+input CreateOffenseInput {
+  caseId: ID!
+  indictmentCountId: ID!
+  offense: IndictmentCountOffense!
+}
+
+input UpdateOffenseInput {
+  offenseId: ID!
+  caseId: ID!
+  indictmentCountId: ID!
+  substances: JSONObject
+}
+
+input DeleteOffenseInput {
+  caseId: ID!
+  offenseId: ID!
+  indictmentCountId: ID!
+}
+
+input CreatePresignedPostInput {
+  caseId: ID!
+  fileName: String!
+  type: String!
+}
+
+input CreateFileInput {
+  caseId: ID!
+  type: String!
+  category: CaseFileCategory
+  key: String!
+  size: Int!
+  policeCaseNumber: String
+
+  """
+  Number of chapter where file is in. 0 or greater. If provided, then order must also be provided.
+  """
+  chapter: Int
+
+  """
+  Number indicating the order within chapter. 0 or greater. If provided, then chapter must also be provided.
+  """
+  orderWithinChapter: Int
+  displayDate: String
+  policeFileId: String
+  userGeneratedFilename: String
+  submissionDate: String
+  fileRepresentative: String
+}
+
+input CreateDefendantFileInput {
+  caseId: ID!
+  type: String!
+  category: CaseFileCategory
+  key: String!
+  size: Int!
+  policeCaseNumber: String
+
+  """
+  Number of chapter where file is in. 0 or greater. If provided, then order must also be provided.
+  """
+  chapter: Int
+
+  """
+  Number indicating the order within chapter. 0 or greater. If provided, then chapter must also be provided.
+  """
+  orderWithinChapter: Int
+  displayDate: String
+  policeFileId: String
+  userGeneratedFilename: String
+  submissionDate: String
+  fileRepresentative: String
+  defendantId: ID!
+}
+
+input CreateCivilClaimantFileInput {
+  caseId: ID!
+  type: String!
+  category: CaseFileCategory
+  key: String!
+  size: Int!
+  policeCaseNumber: String
+
+  """
+  Number of chapter where file is in. 0 or greater. If provided, then order must also be provided.
+  """
+  chapter: Int
+
+  """
+  Number indicating the order within chapter. 0 or greater. If provided, then chapter must also be provided.
+  """
+  orderWithinChapter: Int
+  displayDate: String
+  policeFileId: String
+  userGeneratedFilename: String
+  submissionDate: String
+  fileRepresentative: String
+  civilClaimantId: ID!
+}
+
+input DeleteFileInput {
+  id: ID!
+  caseId: ID!
+}
+
+input UploadFileToCourtInput {
+  id: ID!
+  caseId: ID!
+}
+
+input UpdateFilesInput {
+  caseId: ID!
+  files: [UpdateFile!]!
+}
+
+input UpdateFile {
+  id: ID!
+
+  """
+  Number of chapter where file is in. 0 or greater. If provided, then order must also be provided.
+  """
+  chapter: Int
+
+  """
+  Number indicating the order within chapter. 0 or greater. If provided, then chapter must also be provided.
+  """
+  orderWithinChapter: Int
+  userGeneratedFilename: String
+  displayDate: String
+}
+
+input UploadPoliceCaseFileInput {
+  caseId: ID!
+  id: ID!
+  name: String!
+}
+
+input CreateEventLogInput {
+  eventType: EventType!
+  caseId: String
+}
+
+input CreateVictimInput {
+  caseId: ID!
+}
+
+input UpdateVictimInput {
+  victimId: ID!
+  caseId: ID!
+  name: String
+  hasNationalId: Boolean
+  nationalId: String
+  hasLawyer: Boolean
+  lawyerNationalId: String
+  lawyerName: String
+  lawyerEmail: String
+  lawyerPhoneNumber: String
+  lawyerAccessToRequest: RequestSharedWhen
+}
+
+input DeleteVictimInput {
+  caseId: ID!
+  victimId: ID!
+}

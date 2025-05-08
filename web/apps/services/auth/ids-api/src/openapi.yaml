@@ -1,0 +1,2625 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /v1/user-identities:
+    post:
+      operationId: UserIdentitiesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserIdentityDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdentity'
+      tags:
+        - user-identities
+  /user-identities:
+    post:
+      operationId: UserIdentitiesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserIdentityDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdentity'
+      tags:
+        - user-identities
+  /v1/user-identities/{subjectId}:
+    get:
+      operationId: UserIdentitiesController_findOne
+      parameters:
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdentity'
+      tags:
+        - user-identities
+  /user-identities/{subjectId}:
+    get:
+      operationId: UserIdentitiesController_findOne
+      parameters:
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdentity'
+      tags:
+        - user-identities
+  /v1/user-identities/{provider}/{subjectId}:
+    get:
+      operationId: UserIdentitiesController_findOneByProviderSubject
+      parameters:
+        - name: provider
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdentity'
+      tags:
+        - user-identities
+  /user-identities/{provider}/{subjectId}:
+    get:
+      operationId: UserIdentitiesController_findOneByProviderSubject
+      parameters:
+        - name: provider
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdentity'
+      tags:
+        - user-identities
+  /v1/user-identities/delegation/{provider}/{subjectId}/{actorSubjectId}:
+    get:
+      operationId: UserIdentitiesController_findDelegationIdentity
+      parameters:
+        - name: provider
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: actorSubjectId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdentity'
+      tags:
+        - user-identities
+  /user-identities/delegation/{provider}/{subjectId}/{actorSubjectId}:
+    get:
+      operationId: UserIdentitiesController_findDelegationIdentity
+      parameters:
+        - name: provider
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: actorSubjectId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdentity'
+      tags:
+        - user-identities
+  /v1/user-identities/{subjectId}/claims:
+    put:
+      operationId: UserIdentitiesController_updateClaims
+      parameters:
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClaimDto'
+      tags:
+        - user-identities
+  /user-identities/{subjectId}/claims:
+    put:
+      operationId: UserIdentitiesController_updateClaims
+      parameters:
+        - name: subjectId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClaimDto'
+      tags:
+        - user-identities
+  /v1/clients/{id}:
+    get:
+      operationId: ClientsController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+      tags:
+        - clients
+  /clients/{id}:
+    get:
+      operationId: ClientsController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+      tags:
+        - clients
+  /v1/origins:
+    get:
+      operationId: OriginsController_findAllowedCorsOrigins
+      parameters:
+        - name: origin
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientAllowedCorsOrigin'
+      tags:
+        - clients
+  /origins:
+    get:
+      operationId: OriginsController_findAllowedCorsOrigins
+      parameters:
+        - name: origin
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientAllowedCorsOrigin'
+      tags:
+        - clients
+  /v1/identity-resources:
+    get:
+      operationId: ResourcesController_findIdentityResourcesByScopeName
+      parameters:
+        - name: scopeNames
+          required: false
+          in: query
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IdentityResourceDTO'
+      tags:
+        - resources
+  /identity-resources:
+    get:
+      operationId: ResourcesController_findIdentityResourcesByScopeName
+      parameters:
+        - name: scopeNames
+          required: false
+          in: query
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IdentityResourceDTO'
+      tags:
+        - resources
+  /v1/api-scopes:
+    get:
+      operationId: ResourcesController_findApiScopesByNameAsync
+      parameters:
+        - name: scopeNames
+          required: false
+          in: query
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiScope'
+      tags:
+        - resources
+  /api-scopes:
+    get:
+      operationId: ResourcesController_findApiScopesByNameAsync
+      parameters:
+        - name: scopeNames
+          required: false
+          in: query
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiScope'
+      tags:
+        - resources
+  /v1/api-resources:
+    get:
+      operationId: ResourcesController_findApiResourcesByNameAsync
+      parameters:
+        - name: apiResourceNames
+          required: false
+          in: query
+          allowEmptyValue: true
+          schema:
+            type: string
+        - name: apiScopeNames
+          required: false
+          in: query
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiResource'
+      tags:
+        - resources
+  /api-resources:
+    get:
+      operationId: ResourcesController_findApiResourcesByNameAsync
+      parameters:
+        - name: apiResourceNames
+          required: false
+          in: query
+          allowEmptyValue: true
+          schema:
+            type: string
+        - name: apiScopeNames
+          required: false
+          in: query
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiResource'
+      tags:
+        - resources
+  /v1/api-scopes/for-actor:
+    get:
+      operationId: ResourcesController_findActorApiScopes
+      parameters:
+        - name: requestedScopes
+          required: true
+          in: query
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+      tags:
+        - resources
+  /api-scopes/for-actor:
+    get:
+      operationId: ResourcesController_findActorApiScopes
+      parameters:
+        - name: requestedScopes
+          required: true
+          in: query
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+      tags:
+        - resources
+  /v1/grants:
+    get:
+      operationId: GrantsController_getAll
+      parameters:
+        - name: subjectId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sessionId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: clientId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grant'
+      tags:
+        - grants
+    delete:
+      operationId: GrantsController_removeAllAsync
+      parameters:
+        - name: subjectId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sessionId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: clientId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - grants
+    post:
+      operationId: GrantsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grant'
+      tags:
+        - grants
+  /grants:
+    get:
+      operationId: GrantsController_getAll
+      parameters:
+        - name: subjectId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sessionId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: clientId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grant'
+      tags:
+        - grants
+    delete:
+      operationId: GrantsController_removeAllAsync
+      parameters:
+        - name: subjectId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: sessionId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: clientId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - grants
+    post:
+      operationId: GrantsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grant'
+      tags:
+        - grants
+  /v1/grants/{key}:
+    get:
+      operationId: GrantsController_getAsync
+      parameters:
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grant'
+      tags:
+        - grants
+    delete:
+      operationId: GrantsController_removeAsync
+      parameters:
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - grants
+    put:
+      operationId: GrantsController_update
+      parameters:
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grant'
+      tags:
+        - grants
+  /grants/{key}:
+    get:
+      operationId: GrantsController_getAsync
+      parameters:
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grant'
+      tags:
+        - grants
+    delete:
+      operationId: GrantsController_removeAsync
+      parameters:
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - grants
+    put:
+      operationId: GrantsController_update
+      parameters:
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grant'
+      tags:
+        - grants
+  /v1/translations:
+    get:
+      operationId: TranslationController_findAllTranslations
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Translation'
+      tags:
+        - translation
+  /translations:
+    get:
+      operationId: TranslationController_findAllTranslations
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Translation'
+      tags:
+        - translation
+  /delegations:
+    get:
+      operationId: DelegationsController_findAllTo
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - delegations
+  /v1/delegations:
+    get:
+      operationId: DelegationsController_findAllTo
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - delegations
+  /v2/delegations:
+    get:
+      operationId: DelegationsController_findAllTo
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - delegations
+  /v1/delegations/scopes:
+    get:
+      operationId: DelegationsController_findAllScopesTo
+      parameters:
+        - name: fromNationalId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: delegationType
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - delegations
+  /delegations/scopes:
+    get:
+      operationId: DelegationsController_findAllScopesTo
+      parameters:
+        - name: fromNationalId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: delegationType
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - delegations
+  /v1/delegations/verify:
+    post:
+      operationId: DelegationsController_verify
+      description: Verifies a delegation at the source.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DelegationVerification'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegationVerificationResult'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - delegations
+  /delegations/verify:
+    post:
+      operationId: DelegationsController_verify
+      description: Verifies a delegation at the source.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DelegationVerification'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegationVerificationResult'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - delegations
+  /v1/permissions/permitted-scopes:
+    get:
+      operationId: PermissionsController_findAllPermittedScopes
+      parameters:
+        - name: requestedScopes
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - permissions
+  /permissions/permitted-scopes:
+    get:
+      operationId: PermissionsController_findAllPermittedScopes
+      parameters:
+        - name: requestedScopes
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - permissions
+  /v1/permissions/access-controlled-scopes:
+    get:
+      operationId: PermissionsController_findAllAccessControlledApiScopes
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiScope'
+      tags:
+        - permissions
+  /permissions/access-controlled-scopes:
+    get:
+      operationId: PermissionsController_findAllAccessControlledApiScopes
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiScope'
+      tags:
+        - permissions
+  /v1/user-profile:
+    get:
+      operationId: UserProfileController_userProfile
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - user-profile
+  /user-profile:
+    get:
+      operationId: UserProfileController_userProfile
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - user-profile
+  /v1/user-profile/individual:
+    get:
+      operationId: UserProfileController_individualUserProfile
+      description: Use /user-profile instead.
+      deprecated: true
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - user-profile
+  /user-profile/individual:
+    get:
+      operationId: UserProfileController_individualUserProfile
+      description: Use /user-profile instead.
+      deprecated: true
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - user-profile
+  /v1/notifications/sms:
+    post:
+      operationId: NotificationsController_sendSms
+      description: Send a message via SMS.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmsMessage'
+      responses:
+        '202':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - notifications
+      security:
+        - ias:
+            - '@identityserver.api/authentication'
+  /v1/login-restrictions:
+    get:
+      operationId: LoginRestrictionsController_findAll
+      description: Gets all login restrictions for a user.
+      parameters:
+        - name: X-Query-Phone-Number
+          required: true
+          in: header
+          description: Phone number of the user
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoginRestrictionDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - login-restrictions
+  /v1/login-restrictions/.phone-number:
+    get:
+      operationId: LoginRestrictionsController_findByPhoneNumber
+      description: >-
+        Deprecated. IDS should use the collection endpoint. This endpoint will
+        be removed when IDS has switched over.
+      deprecated: true
+      parameters:
+        - name: X-Param-Phone-Number
+          required: true
+          in: header
+          description: Phone number of the user
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginRestrictionDto'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - login-restrictions
+  /v1/confirm-identity/{id}:
+    post:
+      operationId: ConfirmIdentityController_confirmIdentity
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - confirm-identity
+    get:
+      operationId: ConfirmIdentityController_getIdentityConfirmation
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: The id of the identity confirmation
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityConfirmationDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - confirm-identity
+  /confirm-identity/{id}:
+    post:
+      operationId: ConfirmIdentityController_confirmIdentity
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - confirm-identity
+    get:
+      operationId: ConfirmIdentityController_getIdentityConfirmation
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: The id of the identity confirmation
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityConfirmationDTO'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - confirm-identity
+  /v1/passkeys/authenticate:
+    post:
+      operationId: PasskeysController_verifyAuthentication
+      summary: Validates passkey authentication based on input from authenticated user.
+      description: Verifies authenticated user passkey authentication response.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationOptions'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResult'
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResult'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - passkeys
+  /passkeys/authenticate:
+    post:
+      operationId: PasskeysController_verifyAuthentication
+      summary: Validates passkey authentication based on input from authenticated user.
+      description: Verifies authenticated user passkey authentication response.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationOptions'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResult'
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResult'
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpProblemResponse'
+      tags:
+        - passkeys
+info:
+  title: IdentityServer Api
+  description: Api for IdentityServer.
+  version: '1.0'
+  contact: {}
+tags:
+  - name: auth-api
+    description: ''
+servers: []
+components:
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    ClaimDto:
+      type: object
+      properties:
+        type:
+          type: string
+          example: set_type
+        value:
+          type: string
+          example: set_value
+        valueType:
+          type: string
+          example: set_value_type
+        issuer:
+          type: string
+          example: set_issuer
+        originalIssuer:
+          type: string
+          example: set_original_issuer
+      required:
+        - type
+        - value
+        - valueType
+        - issuer
+        - originalIssuer
+    UserIdentityDto:
+      type: object
+      properties:
+        subjectId:
+          type: string
+          example: set_subject_id
+        name:
+          type: string
+          example: set_name
+        providerName:
+          type: string
+          example: set_provider_name
+        active:
+          type: boolean
+          example: set_active
+        providerSubjectId:
+          type: string
+          example: set_provider_subject_id
+        claims:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClaimDto'
+      required:
+        - subjectId
+        - name
+        - providerName
+        - active
+        - providerSubjectId
+        - claims
+    UserIdentity:
+      type: object
+      properties:
+        subjectId:
+          type: string
+        name:
+          type: string
+        providerName:
+          type: string
+        providerSubjectId:
+          type: string
+        active:
+          type: boolean
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        claims:
+          type: array
+          items:
+            type: string
+      required:
+        - subjectId
+        - name
+        - providerName
+        - providerSubjectId
+        - active
+        - created
+        - modified
+        - claims
+    Client:
+      type: object
+      properties:
+        clientId:
+          type: string
+          example: client_id
+        nationalId:
+          type: string
+          example: '1234567890'
+        clientType:
+          type: string
+          example: spa
+        allowOfflineAccess:
+          type: boolean
+          example: false
+        identityTokenLifetime:
+          type: number
+          example: 300
+        accessTokenLifetime:
+          type: number
+          example: 3600
+        authorizationCodeLifetime:
+          type: number
+          example: 300
+        absoluteRefreshTokenLifetime:
+          type: number
+          example: 2592000
+        slidingRefreshTokenLifetime:
+          type: number
+          example: 1296000
+        consentLifetime:
+          type: number
+          example: null
+        refreshTokenUsage:
+          type: number
+          example: 1
+        updateAccessTokenClaimsOnRefresh:
+          type: boolean
+          example: true
+        refreshTokenExpiration:
+          type: number
+          example: 1
+        accessTokenType:
+          type: number
+          example: 0
+        enableLocalLogin:
+          type: boolean
+          example: true
+        includeJwtId:
+          type: boolean
+          example: true
+        alwaysSendClientClaims:
+          type: boolean
+          example: false
+        pairWiseSubjectSalt:
+          type: string
+          example: null
+        userSsoLifetime:
+          type: number
+          example: null
+        userCodeType:
+          type: string
+          example: null
+        deviceCodeLifetime:
+          type: number
+          example: 300
+        alwaysIncludeUserClaimsInIdToken:
+          type: boolean
+          example: false
+        backChannelLogoutSessionRequired:
+          type: boolean
+          example: true
+        enabled:
+          type: boolean
+          example: true
+        logoUri:
+          type: string
+          example: null
+        requireConsent:
+          type: boolean
+          example: false
+        requirePkce:
+          type: boolean
+          example: false
+        requireRequestObject:
+          type: boolean
+          example: false
+        allowPlainTextPkce:
+          type: boolean
+          example: false
+        allowAccessTokenViaBrowser:
+          type: boolean
+          example: false
+        frontChannelLogoutUri:
+          type: string
+          example: null
+        frontChannelLogoutSessionRequired:
+          type: boolean
+          example: true
+        backChannelLogoutUri:
+          type: string
+          example: null
+        allowRememberConsent:
+          type: boolean
+          example: true
+        clientClaimsPrefix:
+          type: string
+          example: client_claims_prefix
+        clientName:
+          type: string
+          example: null
+        clientUri:
+          type: string
+          example: null
+        description:
+          type: string
+          example: Client Description for AdminUI
+        protocolType:
+          type: string
+          example: protocol_type
+        requireClientSecret:
+          type: boolean
+          example: true
+        archived:
+          format: date-time
+          type: string
+          example: null
+        contactEmail:
+          type: string
+          example: null
+        supportsCustomDelegation:
+          type: boolean
+          example: true
+        supportsLegalGuardians:
+          type: boolean
+          example: true
+        supportsProcuringHolders:
+          type: boolean
+          example: true
+        supportsPersonalRepresentatives:
+          type: boolean
+          example: true
+        promptDelegations:
+          type: boolean
+          example: true
+        requireApiScopes:
+          type: boolean
+          example: true
+        singleSession:
+          type: boolean
+          example: true
+        sso:
+          type: string
+          example: disabled
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        allowedScopes:
+          type: array
+          items:
+            type: string
+        allowedCorsOrigins:
+          type: array
+          items:
+            type: string
+        postLogoutRedirectUris:
+          type: array
+          items:
+            type: string
+        allowedAcr:
+          type: array
+          items:
+            type: string
+      required:
+        - clientId
+        - nationalId
+        - clientType
+        - allowOfflineAccess
+        - identityTokenLifetime
+        - accessTokenLifetime
+        - authorizationCodeLifetime
+        - absoluteRefreshTokenLifetime
+        - slidingRefreshTokenLifetime
+        - consentLifetime
+        - refreshTokenUsage
+        - updateAccessTokenClaimsOnRefresh
+        - refreshTokenExpiration
+        - accessTokenType
+        - enableLocalLogin
+        - includeJwtId
+        - alwaysSendClientClaims
+        - pairWiseSubjectSalt
+        - userSsoLifetime
+        - userCodeType
+        - deviceCodeLifetime
+        - alwaysIncludeUserClaimsInIdToken
+        - backChannelLogoutSessionRequired
+        - enabled
+        - logoUri
+        - requireConsent
+        - requirePkce
+        - requireRequestObject
+        - allowPlainTextPkce
+        - allowAccessTokenViaBrowser
+        - frontChannelLogoutUri
+        - frontChannelLogoutSessionRequired
+        - backChannelLogoutUri
+        - allowRememberConsent
+        - clientClaimsPrefix
+        - clientName
+        - clientUri
+        - description
+        - protocolType
+        - requireClientSecret
+        - archived
+        - contactEmail
+        - supportsCustomDelegation
+        - supportsLegalGuardians
+        - supportsProcuringHolders
+        - supportsPersonalRepresentatives
+        - promptDelegations
+        - requireApiScopes
+        - singleSession
+        - sso
+        - created
+        - modified
+        - allowedScopes
+        - allowedCorsOrigins
+        - postLogoutRedirectUris
+        - allowedAcr
+    ClientAllowedCorsOrigin:
+      type: object
+      properties:
+        origin:
+          type: string
+        clientId:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+      required:
+        - origin
+        - clientId
+        - created
+        - modified
+    ApiScope:
+      type: object
+      properties:
+        name:
+          type: string
+        enabled:
+          type: boolean
+        displayName:
+          type: string
+        description:
+          type: string
+        domainName:
+          type: string
+          example: '@island.is'
+        order:
+          type: number
+          example: 0
+        groupId:
+          type: object
+          nullable: true
+        showInDiscoveryDocument:
+          type: boolean
+        grantToAuthenticatedUser:
+          type: boolean
+        grantToLegalGuardians:
+          type: boolean
+        grantToProcuringHolders:
+          type: boolean
+        grantToPersonalRepresentatives:
+          type: boolean
+        allowExplicitDelegationGrant:
+          type: boolean
+        automaticDelegationGrant:
+          type: boolean
+        alsoForDelegatedUser:
+          type: boolean
+        isAccessControlled:
+          type: object
+          nullable: true
+        userClaims:
+          nullable: true
+          type: array
+          items:
+            type: string
+        required:
+          type: boolean
+        emphasize:
+          type: boolean
+        archived:
+          type: object
+          nullable: true
+        created:
+          format: date-time
+          type: string
+        modified:
+          type: object
+          nullable: true
+        group:
+          $ref: '#/components/schemas/ApiScopeGroup'
+        domain:
+          $ref: '#/components/schemas/Domain'
+      required:
+        - name
+        - enabled
+        - displayName
+        - description
+        - domainName
+        - order
+        - showInDiscoveryDocument
+        - grantToAuthenticatedUser
+        - grantToLegalGuardians
+        - grantToProcuringHolders
+        - grantToPersonalRepresentatives
+        - allowExplicitDelegationGrant
+        - automaticDelegationGrant
+        - alsoForDelegatedUser
+        - required
+        - emphasize
+        - archived
+        - created
+    ApiScopeGroup:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: Finance
+        displayName:
+          type: string
+          example: Finance heading
+        description:
+          type: string
+          example: Description about the Finance group
+        order:
+          type: number
+          example: 0
+        domainName:
+          type: string
+          example: '@island.is'
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiScope'
+        domain:
+          $ref: '#/components/schemas/Domain'
+      required:
+        - id
+        - name
+        - displayName
+        - description
+        - order
+        - domainName
+        - created
+        - modified
+    Domain:
+      type: object
+      properties:
+        name:
+          type: string
+          example: '@island.is'
+        description:
+          type: string
+          example: Domain for Island.is
+        nationalId:
+          type: string
+          example: '0123456789'
+        displayName:
+          type: string
+          example: Mínar síður Ísland.is
+        organisationLogoKey:
+          type: string
+          example: Stafrænt Ísland
+          description: This key is used to look up the organisation in Contentful.
+        contactEmail:
+          type: string
+          example: island@example.is
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiScopeGroup'
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiScope'
+        clients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+      required:
+        - name
+        - description
+        - nationalId
+        - displayName
+        - organisationLogoKey
+        - contactEmail
+        - created
+        - modified
+    IdentityResourceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        displayName:
+          type: string
+        description:
+          type: string
+        showInDiscoveryDocument:
+          type: boolean
+          example: true
+        automaticDelegationGrant:
+          type: boolean
+          example: true
+        userClaims:
+          type: array
+          items:
+            type: string
+        enabled:
+          type: boolean
+          example: true
+        required:
+          type: boolean
+          example: false
+        emphasize:
+          type: boolean
+          example: false
+        archived:
+          format: date-time
+          type: string
+          example: null
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        domain:
+          $ref: '#/components/schemas/Domain'
+      required:
+        - name
+        - displayName
+        - description
+        - showInDiscoveryDocument
+        - automaticDelegationGrant
+        - userClaims
+        - enabled
+        - required
+        - emphasize
+        - archived
+        - created
+        - modified
+    ApiResource:
+      type: object
+      properties:
+        name:
+          type: string
+        nationalId:
+          type: string
+          example: '1234567890'
+        enabled:
+          type: boolean
+        displayName:
+          type: string
+        description:
+          type: string
+        showInDiscoveryDocument:
+          type: boolean
+        archived:
+          format: date-time
+          type: string
+          example: null
+        contactEmail:
+          type: string
+          example: null
+        userClaims:
+          type: array
+          items:
+            type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        apiSecrets:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - nationalId
+        - enabled
+        - displayName
+        - description
+        - showInDiscoveryDocument
+        - archived
+        - contactEmail
+        - userClaims
+        - created
+        - modified
+        - scopes
+        - apiSecrets
+    Grant:
+      type: object
+      properties:
+        key:
+          type: string
+          example: key
+        type:
+          type: string
+          example: type
+        subjectId:
+          type: string
+          example: subjectId
+        sessionId:
+          type: string
+          example: sessionId
+        clientId:
+          type: string
+          example: postman
+        description:
+          type: string
+          example: description
+        creationTime:
+          format: date-time
+          type: string
+        expiration:
+          format: date-time
+          type: string
+          example: 2025-05-07T09:41:16.278Z
+        consumedTime:
+          format: date-time
+          type: string
+        data:
+          type: string
+          example: data
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+      required:
+        - key
+        - type
+        - subjectId
+        - sessionId
+        - clientId
+        - description
+        - creationTime
+        - expiration
+        - consumedTime
+        - data
+        - created
+        - modified
+    GrantDto:
+      type: object
+      properties:
+        key:
+          type: string
+          example: set_key
+        type:
+          type: string
+          example: set_type
+        subjectId:
+          type: string
+          example: set_subject_id
+        sessionId:
+          type: string
+          example: sessionId
+        clientId:
+          type: string
+          example: set_clientId
+        description:
+          type: object
+          example: description
+        creationTime:
+          format: date-time
+          type: string
+        expiration:
+          format: date-time
+          type: string
+          example: 2025-05-07T09:41:16.368Z
+        consumedTime:
+          type: object
+        data:
+          type: string
+          example: set_data
+      required:
+        - key
+        - type
+        - subjectId
+        - sessionId
+        - clientId
+        - description
+        - creationTime
+        - expiration
+        - consumedTime
+        - data
+    Translation:
+      type: object
+      properties:
+        language:
+          type: string
+        className:
+          type: string
+        key:
+          type: string
+        property:
+          type: string
+        value:
+          type: string
+        created:
+          format: date-time
+          type: string
+        modified:
+          format: date-time
+          type: string
+      required:
+        - language
+        - className
+        - key
+        - property
+        - value
+        - created
+        - modified
+    AuthDelegationType:
+      type: string
+      enum:
+        - ProcurationHolder
+        - LegalGuardian
+        - Custom
+        - PersonalRepresentative
+        - LegalGuardianMinor
+        - LegalRepresentative
+        - GeneralMandate
+    DelegationVerification:
+      type: object
+      properties:
+        fromNationalId:
+          type: string
+        delegationTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthDelegationType'
+      required:
+        - fromNationalId
+        - delegationTypes
+    DelegationVerificationResult:
+      type: object
+      properties:
+        verified:
+          type: boolean
+      required:
+        - verified
+    HttpProblemResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: number
+          description: The HTTP status code
+        detail:
+          type: string
+          description: >-
+            A human-readable explanation specific to this occurrence of the
+            problem
+        instance:
+          type: string
+          description: >-
+            A URI reference that identifies the specific occurrence of the
+            problem.
+      required:
+        - type
+        - title
+    AddressDTO:
+      type: object
+      properties:
+        formatted:
+          type: string
+        streetAddress:
+          type: string
+        locality:
+          type: string
+        region:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+    UserProfileDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        givenName:
+          type: string
+        familyName:
+          type: string
+        middleName:
+          type: string
+        email:
+          type: string
+        emailVerified:
+          type: boolean
+        phoneNumber:
+          type: string
+        phoneNumberVerified:
+          type: boolean
+        gender:
+          type: string
+        birthdate:
+          type: string
+        picture:
+          type: string
+        locale:
+          type: string
+        address:
+          $ref: '#/components/schemas/AddressDTO'
+        legalDomicile:
+          $ref: '#/components/schemas/AddressDTO'
+    SmsMessage:
+      type: object
+      properties:
+        toPhoneNumber:
+          type: string
+        content:
+          type: string
+      required:
+        - toPhoneNumber
+        - content
+    LoginRestrictionDto:
+      type: object
+      properties:
+        nationalId:
+          type: string
+        phoneNumber:
+          type: string
+        until:
+          format: date-time
+          type: string
+      required:
+        - nationalId
+        - phoneNumber
+        - until
+    IdentityConfirmationDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        ticketId:
+          type: string
+        title:
+          type: object
+        description:
+          type: object
+        isExpired:
+          type: boolean
+      required:
+        - id
+        - type
+        - ticketId
+        - title
+        - description
+        - isExpired
+    AuthenticationOptions:
+      type: object
+      properties:
+        passkey:
+          type: string
+      required:
+        - passkey
+    AuthenticationResult:
+      type: object
+      properties:
+        verified:
+          type: boolean
+        idp:
+          type: string
+        sub:
+          type: string
+      required:
+        - verified
+        - idp
+        - sub

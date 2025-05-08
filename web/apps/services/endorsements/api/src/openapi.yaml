@@ -1,0 +1,1088 @@
+openapi: 3.0.0
+paths:
+  /liveness:
+    get:
+      operationId: InfraController_liveness
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liveness'
+      tags:
+        - internal
+  /version:
+    get:
+      operationId: InfraController_version
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+      tags:
+        - internal
+  /health/check:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database:
+                        status: up
+                      redis:
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties:
+                        type: string
+  /endorsement-list/{listId}/endorsement:
+    get:
+      operationId: EndorsementController_findAll
+      summary: Finds all endorsements in a given list
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndorsementDto'
+      tags:
+        - endorsement
+      security:
+        - oauth2: []
+    post:
+      operationId: EndorsementController_create
+      summary: Uses the authenticated users national id to create an endorsement
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndorsementDto'
+      responses:
+        '201':
+          description: Uses the authenticated users national id to create an endorsement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endorsement'
+      tags:
+        - endorsement
+      security:
+        - oauth2: []
+    delete:
+      operationId: EndorsementController_delete
+      summary: >-
+        Uses the authenticated users national id to remove endorsement form a
+        given list
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: >-
+            Uses the authenticated users national id to remove endorsement form
+            a given list
+      tags:
+        - endorsement
+      security:
+        - oauth2: []
+  /endorsement-list/{listId}/endorsement/general-petition:
+    get:
+      operationId: EndorsementController_find
+      summary: Finds all endorsements in a given general petition list
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndorsementDto'
+      tags:
+        - endorsement
+      security:
+        - oauth2: []
+  /endorsement-list/{listId}/endorsement/exists:
+    get:
+      operationId: EndorsementController_findByAuth
+      summary: Find any existing endorsement in a given list by national Id
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: >-
+            Uses current authenticated users national id to find any existing
+            endorsement in a given list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExistsEndorsementResponse'
+      tags:
+        - endorsement
+      security:
+        - oauth2: []
+  /endorsement-list:
+    get:
+      operationId: EndorsementListController_findByTags
+      summary: >-
+        Finds all endorsement lists belonging to given tags, if user is not
+        admin then no locked lists will appear
+      parameters:
+        - name: tags
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - generalPetition
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndorsementListDto'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+    post:
+      operationId: EndorsementListController_create
+      summary: Create an endorsements list
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndorsementListDto'
+      responses:
+        '200':
+          description: Create an endorsements list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndorsementList'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/general-petition-lists:
+    get:
+      operationId: EndorsementListController_getGeneralPetitionLists
+      summary: Gets General Petition Lists
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndorsementListDto'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/general-petition-list/{listId}:
+    get:
+      operationId: EndorsementListController_getGeneralPetitionList
+      summary: Gets a General Petition List by Id
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndorsementList'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/endorsements:
+    get:
+      operationId: EndorsementListController_findEndorsements
+      summary: Finds all endorsements for the currently authenticated user
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndorsementDto'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/endorsementLists:
+    get:
+      operationId: EndorsementListController_findEndorsementLists
+      summary: Finds all endorsement lists owned by the currently authenticated user
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: Limits the number of results in a request.
+          schema:
+            default: 10
+            type: number
+        - name: before
+          required: false
+          in: query
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+          schema:
+            type: string
+        - name: after
+          required: false
+          in: query
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndorsementListDto'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/{listId}:
+    get:
+      operationId: EndorsementListController_findOne
+      summary: Finds a single endorsements list by id
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Finds a single endorsements list by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndorsementList'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/{listId}/close:
+    put:
+      operationId: EndorsementListController_close
+      summary: Close a single endorsements list by id
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Close a single endorsements list by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndorsementList'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/{listId}/open:
+    put:
+      operationId: EndorsementListController_open
+      summary: Open a single endorsements list by id
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeEndorsmentListClosedDateDto'
+      responses:
+        '200':
+          description: Open a single endorsements list by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndorsementList'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/{listId}/lock:
+    put:
+      operationId: EndorsementListController_lock
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lock a single endorsements list by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndorsementList'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/{listId}/unlock:
+    put:
+      operationId: EndorsementListController_unlock
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Unlock a single endorsements list by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndorsementList'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/{listId}/update:
+    put:
+      operationId: EndorsementListController_update
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEndorsementListDto'
+      responses:
+        '200':
+          description: Admin update a single endorsements list by id and request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndorsementList'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/{listId}/ownerInfo:
+    get:
+      operationId: EndorsementListController_getOwnerInfo
+      summary: Fetches owner info from national registry
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Create an endorsements list
+          content:
+            application/json:
+              schema:
+                type: string
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/{listId}/email-pdf:
+    post:
+      operationId: EndorsementListController_emailEndorsementsPDF
+      summary: Emails a PDF with list endorsements data
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: emailAddress
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendPdfEmailResponse'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+  /endorsement-list/{listId}/export/{fileType}:
+    get:
+      operationId: EndorsementListController_exportEndorsementList
+      summary: Export an endorsement list as PDF or CSV
+      parameters:
+        - name: listId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: fileType
+          required: true
+          in: path
+          schema:
+            type: string
+            enum:
+              - pdf
+              - csv
+      responses:
+        '200':
+          description: Presigned URL for the exported file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndorsementListExportUrlResponse'
+      tags:
+        - endorsementList
+      security:
+        - oauth2: []
+info:
+  title: EndorsementSystem
+  description: >-
+    This API manages endorsement lists and associated endorsements collected by
+    systems within island.is.
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://identity-server.dev01.devland.is/connect/authorize
+          tokenUrl: https://identity-server.dev01.devland.is/connect/token
+          scopes:
+            openid: ''
+            profile: ''
+            '@island.is/endorsements': ''
+            '@admin.island.is/petitions': ''
+  schemas:
+    Liveness:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    Version:
+      type: object
+      properties:
+        version:
+          type: string
+      required:
+        - version
+    PaginationDto:
+      type: object
+      properties:
+        limit:
+          type: number
+          description: Limits the number of results in a request.
+          default: 10
+        before:
+          type: string
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+        after:
+          type: string
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+    EndorsementListOpen:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+            enum:
+              - generalPetition
+        closedDate:
+          format: date-time
+          type: string
+          nullable: false
+        openedDate:
+          format: date-time
+          type: string
+          nullable: false
+        adminLock:
+          type: boolean
+          nullable: false
+      required:
+        - id
+        - title
+        - description
+        - tags
+        - closedDate
+        - openedDate
+        - adminLock
+    EndorsementMetadata:
+      type: object
+      properties:
+        fullName:
+          type: string
+        locality:
+          type: string
+        showName:
+          type: boolean
+      required:
+        - fullName
+        - locality
+        - showName
+    Endorsement:
+      type: object
+      properties:
+        id:
+          type: string
+        counter:
+          type: number
+        endorser:
+          type: string
+        endorsementListId:
+          type: string
+        endorsementList:
+          $ref: '#/components/schemas/EndorsementListOpen'
+        meta:
+          $ref: '#/components/schemas/EndorsementMetadata'
+        created:
+          type: string
+        modified:
+          type: string
+      required:
+        - id
+        - counter
+        - endorser
+        - endorsementListId
+        - meta
+        - created
+        - modified
+    PageInfoDto:
+      type: object
+      properties:
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPreviousPage:
+          type: boolean
+          example: false
+        startCursor:
+          type: string
+          example: WyIwM2JmMWUwOS1hNWEwLTQyNDMtOTAxOC1mY2FhYjg4NTVkMTYiXQ==
+        endCursor:
+          type: string
+          example: WyJmODY1MDAzMS03YTFkLTRhOTAtOWI2OC00ODg1YjlkZDZjZDgiXQ==
+      required:
+        - hasNextPage
+        - hasPreviousPage
+        - startCursor
+        - endCursor
+    PaginatedEndorsementDto:
+      type: object
+      properties:
+        totalCount:
+          type: number
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Endorsement'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+      required:
+        - totalCount
+        - data
+        - pageInfo
+    ExistsEndorsementResponse:
+      type: object
+      properties:
+        hasEndorsed:
+          type: boolean
+      required:
+        - hasEndorsed
+    EndorsementDto:
+      type: object
+      properties:
+        showName:
+          type: boolean
+      required:
+        - showName
+    FindTagPaginationComboDto:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+            enum:
+              - generalPetition
+        limit:
+          type: number
+          description: Limits the number of results in a request.
+          default: 10
+        before:
+          type: string
+          description: >-
+            The value of `startCursor` from the previous response pageInfo to
+            query the previous page of `limit` number of data items.
+        after:
+          type: string
+          description: >-
+            The value of `endCursor` from the response to query the next page of
+            `limit` number of data items.
+      required:
+        - tags
+    EndorsementMetadataDto:
+      type: object
+      properties:
+        field:
+          type: string
+          enum:
+            - fullName
+            - showName
+      required:
+        - field
+    EndorsementList:
+      type: object
+      properties:
+        id:
+          type: string
+        counter:
+          type: number
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        openedDate:
+          format: date-time
+          type: string
+          nullable: false
+        closedDate:
+          format: date-time
+          type: string
+          nullable: false
+        endorsementMetadata:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndorsementMetadataDto'
+        tags:
+          type: array
+          items:
+            type: string
+            enum:
+              - generalPetition
+        owner:
+          type: string
+        ownerName:
+          type: string
+        adminLock:
+          type: boolean
+        endorsements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Endorsement'
+        endorsementCounter:
+          type: number
+        meta:
+          type: object
+        created:
+          type: string
+        modified:
+          type: string
+        endorsementCount:
+          type: number
+          description: The number of endorsements in the list
+      required:
+        - id
+        - counter
+        - title
+        - description
+        - openedDate
+        - closedDate
+        - endorsementMetadata
+        - tags
+        - owner
+        - ownerName
+        - adminLock
+        - endorsementCounter
+        - meta
+        - created
+        - modified
+        - endorsementCount
+    PaginatedEndorsementListDto:
+      type: object
+      properties:
+        totalCount:
+          type: number
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndorsementList'
+        pageInfo:
+          $ref: '#/components/schemas/PageInfoDto'
+      required:
+        - totalCount
+        - data
+        - pageInfo
+    ChangeEndorsmentListClosedDateDto:
+      type: object
+      properties:
+        closedDate:
+          format: date-time
+          type: string
+      required:
+        - closedDate
+    UpdateEndorsementListDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        closedDate:
+          format: date-time
+          type: string
+        openedDate:
+          format: date-time
+          type: string
+      required:
+        - title
+        - closedDate
+        - openedDate
+    EndorsementListDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        endorsementMetadata:
+          nullable: true
+          type: array
+          items:
+            $ref: '#/components/schemas/EndorsementMetadataDto'
+        tags:
+          type: array
+          nullable: true
+          items:
+            type: string
+            enum:
+              - generalPetition
+        meta:
+          type: object
+          nullable: true
+        openedDate:
+          format: date-time
+          type: string
+          default: 2025-05-06T09:38:17.597Z
+        closedDate:
+          format: date-time
+          type: string
+          default: 2025-06-06T09:38:17.597Z
+        adminLock:
+          type: boolean
+          default: false
+      required:
+        - title
+        - endorsementMetadata
+        - tags
+        - meta
+        - openedDate
+        - closedDate
+        - adminLock
+    SendPdfEmailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
+    EndorsementListExportUrlResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The presigned URL for the exported file
+          example: https://example.com/presigned-url-to-file
+      required:
+        - url

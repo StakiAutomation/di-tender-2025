@@ -1,0 +1,546 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type StaffModel {
+  id: ID!
+  name: String!
+  nationalId: String!
+  municipalityIds: [String!]!
+  roles: [String!]!
+  active: Boolean!
+  usePseudoName: Boolean
+  phoneNumber: String
+  nickname: String
+  email: String
+}
+
+type SpouseModel {
+  hasPartnerApplied: Boolean!
+  hasFiles: Boolean!
+  applicantName: String!
+  applicantSpouseEmail: String!
+}
+
+type UserModel {
+  nationalId: String!
+  name: String!
+  phoneNumber: String
+  currentApplicationId: String
+  spouse: SpouseModel
+  staff: StaffModel
+  postalCode: Float
+}
+
+type SignedUrlModel {
+  url: String!
+  key: String!
+}
+
+type ApplicationFileModel {
+  id: ID!
+  created: String!
+  applicationId: String!
+  name: String!
+  key: String!
+  size: Float!
+  type: String!
+}
+
+type CreateFilesModel {
+  success: Boolean!
+}
+
+type DeductionFactorsModel {
+  amount: Float!
+  description: String!
+  amountId: String!
+}
+
+type AmountModel {
+  applicationId: String!
+  aidAmount: Float!
+  income: Float
+  childrenAidAmount: Float
+  decemberAidAmount: Float
+  personalTaxCredit: Float!
+  spousePersonalTaxCredit: Float
+  tax: Float!
+  finalAmount: Float!
+  deductionFactors: [DeductionFactorsModel!]
+}
+
+type DirectTaxPaymentModel {
+  totalSalary: Float!
+  payerNationalId: String!
+  personalAllowance: Float!
+  withheldAtSource: Float!
+  month: Float!
+  year: Float!
+  userType: String!
+}
+
+type ChildrenModel {
+  id: ID!
+  created: String!
+  modified: String!
+  applicationId: String!
+  school: String
+  nationalId: String!
+  name: String!
+  livesWithApplicant: Boolean!
+  livesWithBothParents: Boolean!
+}
+
+type ApplicationModel {
+  id: ID!
+  created: String!
+  modified: String!
+  appliedDate: String!
+  nationalId: String!
+  name: String!
+  phoneNumber: String
+  email: String!
+  homeCircumstances: String!
+  homeCircumstancesCustom: String
+  student: Boolean!
+  studentCustom: String
+  employment: String!
+  employmentCustom: String
+  hasIncome: Boolean!
+  usePersonalTaxCredit: Boolean!
+  bankNumber: String
+  ledger: String
+  accountNumber: String
+  interview: Boolean
+  formComment: String
+  childrenComment: String
+  spouseFormComment: String
+  state: String!
+  files: [ApplicationFileModel!]
+  rejection: String
+  staff: StaffModel
+  applicationEvents: [ApplicationEventModel!]
+  children: [ChildrenModel!]
+  amount: AmountModel
+  filters: ApplicationFiltersModel
+  spouseName: String
+  spouseNationalId: String
+  spouseEmail: String
+  spousePhoneNumber: String
+  familyStatus: String!
+  streetName: String
+  postalCode: String
+  city: String
+  municipalityCode: String!
+  directTaxPayments: [DirectTaxPaymentModel!]!
+  hasFetchedDirectTaxPayment: Boolean
+  spouseHasFetchedDirectTaxPayment: Boolean
+  applicationSystemId: String
+  navSuccess: Boolean
+}
+
+type ApplicationFiltersModel {
+  New: Float!
+  InProgress: Float!
+  DataNeeded: Float!
+  Rejected: Float!
+  Approved: Float!
+  MyCases: Float!
+}
+
+type ApplicationEventModel {
+  id: ID!
+  created: String!
+  applicationId: String!
+  comment: String
+  eventType: String!
+  staffNationalId: String
+  staffName: String
+  emailSent: Boolean
+}
+
+type UpdateApplicationTableResponse {
+  applications: [ApplicationModel!]!
+  filters: ApplicationFiltersModel!
+}
+
+type FilterApplicationsResponse {
+  applications: [ApplicationModel!]!
+  totalCount: Float!
+  staffList: [StaffModel!]!
+  minDateCreated: String
+}
+
+type AidModel {
+  ownPlace: Float!
+  registeredRenting: Float!
+  unregisteredRenting: Float!
+  livesWithParents: Float!
+  unknown: Float!
+  withOthers: Float!
+  municipalityId: String!
+  type: String!
+}
+
+type MunicipalityModel {
+  id: ID!
+  name: String!
+  active: Boolean!
+  homepage: String
+  municipalityId: String!
+  individualAid: AidModel!
+  cohabitationAid: AidModel!
+  email: String
+  rulesHomepage: String
+  numberOfUsers: Float
+  adminUsers: [StaffModel!]
+  allAdminUsers: [StaffModel!]
+  usingNav: Boolean!
+  navUrl: String
+  navUsername: String
+  navPassword: String
+  childrenAid: String!
+  decemberCompensation: Float!
+}
+
+type DirectTaxPaymentsResponse {
+  directTaxPayments: [DirectTaxPaymentResponse!]!
+  success: Boolean!
+}
+
+type DirectTaxPaymentResponse {
+  totalSalary: Float!
+  payerNationalId: String!
+  personalAllowance: Float!
+  withheldAtSource: Float!
+  month: Float!
+  year: Float!
+}
+
+type PersonalTaxReturn {
+  key: String!
+  name: String!
+  size: Float!
+}
+
+type PersonalTaxReturnResponse {
+  personalTaxReturn: PersonalTaxReturn
+}
+
+type UserAddress {
+  streetName: String!
+  postalCode: String
+  city: String
+  municipalityCode: String
+}
+
+type UserResidence {
+  address: UserAddress!
+  houseIdentificationCode: String
+  realEstateNumber: String
+  country: String
+  dateOfChange: DateTime
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type UserSpouse {
+  nationalId: ID
+  maritalStatus: String
+  name: String
+}
+
+type Person {
+  nationalId: ID!
+  fullName: String!
+  genderCode: String!
+  address: UserAddress
+  livesWithApplicant: Boolean
+  livesWithBothParents: Boolean
+  children: [Person!]
+  otherParent: Person
+  residenceHistory: [UserResidence!]
+  spouse: UserSpouse
+}
+
+type ApiKeysModel {
+  id: ID!
+  name: String!
+  apiKey: String!
+  municipalityCode: String!
+}
+
+type DeleteApiKeyResponse {
+  success: Boolean!
+}
+
+type Query {
+  currentUser: UserModel
+  applications(input: AllApplicationInput!): [ApplicationModel!]!
+  application(input: ApplicationInput!): ApplicationModel!
+  applicationSearch(input: ApplicationSearchInput!): [ApplicationModel!]!
+  filterApplications(input: FilterApplicationsInput!): FilterApplicationsResponse!
+  municipality(input: MunicipalityQueryInput!): MunicipalityModel!
+  municipalityByIds: [MunicipalityModel!]!
+  municipalities: [MunicipalityModel!]!
+  getSignedUrlForId(input: GetSignedUrlForIdInput!): SignedUrlModel!
+  getSignedUrlForAllFilesId(input: GetSignedUrlForIdInput!): [SignedUrlModel!]!
+  municipalityNationalRegistryUserV2: Person
+  users: [StaffModel!]!
+  user(input: StaffInput!): StaffModel!
+  admins: [StaffModel!]!
+  supervisors: [StaffModel!]!
+  apiKeysForMunicipality: [ApiKeysModel!]!
+  municipalitiesPersonalTaxReturn(input: MunicipalitiesPersonalTaxReturnIdInput!): PersonalTaxReturnResponse!
+  municipalitiesDirectTaxPayments: DirectTaxPaymentsResponse!
+}
+
+input AllApplicationInput {
+  stateUrl: String!
+}
+
+input ApplicationInput {
+  id: String!
+}
+
+input ApplicationSearchInput {
+  nationalId: String!
+}
+
+input FilterApplicationsInput {
+  defaultStates: [String!]!
+  states: [String!]!
+  staff: [String!]!
+  page: Float!
+  startDate: String
+  endDate: String
+}
+
+input MunicipalityQueryInput {
+  id: String!
+}
+
+input GetSignedUrlForIdInput {
+  id: String!
+}
+
+input StaffInput {
+  id: String!
+}
+
+input MunicipalitiesPersonalTaxReturnIdInput {
+  id: String!
+}
+
+type Mutation {
+  createApplication(input: CreateApplicationInput!): ApplicationModel
+  updateApplication(input: UpdateApplicationInput!): ApplicationModel
+  updateApplicationTable(input: UpdateApplicationInputTable!): UpdateApplicationTableResponse
+  applicationFilters: ApplicationFiltersModel!
+  createApplicationEvent(input: CreateApplicationEventInput!): ApplicationModel
+  municipalityActivity(input: MunicipalityActivityInput!): MunicipalityModel!
+  createMunicipality(input: CreateMunicipalityInput!): MunicipalityModel!
+  updateMunicipality(input: UpdateMunicipalityInput!): [MunicipalityModel!]!
+  getSignedUrl(input: GetSignedUrlInput!): SignedUrlModel!
+  createApplicationFiles(input: CreateApplicationFilesInput!): CreateFilesModel!
+  updateStaff(input: UpdateStaffInput!): StaffModel
+  createStaff(input: CreateStaffInput!): StaffModel!
+  createApiKey(input: CreateApiKeyInput!): ApiKeysModel!
+  updateApiKey(input: UpdateApiKeyInput!): ApiKeysModel!
+  deleteApiKey(input: DeleteApiKeyInput!): DeleteApiKeyResponse!
+}
+
+input CreateApplicationInput {
+  name: String!
+  phoneNumber: String
+  email: String!
+  homeCircumstances: String!
+  homeCircumstancesCustom: String
+  student: Boolean!
+  studentCustom: String
+  employment: String!
+  employmentCustom: String
+  hasIncome: Boolean!
+  usePersonalTaxCredit: Boolean!
+  bankNumber: String
+  ledger: String
+  accountNumber: String
+  interview: Boolean
+  formComment: String
+  childrenComment: String
+  state: String!
+  files: [CreateApplicationFileInput!]!
+  amount: Float
+  spouseName: String
+  spouseNationalId: String
+  spouseEmail: String
+  familyStatus: String!
+  city: String
+  streetName: String
+  municipalityCode: String!
+  postalCode: String
+  hasFetchedDirectTaxPayment: Boolean
+  directTaxPayments: [DirectTaxPaymentInput!]!
+  applicationSystemId: String
+}
+
+input CreateApplicationFileInput {
+  name: String!
+  key: String!
+  size: Float!
+  type: String!
+}
+
+input DirectTaxPaymentInput {
+  totalSalary: Float!
+  payerNationalId: String!
+  personalAllowance: Float!
+  withheldAtSource: Float!
+  month: Float!
+  year: Float!
+  userType: String!
+}
+
+input UpdateApplicationInput {
+  id: String!
+  state: String
+  event: String!
+  appliedDate: String
+  rejection: String
+  comment: String
+  staffId: String
+  spouseEmail: String
+  spousePhoneNumber: String
+  spouseName: String
+  spouseFormComment: String
+  amount: CreateAmountInput
+  spouseHasFetchedDirectTaxPayment: Boolean
+  directTaxPayments: [DirectTaxPaymentInput!]
+}
+
+input CreateAmountInput {
+  applicationId: String!
+  aidAmount: Float!
+  income: Float
+  childrenAidAmount: Float
+  decemberAidAmount: Float
+  deductionFactors: [CreateDeductionFactorsInput!]
+  personalTaxCredit: Float!
+  spousePersonalTaxCredit: Float
+  tax: Float!
+  finalAmount: Float!
+}
+
+input CreateDeductionFactorsInput {
+  amount: Float!
+  description: String!
+}
+
+input UpdateApplicationInputTable {
+  id: String!
+  state: String!
+  event: String!
+  staffId: String!
+  stateUrl: String!
+}
+
+input CreateApplicationEventInput {
+  applicationId: String!
+  comment: String
+  eventType: String!
+  staffNationalId: String
+  staffName: String
+}
+
+input MunicipalityActivityInput {
+  id: String!
+  active: Boolean!
+}
+
+input CreateMunicipalityInput {
+  name: String!
+  municipalityId: String!
+  admin: CreateStaffInput
+}
+
+input CreateStaffInput {
+  name: String!
+  nationalId: String!
+  email: String!
+  roles: [String!]!
+  municipalityNames: [String!]
+  municipalityIds: [String!]
+}
+
+input UpdateMunicipalityInput {
+  individualAid: AidInput
+  cohabitationAid: AidInput
+  homepage: String
+  rulesHomepage: String
+  email: String
+  usingNav: Boolean
+  navUrl: String
+  navUsername: String
+  navPassword: String
+  childrenAid: String
+  decemberCompensation: Float
+  municipalityId: String!
+}
+
+input AidInput {
+  ownPlace: Float!
+  registeredRenting: Float!
+  unregisteredRenting: Float!
+  livesWithParents: Float!
+  unknown: Float!
+  withOthers: Float!
+  type: String!
+}
+
+input GetSignedUrlInput {
+  folder: String!
+  fileName: String!
+}
+
+input CreateApplicationFilesInput {
+  files: [CreateFileInput!]!
+}
+
+input CreateFileInput {
+  name: String!
+  key: String!
+  size: Float!
+  type: String!
+  applicationId: String!
+}
+
+input UpdateStaffInput {
+  id: String!
+  name: String
+  active: Boolean
+  nationalId: String
+  roles: [String!]
+  nickname: String
+  email: String
+  usePseudoName: Boolean
+  municipalityIds: [String!]
+}
+
+input CreateApiKeyInput {
+  name: String!
+  municipalityCode: String!
+  apiKey: String!
+}
+
+input UpdateApiKeyInput {
+  id: String!
+  name: String!
+}
+
+input DeleteApiKeyInput {
+  id: String!
+}

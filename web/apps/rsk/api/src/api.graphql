@@ -1,0 +1,168 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type NationalRegistryEntryDto {
+  nationalId: String!
+  name: String!
+  genderName: String!
+  genderCode: String!
+  streetName: String!
+  houseNumber: String!
+  postalCode: Float!
+  municipality: String!
+  country: String!
+  countryCode: String!
+  typeName: String!
+  typeCode: String!
+}
+
+type PersonDto {
+  kennitala: String!
+  nafn: String!
+  heimilisfang: String!
+  tegund: String!
+}
+
+type TaxPayerDto {
+  id: Float
+  kennitala: String!
+  netfang: String!
+  simanumer: String!
+  person: PersonDto!
+}
+
+type StatusDto {
+  id: Float
+  nafn: String!
+  kodi: String!
+}
+
+type AssetTypeDto {
+  id: Float
+  nafn: String
+}
+
+type FormDto {
+  id: Float
+  numer: String!
+  nafn: String!
+}
+
+type FormFieldGroupDto {
+  id: Float
+  numer: String!
+  nafn: String!
+  eydublad: FormDto!
+}
+
+type FormFieldDto {
+  id: Float
+  numer: String!
+  nafn: String
+  lysing: String
+  hopur: FormFieldGroupDto
+}
+
+type AssetDto {
+  id: Float
+  tegund: AssetTypeDto
+  titill: String
+  numer: String
+  heimilisfang: String
+  kaupar: String
+  upphaed: Float!
+  reitur: FormFieldDto!
+}
+
+type IncomeDto {
+  id: Float
+  titill: String!
+  upphaed: Float!
+  reitur: FormFieldDto!
+  kennitala_greidanda: String
+  greidandi: PersonDto
+}
+
+type DebtTypeDto {
+  id: Float
+  nafn: String!
+}
+
+type DebtDto {
+  id: Float
+  tegund: DebtTypeDto!
+  titill: String
+  vaxtagjold: Float!
+  eftirstodvar: Float!
+  kaupar: String
+  stadsetning: String
+  fastanumer: String
+  kennitala_lanveitanda: String
+  lanveitandi: PersonDto
+  lansnumer: String
+  lantokudagur: String
+  lanstimi_i_arum: Float
+  heildargreidslur_arsins: Float
+  afborgun_nafnverd: Float
+}
+
+type TaxReturnDto {
+  id: Float
+  skattgreidandi: TaxPayerDto!
+  ar: String
+  eitt_uppgjor: Boolean!
+  slysatrygging_heimilisstorf: Boolean!
+  fjolskyldumerking: String
+  stada: StatusDto!
+  eignir: [AssetDto!]!
+  tekjur: [IncomeDto!]!
+  skuldir: [DebtDto!]!
+}
+
+type Query {
+  getFromNationalRegistry(kennitala: String!): [NationalRegistryEntryDto!]!
+  getCurrentTaxReturn(kennitala: String!): TaxReturnDto!
+  getPreviousTaxReturns(kennitala: String!): [TaxReturnDto!]!
+}
+
+type Mutation {
+  updateCurrentTaxReturn(taxReturn: TaxReturnInput!): Boolean!
+  submitCurrentTaxReturn(kennitala: String!): Boolean!
+}
+
+input TaxReturnInput {
+  kennitala: String!
+  eitt_uppgjor: Boolean!
+  slysatrygging_heimilisstorf: Boolean!
+  tekjur: [IncomeInput!]
+  eignir: [AssetInput!]
+  skuldir: [DebtInput!]
+}
+
+input IncomeInput {
+  titill: String!
+  upphaed: Float!
+  reitur: String!
+  kennitala_greidanda: String
+  greidandi: String
+}
+
+input AssetInput {
+  tegund_id: Float
+  titill: String
+  numer: String
+  heimilisfang: String
+  kaupar: String
+  upphaed: Float!
+  reitur: String!
+}
+
+input DebtInput {
+  id: Float!
+  titill: String!
+  upphaed: Float!
+  reitur: String!
+  kennitala_greidanda: String
+  greidandi: String
+}

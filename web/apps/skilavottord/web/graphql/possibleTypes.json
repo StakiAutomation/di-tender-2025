@@ -1,0 +1,5 @@
+{
+  "possibleTypes": {
+    "RecyclingRequestResponse": ["RequestErrors", "RequestStatus"]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "rsk-web-e2e",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/rsk/web-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["rsk-web"],
+  "targets": {
+    "e2e": {
+      "executor": "@nx/playwright:playwright",
+      "outputs": ["{workspaceRoot}/dist/.playwright/apps/rsk/web-e2e"],
+      "options": {
+        "config": "apps/rsk/web-e2e/playwright.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}
